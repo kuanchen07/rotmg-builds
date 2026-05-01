@@ -1,7 +1,8 @@
 /**
  * Rogue set checker — compares BiS enchant lines in the page to live RealmEye player JSON only.
  * Set window.REALMEYE_LIVE_API_BASE (Vercel origin, no trailing slash). There is no local snapshot fallback.
- * Player: REALMEYE_SET_CHECKER_PLAYER (default evolz).
+ * Username: user enters in the panel; last choice is stored in localStorage. Optional prefill:
+ * REALMEYE_SET_CHECKER_PLAYER (page default).
  *
  * Triggers: buttons with class `set-checker-trigger` and `data-bis-root` pointing to the build article id.
  * Each BiS enchant `<li>` may set `data-bis-equipment-slot` (weapon|ability|armor|ring) and `data-bis-omit-if-no-match`.
@@ -10,6 +11,8 @@
   "use strict";
 
   const BACKPACK_SLUG = "backpack-extender";
+
+  const LS_USERNAME_KEY = "realmeye_set_checker_username";
 
   /** RealmEye character table order after filtering backpack (weapon, ability/cloak, armor, ring). */
   const EQUIPMENT_SLOT_TO_INDEX = {
@@ -34,18 +37,29 @@
     return v;
   }
 
-  function getCheckerPlayer() {
+  function usernamePrefill() {
+    try {
+      const s = localStorage.getItem(LS_USERNAME_KEY);
+      if (s != null && String(s).trim()) {
+        return String(s).trim();
+      }
+    } catch (_) {
+      /* ignore */
+    }
     const v =
       typeof window.REALMEYE_SET_CHECKER_PLAYER === "string" ? window.REALMEYE_SET_CHECKER_PLAYER.trim() : "";
-    return v || "evolz";
+    return v;
   }
 
   /**
    * @returns {Promise<{ data: object, source: 'live' }>}
    */
-  async function loadPlayerData() {
+  async function loadPlayerData(/** @type {string} */ username) {
     const base = getLiveApiBase();
-    const player = getCheckerPlayer();
+    const player = String(username || "").trim();
+    if (!player) {
+      throw new Error("Enter a RealmEye username.");
+    }
 
     if (!base) {
       throw new Error(
@@ -78,10 +92,10 @@
     }
   }
 
-  function sourceBannerHtml() {
-    const player = getCheckerPlayer();
+  function sourceBannerHtml(/** @type {string} */ player) {
+    const name = String(player || "").trim() || "—";
     return `<p class="set-checker-source set-checker-source--live">Live data from RealmEye (<code>${escapeHtml(
-      player
+      name
     )}</code>).</p>`;
   }
 
@@ -487,10 +501,10 @@
   /**
    * @param {string} bisRootId
    */
-  function renderRoguePicker(mount, rogues, bisRootId) {
+  function renderRoguePicker(mount, rogues, bisRootId, liveUsername) {
     const root = document.getElementById(bisRootId);
     const rows = parseBisRowsFromRoot(root);
-    const banner = sourceBannerHtml();
+    const banner = sourceBannerHtml(liveUsername);
     if (rogues.length === 0) {
       mount.innerHTML =
         banner +
@@ -548,6 +562,8 @@
     /** @type {ReturnType<typeof setTimeout> | null} */
     let closeFallbackTimer = null;
     let loadGeneration = 0;
+    /** @type {string} */
+    let currentLiveUsername = "";
 
     function prefersReducedMotion() {
       try {
@@ -631,21 +647,78 @@
       }
     }
 
-    async function runLoad() {
+    function renderUsernameStep() {
+      const bisRootId = activeConfig && activeConfig.bisRootId;
+      if (!bisRootId || !mount) {
+        return;
+      }
+      currentLiveUsername = "";
+      const safeVal = escapeHtml(usernamePrefill());
+      mount.innerHTML =
+        `<div class="set-checker-username-step"><div class="set-checker-username-row">` +
+        `<label class="set-checker-label" for="set-checker-username-input"><span class="set-checker-label-text">RealmEye username</span></label> ` +
+        `<input type="text" id="set-checker-username-input" name="realmeye_username" class="set-checker-input" autocomplete="username" value="${safeVal}" aria-required="true" spellcheck="false">` +
+        `</div>` +
+        `<p id="set-checker-username-error" class="set-checker-bad set-checker-username-error" hidden role="alert"></p>` +
+        `<button type="button" class="set-checker-primary set-checker-load-player">Load RealmEye data</button></div>`;
+      const inp = /** @type {HTMLInputElement | null} */ (mount.querySelector("#set-checker-username-input"));
+      const btn = mount.querySelector(".set-checker-load-player");
+      const errEl = mount.querySelector("#set-checker-username-error");
+      function submit() {
+        if (!inp || !errEl) {
+          return;
+        }
+        errEl.hidden = true;
+        const u = inp.value.trim();
+        if (!u) {
+          errEl.textContent = "Enter a RealmEye username.";
+          errEl.hidden = false;
+          return;
+        }
+        void runLoad(u);
+      }
+      if (btn) {
+        btn.addEventListener("click", () => submit());
+      }
+      if (inp) {
+        inp.addEventListener("keydown", (e) => {
+          if (e.key === "Enter") {
+            e.preventDefault();
+            submit();
+          }
+        });
+        queueMicrotask(() => {
+          if (inp && typeof inp.focus === "function") {
+            inp.focus();
+          }
+        });
+      }
+    }
+
+    async function runLoad(/** @type {string} */ username) {
       const bisRootId = activeConfig && activeConfig.bisRootId;
       if (!bisRootId) {
         return;
       }
+      const name = String(username || "").trim();
+      if (!name) {
+        return;
+      }
       const gen = ++loadGeneration;
-      const base = getLiveApiBase();
       mount.innerHTML = "<p class=\"set-checker-loading\">Fetching live RealmEye data…</p>";
       try {
-        const meta = await loadPlayerData();
+        const meta = await loadPlayerData(name);
         if (gen !== loadGeneration) {
           return;
         }
+        try {
+          localStorage.setItem(LS_USERNAME_KEY, name);
+        } catch (_) {
+          /* ignore */
+        }
+        currentLiveUsername = name;
         const rogues = roguesFromPayload(meta.data);
-        renderRoguePicker(mount, rogues, bisRootId);
+        renderRoguePicker(mount, rogues, bisRootId, name);
       } catch (err) {
         if (gen !== loadGeneration) {
           return;
@@ -654,7 +727,7 @@
         const baseForHint = getLiveApiBase();
         const detailHint = baseForHint
           ? `<p class="set-checker-hint">Request URL: <code>${escapeHtml(
-              `${baseForHint}/api/main?username=${encodeURIComponent(getCheckerPlayer())}`
+              `${baseForHint}/api/main?username=${encodeURIComponent(name)}`
             )}</code>. On Vercel, set <code>CORS_ORIGIN</code> to <code>https://&lt;your-github-user&gt;.github.io</code> (GitHub project pages use that origin only—no <code>/repo</code> path), use <code>*</code>, or a comma-separated list (e.g. GitHub Pages + Vercel preview). Open the URL above in a new tab to confirm the API.</p>`
           : `<p class="set-checker-hint">Set <code>window.REALMEYE_LIVE_API_BASE</code> in this page to your Vercel API origin (HTTPS, no path). See <code>classes/rogue.html</code>.</p>`;
         mount.innerHTML = `<p class="set-checker-source set-checker-source--warn"><strong>Not fetching live data.</strong> The set checker only uses the live API—no offline snapshot.</p><p class="set-checker-bad">Could not load player data.</p><p class="set-checker-hint">${msg}</p>${detailHint}`;
@@ -668,12 +741,14 @@
 
     if (refreshBtn) {
       refreshBtn.addEventListener("click", () => {
-        void runLoad();
+        if (currentLiveUsername) {
+          void runLoad(currentLiveUsername);
+        }
       });
     }
 
     for (const trigger of triggers) {
-      trigger.addEventListener("click", async () => {
+      trigger.addEventListener("click", () => {
         const bisRootId = (trigger.getAttribute("data-bis-root") || "").trim();
         const dialogTitle = (trigger.getAttribute("data-bis-dialog-title") || "").trim() || "Set checker";
         lastTrigger = trigger;
@@ -682,7 +757,7 @@
           titleEl.textContent = dialogTitle;
         }
         openShell();
-        await runLoad();
+        renderUsernameStep();
       });
     }
   }
