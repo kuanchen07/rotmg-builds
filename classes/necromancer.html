@@ -5,8 +5,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Necromancer — ROTMG Builds</title>
   <link rel="stylesheet" href="../builds.css">
+  <script>
+    /* GET /api/main?username=... (api/main.py). On Vercel-hosted pages, use same origin so preview + production work. Else set your API origin (https://…, no path). */
+    window.REALMEYE_LIVE_API_BASE =
+      typeof location !== "undefined" && /\.vercel\.app$/i.test(location.hostname || "")
+        ? location.origin
+        : "https://rotmg-builds.vercel.app";
+    window.REALMEYE_SET_CHECKER_CLASS = "necromancer";
+  </script>
 </head>
 <body>
+  <p id="set-checker-script-error" class="set-checker-script-error" hidden role="alert">
+    Set checker could not load its script. Confirm <code>classes/set-checker.js</code> is present on the host (commit and redeploy if needed).
+  </p>
   <main>
     <header class="class-picker">
       <h1 class="class-heading">
@@ -66,6 +77,11 @@
           <a class="icon-link" href="https://www.realmeye.com/wiki/chrysalis-of-eternity" target="_blank" rel="noopener noreferrer" aria-label="Chrysalis of Eternity on RealmEye wiki">
             <img class="icon-inline" src="../icons/lean.png" alt="Chrysalis of Eternity">
           </a>
+          <button type="button" class="set-checker-btn set-checker-trigger" data-bis-root="nec-attack-build" data-bis-dialog-title="Attack Necro — set checker" aria-label="Compare equipped enchants with Attack Necro BiS">
+            <svg class="set-checker-play" aria-hidden="true" viewBox="0 0 24 24" width="22" height="22" fill="currentColor" focusable="false">
+              <path d="M8 5v14l11-7L8 5z"/>
+            </svg>
+          </button>
           (any good dps ring)
         </p>
         <p>
@@ -92,13 +108,13 @@
       <section class="section-bis-enchants" aria-labelledby="nec-enchants-heading">
         <h3 id="nec-enchants-heading" class="section-title section-title--underline">BiS Enchants:</h3>
         <ul>
-          <li>
+          <li data-bis-equipment-slot="weapon">
             <a class="icon-link" href="https://www.realmeye.com/wiki/vigor" target="_blank" rel="noopener noreferrer" aria-label="Staff of Vigor on RealmEye wiki">
               <img class="icon-inline" src="../icons/vigor.png" alt="Staff of Vigor">
             </a>
             : Flurry of Blows - Relative Attack IV - Attack Tradeoff IV - Onshoot Dexterity IV
           </li>
-          <li>
+          <li data-bis-equipment-slot="weapon">
             <a class="icon-link" href="https://www.realmeye.com/wiki/staff-of-unholy-sacrifice" target="_blank" rel="noopener noreferrer" aria-label="Staff of Unholy Sacrifice on RealmEye wiki">
               <img class="icon-inline" src="../icons/cult_staff.png" alt="Staff of Unholy Sacrifice">
             </a>
@@ -110,7 +126,7 @@
             </a>
             : Overwhelming Strikes - Relative Attack IV - Attack Tradeoff IV - Onshoot Dexterity IV
           </li>
-          <li>
+          <li data-bis-equipment-slot="ability">
             <a class="icon-link" href="https://www.realmeye.com/wiki/skull-of-endless-torment" target="_blank" rel="noopener noreferrer" aria-label="Skull of Endless Torment on RealmEye wiki">
               <img class="icon-inline" src="../icons/shaitan_skull.png" alt="Skull of Endless Torment">
             </a>
@@ -119,13 +135,13 @@
             </a>
             : Shaitan&rsquo;s Might - Attack Tradeoff IV - Percent Mana Regen IV - Stat Mod Multiplier IV (OR MP Reduction IV until stat mod gets fixed)
           </li>
-          <li>
+          <li data-bis-equipment-slot="armor">
             <a class="icon-link" href="https://www.realmeye.com/wiki/diplomatic-robe" target="_blank" rel="noopener noreferrer" aria-label="Diplomatic Robe on RealmEye wiki">
               <img class="icon-inline" src="../icons/diplo.png" alt="Diplomatic Robe">
             </a>
             : Relative Attack IV - Attack Tradeoff IV - Onhit Attack IV
           </li>
-          <li>
+          <li data-bis-equipment-slot="ring">
             <a class="icon-link" href="https://www.realmeye.com/wiki/chrysalis-of-eternity" target="_blank" rel="noopener noreferrer" aria-label="Chrysalis of Eternity on RealmEye wiki">
               <img class="icon-inline" src="../icons/lean.png" alt="Chrysalis of Eternity">
             </a>
@@ -151,8 +167,8 @@
             <img class="icon-inline" src="../icons/vigor.png" alt="Staff of Vigor">
           </a>
           -
-          <a class="icon-link" href="https://www.realmeye.com/wiki/skull-of-restless-souls" target="_blank" rel="noopener noreferrer" aria-label="Skull of Restless Souls on RealmEye wiki">
-            <img class="icon-inline" src="../icons/cit_skull.png" alt="Skull of Restless Souls">
+          <a class="icon-link" href="https://www.realmeye.com/wiki/skullish-remains-of-esben" target="_blank" rel="noopener noreferrer" aria-label="Skullish Remains of Esben on RealmEye wiki">
+            <img class="icon-inline" src="../icons/cit_skull.png" alt="Skullish Remains of Esben">
           </a>
           -
           <a class="icon-link" href="https://www.realmeye.com/wiki/robe-of-the-ancient-intellect" target="_blank" rel="noopener noreferrer" aria-label="Robe of the Ancient Intellect on RealmEye wiki">
@@ -166,6 +182,11 @@
           <a class="icon-link" href="https://www.realmeye.com/wiki/magical-lodestone" target="_blank" rel="noopener noreferrer" aria-label="Magical Lodestone on RealmEye wiki">
             <img class="icon-inline" src="../icons/potato.png" alt="Magical Lodestone">
           </a>
+          <button type="button" class="set-checker-btn set-checker-trigger" data-bis-root="nec-def-build" data-bis-dialog-title="Def Necro — set checker" aria-label="Compare equipped enchants with Def Necro BiS">
+            <svg class="set-checker-play" aria-hidden="true" viewBox="0 0 24 24" width="22" height="22" fill="currentColor" focusable="false">
+              <path d="M8 5v14l11-7L8 5z"/>
+            </svg>
+          </button>
         </p>
         <p>
           <strong>Swapouts:</strong>
@@ -186,13 +207,13 @@
       <section class="section-bis-enchants" aria-labelledby="nec-def-enchants-heading">
         <h3 id="nec-def-enchants-heading" class="section-title section-title--underline">BiS Enchants:</h3>
         <ul>
-          <li>
+          <li data-bis-equipment-slot="weapon">
             <a class="icon-link" href="https://www.realmeye.com/wiki/vigor" target="_blank" rel="noopener noreferrer" aria-label="Staff of Vigor on RealmEye wiki">
               <img class="icon-inline" src="../icons/vigor.png" alt="Staff of Vigor">
             </a>
             : Flurry of Blows - Relative Defense IV - Def Tradeoff IV - Onshoot Defense IV
           </li>
-          <li>
+          <li data-bis-equipment-slot="weapon">
             <a class="icon-link" href="https://www.realmeye.com/wiki/staff-of-extreme-prejudice" target="_blank" rel="noopener noreferrer" aria-label="Staff of Extreme Prejudice on RealmEye wiki">
               <img class="icon-inline" src="../icons/ep.png" alt="Staff of Extreme Prejudice">
             </a>
@@ -204,19 +225,19 @@
             </a>
             : Overwhelming Strikes - Relative Defense IV - Def Tradeoff IV - Onability Defense IV
           </li>
-          <li>
-            <a class="icon-link" href="https://www.realmeye.com/wiki/skull-of-restless-souls" target="_blank" rel="noopener noreferrer" aria-label="Skull of Restless Souls on RealmEye wiki">
-              <img class="icon-inline" src="../icons/cit_skull.png" alt="Skull of Restless Souls">
+          <li data-bis-equipment-slot="ability">
+            <a class="icon-link" href="https://www.realmeye.com/wiki/skullish-remains-of-esben" target="_blank" rel="noopener noreferrer" aria-label="Skullish Remains of Esben on RealmEye wiki">
+              <img class="icon-inline" src="../icons/cit_skull.png" alt="Skullish Remains of Esben">
             </a>
             : Sandstone Resilience - Def Tradeoff IV - Percent Mana Regen IV - Stat Mod Multiplier IV (OR MP Reduction IV until stat mod gets fixed)
           </li>
-          <li>
+          <li data-bis-equipment-slot="armor">
             <a class="icon-link" href="https://www.realmeye.com/wiki/robe-of-the-ancient-intellect" target="_blank" rel="noopener noreferrer" aria-label="Robe of the Ancient Intellect on RealmEye wiki">
               <img class="icon-inline" src="../icons/t14_robe.png" alt="Robe of the Ancient Intellect">
             </a>
             : Relative Defense IV - Def Tradeoff IV - Onhit Defense IV
           </li>
-          <li>
+          <li data-bis-equipment-slot="ring">
             <a class="icon-link" href="https://www.realmeye.com/wiki/magical-lodestone" target="_blank" rel="noopener noreferrer" aria-label="Magical Lodestone on RealmEye wiki">
               <img class="icon-inline" src="../icons/potato.png" alt="Magical Lodestone">
             </a>
@@ -273,6 +294,11 @@
           <a class="icon-link" href="https://www.realmeye.com/wiki/the-twilight-gemstone" target="_blank" rel="noopener noreferrer" aria-label="The Twilight Gemstone on RealmEye wiki">
             <img class="icon-inline" src="../icons/gemstone.png" alt="The Twilight Gemstone">
           </a>
+          <button type="button" class="set-checker-btn set-checker-trigger" data-bis-root="nec-mana-build" data-bis-dialog-title="Mana Necro — set checker" aria-label="Compare equipped enchants with Mana Necro BiS">
+            <svg class="set-checker-play" aria-hidden="true" viewBox="0 0 24 24" width="22" height="22" fill="currentColor" focusable="false">
+              <path d="M8 5v14l11-7L8 5z"/>
+            </svg>
+          </button>
         </p>
         <p>
           <strong>Swapouts:</strong>
@@ -298,13 +324,13 @@
       <section class="section-bis-enchants" aria-labelledby="nec-mana-enchants-heading">
         <h3 id="nec-mana-enchants-heading" class="section-title section-title--underline">BiS Enchants:</h3>
         <ul>
-          <li>
+          <li data-bis-equipment-slot="weapon">
             <a class="icon-link" href="https://www.realmeye.com/wiki/vigor" target="_blank" rel="noopener noreferrer" aria-label="Staff of Vigor on RealmEye wiki">
               <img class="icon-inline" src="../icons/vigor.png" alt="Staff of Vigor">
             </a>
             : Flurry of Blows - Relative Mana IV - Mana Tradeoff IV - Onshoot Dexterity IV
           </li>
-          <li>
+          <li data-bis-equipment-slot="weapon">
             <a class="icon-link" href="https://www.realmeye.com/wiki/staff-of-unholy-sacrifice" target="_blank" rel="noopener noreferrer" aria-label="Staff of Unholy Sacrifice on RealmEye wiki">
               <img class="icon-inline" src="../icons/cult_staff.png" alt="Staff of Unholy Sacrifice">
             </a>
@@ -316,31 +342,31 @@
             </a>
             : Overwhelming Strikes - Relative Mana IV - Mana Tradeoff IV - Onshoot Attack IV
           </li>
-          <li>
+          <li data-bis-equipment-slot="ability">
             <a class="icon-link" href="https://www.realmeye.com/wiki/sealed-crystal-skull" target="_blank" rel="noopener noreferrer" aria-label="Sealed Crystal Skull on RealmEye wiki">
               <img class="icon-inline" src="../icons/thicket_skull.png" alt="Sealed Crystal Skull">
             </a>
             : Arcane Battery - Mana Tradeoff IV - Percent Mana Regen IV - Stat Mod Multiplier IV (OR MP Reduction IV until stat mod gets fixed)
           </li>
-          <li>
+          <li data-bis-equipment-slot="armor">
             <a class="icon-link" href="https://www.realmeye.com/wiki/flowering-kimono" target="_blank" rel="noopener noreferrer" aria-label="Flowering Kimono on RealmEye wiki">
               <img class="icon-inline" src="../icons/flowering_kimono.png" alt="Flowering Kimono">
             </a>
             : Relative Mana IV - Mana Tradeoff IV - Onhit Attack IV
           </li>
-          <li>
+          <li data-bis-equipment-slot="armor">
             <a class="icon-link" href="https://www.realmeye.com/wiki/tlatoani-s-shroud" target="_blank" rel="noopener noreferrer" aria-label="Tlatoani&rsquo;s Shroud on RealmEye wiki">
               <img class="icon-inline" src="../icons/tlatoani_shroud.png" alt="Tlatoani&rsquo;s Shroud">
             </a>
             : Raijin&rsquo;s Dance - Relative Mana IV - Mana Tradeoff IV - Onhit Attack IV
           </li>
-          <li>
+          <li data-bis-equipment-slot="armor">
             <a class="icon-link" href="https://www.realmeye.com/wiki/wretched-rags" target="_blank" rel="noopener noreferrer" aria-label="Wretched Rags on RealmEye wiki">
               <img class="icon-inline" src="../icons/rags.png" alt="Wretched Rags">
             </a>
             : Mermaid Magic - Mana Tradeoff IV - Onhit Attack IV
           </li>
-          <li>
+          <li data-bis-equipment-slot="ring">
             <a class="icon-link" href="https://www.realmeye.com/wiki/ring-of-transcendent-magic" target="_blank" rel="noopener noreferrer" aria-label="Ring of Transcendent Magic on RealmEye wiki">
               <img class="icon-inline" src="../icons/t7_mana.png" alt="Ring of Transcendent Magic">
             </a>
@@ -395,7 +421,7 @@
           </a>
           -
           <a class="icon-link" href="https://www.realmeye.com/wiki/skull-of-restless-souls" target="_blank" rel="noopener noreferrer" aria-label="Skull of Restless Souls on RealmEye wiki">
-            <img class="icon-inline" src="../icons/cit_skull.png" alt="Skull of Restless Souls">
+            <img class="icon-inline" src="../icons/restless_skull.png" alt="Skull of Restless Souls">
           </a>
           <strong>or</strong>
           <a class="icon-link" href="https://www.realmeye.com/wiki/skull-of-corrupted-souls" target="_blank" rel="noopener noreferrer" aria-label="Skull of Corrupted Souls on RealmEye wiki">
@@ -425,6 +451,11 @@
           <a class="icon-link" href="https://www.realmeye.com/wiki/ring-of-cubed-wisdom" target="_blank" rel="noopener noreferrer" aria-label="Ring of Cubed Wisdom on RealmEye wiki">
             <img class="icon-inline" src="../icons/cubic_ring.png" alt="Ring of Cubed Wisdom">
           </a>
+          <button type="button" class="set-checker-btn set-checker-trigger" data-bis-root="nec-wis-build" data-bis-dialog-title="Wis Necro — set checker" aria-label="Compare equipped enchants with Wis Necro BiS">
+            <svg class="set-checker-play" aria-hidden="true" viewBox="0 0 24 24" width="22" height="22" fill="currentColor" focusable="false">
+              <path d="M8 5v14l11-7L8 5z"/>
+            </svg>
+          </button>
         </p>
         <p>
           <strong>Swapouts:</strong>
@@ -450,7 +481,7 @@
       <section class="section-bis-enchants" aria-labelledby="nec-wis-enchants-heading">
         <h3 id="nec-wis-enchants-heading" class="section-title section-title--underline">BiS Enchants:</h3>
         <ul>
-          <li>
+          <li data-bis-equipment-slot="weapon">
             <a class="icon-link" href="https://www.realmeye.com/wiki/vigor" target="_blank" rel="noopener noreferrer" aria-label="Staff of Vigor on RealmEye wiki">
               <img class="icon-inline" src="../icons/vigor.png" alt="Staff of Vigor">
             </a>
@@ -459,7 +490,7 @@
             </a>
             : Flurry of Blows - Relative Wisdom IV - Wisdom Tradeoff IV - Onshoot Wisdom IV
           </li>
-          <li>
+          <li data-bis-equipment-slot="weapon">
             <a class="icon-link" href="https://www.realmeye.com/wiki/staff-of-extreme-prejudice" target="_blank" rel="noopener noreferrer" aria-label="Staff of Extreme Prejudice on RealmEye wiki">
               <img class="icon-inline" src="../icons/ep.png" alt="Staff of Extreme Prejudice">
             </a>
@@ -471,40 +502,40 @@
             </a>
             : Overwhelming Strikes - Relative Wisdom IV - Wisdom Tradeoff IV - Onshoot Wisdom IV
           </li>
-          <li>
+          <li data-bis-equipment-slot="ability">
             <a class="icon-link" href="https://www.realmeye.com/wiki/skull-of-restless-souls" target="_blank" rel="noopener noreferrer" aria-label="Skull of Restless Souls on RealmEye wiki">
-              <img class="icon-inline" src="../icons/cit_skull.png" alt="Skull of Restless Souls">
+              <img class="icon-inline" src="../icons/restless_skull.png" alt="Skull of Restless Souls">
             </a>
             <a class="icon-link" href="https://www.realmeye.com/wiki/skull-of-corrupted-souls" target="_blank" rel="noopener noreferrer" aria-label="Skull of Corrupted Souls on RealmEye wiki">
               <img class="icon-inline" src="../icons/cult_skull.png" alt="Skull of Corrupted Souls">
             </a>
             : Relative Wisdom IV - Wisdom Tradeoff IV - Percent Mana Regen IV - Stat Mod Multiplier IV (OR MP Reduction IV until stat mod gets fixed)
           </li>
-          <li>
+          <li data-bis-equipment-slot="armor">
             <a class="icon-link" href="https://www.realmeye.com/wiki/ritual-robe" target="_blank" rel="noopener noreferrer" aria-label="Ritual Robe on RealmEye wiki">
               <img class="icon-inline" src="../icons/cult_robe.png" alt="Ritual Robe">
             </a>
             : Relative Wisdom IV - Wisdom Tradeoff IV - Onhit Wisdom IV
           </li>
-          <li>
+          <li data-bis-equipment-slot="armor">
             <a class="icon-link" href="https://www.realmeye.com/wiki/flowering-kimono" target="_blank" rel="noopener noreferrer" aria-label="Flowering Kimono on RealmEye wiki">
               <img class="icon-inline" src="../icons/flowering_kimono.png" alt="Flowering Kimono">
             </a>
             : Raijin&rsquo;s Dance - Relative Wisdom IV - Wisdom Tradeoff IV - Onhit Wisdom IV
           </li>
-          <li>
+          <li data-bis-equipment-slot="ring">
             <a class="icon-link" href="https://www.realmeye.com/wiki/ring-of-skeletal-specters" target="_blank" rel="noopener noreferrer" aria-label="Ring of Skeletal Specters on RealmEye wiki">
               <img class="icon-inline" src="../icons/specter_ring.png" alt="Ring of Skeletal Specters">
             </a>
             : Necrotic Knowledge - Wisdom Tradeoff IV - Percent Mana Regen IV - Onhit/Onability Wisdom IV
           </li>
-          <li>
+          <li data-bis-equipment-slot="ring">
             <a class="icon-link" href="https://www.realmeye.com/wiki/ring-of-transcendent-wisdom" target="_blank" rel="noopener noreferrer" aria-label="Ring of Transcendent Wisdom on RealmEye wiki">
               <img class="icon-inline" src="../icons/t7_wis.png" alt="Ring of Transcendent Wisdom">
             </a>
             : Relative Wisdom IV - Wisdom Tradeoff IV - Percent Mana Regen IV - Onhit/Onability Wisdom IV
           </li>
-          <li>
+          <li data-bis-equipment-slot="ring">
             <a class="icon-link" href="https://www.realmeye.com/wiki/the-twilight-gemstone" target="_blank" rel="noopener noreferrer" aria-label="The Twilight Gemstone on RealmEye wiki">
               <img class="icon-inline" src="../icons/gemstone.png" alt="The Twilight Gemstone">
             </a>
@@ -520,6 +551,36 @@
       </section>
     </article>
     </section>
+
+    <div id="vit-set-checker-shell" class="set-checker-shell" hidden aria-hidden="true">
+      <aside
+        id="vit-set-checker-panel"
+        class="set-checker-panel"
+        role="dialog"
+        aria-modal="false"
+        aria-labelledby="vit-set-checker-title"
+      >
+        <div class="set-checker-panel-inner">
+          <header class="set-checker-dialog-header">
+            <h2 id="vit-set-checker-title" class="set-checker-dialog-title">Necromancer — set checker</h2>
+            <div class="set-checker-header-actions">
+              <button type="button" id="vit-set-checker-refresh" class="set-checker-secondary" aria-label="Refresh player data from RealmEye">Refresh</button>
+              <button type="button" class="set-checker-icon-close set-checker-close" aria-label="Close">&times;</button>
+            </div>
+          </header>
+          <p class="set-checker-fetch-hint">
+            Enter a RealmEye username in the panel below, then load live data (<code>GET /api/main?username=…</code> on your <code>REALMEYE_LIVE_API_BASE</code>).
+            If you see a network or CORS error, set Vercel env <code>CORS_ORIGIN</code> to this site&rsquo;s origin (e.g. <code>https://you.github.io</code>) or <code>*</code>.
+            Use <strong>Refresh</strong> to retry with the same username without closing.
+          </p>
+          <div id="vit-set-checker-mount" class="set-checker-mount"></div>
+          <footer class="set-checker-dialog-footer">
+            <button type="button" class="set-checker-close set-checker-muted">Close</button>
+          </footer>
+        </div>
+      </aside>
+    </div>
   </main>
+  <script src="set-checker.js" defer onerror="(function(){var e=document.getElementById('set-checker-script-error');if(e)e.hidden=false;})()"></script>
 </body>
 </html>

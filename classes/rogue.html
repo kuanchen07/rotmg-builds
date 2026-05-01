@@ -11,7 +11,7 @@
       typeof location !== "undefined" && /\.vercel\.app$/i.test(location.hostname || "")
         ? location.origin
         : "https://rotmg-builds.vercel.app";
-    window.REALMEYE_SET_CHECKER_PLAYER = "evolz";
+    window.REALMEYE_SET_CHECKER_CLASS = "rogue";
   </script>
 </head>
 <body>
@@ -640,9 +640,9 @@
             </div>
           </header>
           <p class="set-checker-fetch-hint">
-            Data is loaded only from the live API (<code>GET /api/main?username=…</code> on your <code>REALMEYE_LIVE_API_BASE</code>).
-            If the panel reports a network or CORS error, set Vercel env <code>CORS_ORIGIN</code> to this site&rsquo;s origin (e.g. <code>https://you.github.io</code>) or <code>*</code>.
-            Use <strong>Refresh</strong> to retry without closing.
+            Enter a RealmEye username in the panel below, then load live data (<code>GET /api/main?username=…</code> on your <code>REALMEYE_LIVE_API_BASE</code>).
+            If you see a network or CORS error, set Vercel env <code>CORS_ORIGIN</code> to this site&rsquo;s origin (e.g. <code>https://you.github.io</code>) or <code>*</code>.
+            Use <strong>Refresh</strong> to retry with the same username without closing.
           </p>
           <div id="vit-set-checker-mount" class="set-checker-mount"></div>
           <footer class="set-checker-dialog-footer">

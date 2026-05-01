@@ -1,8 +1,9 @@
 /**
- * Rogue set checker — compares BiS enchant lines in the page to live RealmEye player JSON only.
+ * Set checker — compares BiS enchant lines in the page to live RealmEye player JSON only.
  * Set window.REALMEYE_LIVE_API_BASE (Vercel origin, no trailing slash). There is no local snapshot fallback.
  * Username: user enters in the panel; last choice is stored in localStorage. Optional prefill:
  * REALMEYE_SET_CHECKER_PLAYER (page default).
+ * Class filter: `window.REALMEYE_SET_CHECKER_CLASS` — lowercase RealmEye class slug(s), e.g. `rogue`, `necromancer` (see page inline script).
  *
  * Triggers: buttons with class `set-checker-trigger` and `data-bis-root` pointing to the build article id.
  * Each BiS enchant `<li>` may set `data-bis-equipment-slot` (weapon|ability|armor|ring) and `data-bis-omit-if-no-match`.
@@ -11,6 +12,12 @@
   "use strict";
 
   const BACKPACK_SLUG = "backpack-extender";
+
+  /** Captured synchronously — used to resolve `item-icon-registry.json` next to this script on GitHub Pages. */
+  const SET_CHECKER_SCRIPT_SRC =
+    typeof document !== "undefined" && /** @type {HTMLScriptElement | null} */ (document.currentScript)
+      ? String(/** @type {HTMLScriptElement} */ (document.currentScript).src || "")
+      : "";
 
   const LS_USERNAME_KEY = "realmeye_set_checker_username";
 
@@ -105,6 +112,92 @@
       .toLowerCase()
       .replace(/\s+/g, " ")
       .trim();
+  }
+
+  /** @returns {string} normalized slug, default rogue */
+  function getSetCheckerClassSlug() {
+    const raw =
+      typeof window.REALMEYE_SET_CHECKER_CLASS === "string" ? window.REALMEYE_SET_CHECKER_CLASS.trim() : "";
+    return norm(raw) || "rogue";
+  }
+
+  /** Display label for UI (RealmEye sends "Title Case" anyway; picker uses slug from globals). */
+  function classSlugToDisplay(slug) {
+    const s = norm(slug) || "rogue";
+    return s.replace(/\b\w/g, (ch) => ch.toUpperCase());
+  }
+
+  function escapeHtml(s) {
+    return String(s)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+  }
+
+  /** @param {object} data API player JSON */
+  function charactersForClassFromPayload(data, /** @type {string} */ classSlug) {
+    const target = norm(classSlug) || "rogue";
+    return (data.characters || []).filter((ch) => norm(ch.class) === target);
+  }
+
+  /** @type {Promise<Record<string, { src: string; alt: string }>> | null} */
+  let iconRegistryLoadPromise = null;
+
+  /**
+   * Wiki slug → local icon `{ src, alt }` from `item-icon-registry.json` (beside this script).
+   * @returns {Promise<Record<string, { src: string; alt: string }>>}
+   */
+  function ensureIconRegistry() {
+    if (!iconRegistryLoadPromise) {
+      const url = SET_CHECKER_SCRIPT_SRC
+        ? new URL("item-icon-registry.json", SET_CHECKER_SCRIPT_SRC).href
+        : new URL("item-icon-registry.json", window.location.href).href;
+      iconRegistryLoadPromise = fetch(url, { cache: "force-cache", mode: "cors" })
+        .then((r) => (r.ok ? r.json() : {}))
+        .then((json) =>
+          json && typeof json.items === "object" && json.items ? /** @type {Record<string, { src: string; alt: string }>} */ (json.items) : {}
+        )
+        .catch(() => ({}));
+    }
+    return iconRegistryLoadPromise;
+  }
+
+  function iconPlaceholderHtml(/** @type {string} */ extraClasses) {
+    const ec = extraClasses ? ` ${extraClasses}` : "";
+    return `<span class="set-checker-icon-placeholder${ec}" aria-hidden="true">?</span>`;
+  }
+
+  function bisIconsRowHtml(/** @type {{ src: string; alt: string }[]} */ imgs) {
+    if (!imgs || !imgs.length) {
+      return "";
+    }
+    const inner = imgs
+      .map(
+        (ico) =>
+          `<img class="set-checker-row-icon" src="${escapeHtml(ico.src)}" alt="${escapeHtml(
+            ico.alt || ""
+          )}" loading="lazy" decoding="async" width="22" height="22">`
+      )
+      .join("");
+    return `<span class="set-checker-row-icons">${inner}</span>`;
+  }
+
+  /**
+   * @param {Record<string, { src: string; alt: string }>} registry
+   * @param {string | null | undefined} wikiSlug
+   * @param {string | null | undefined} fallbackTitle
+   */
+  function equippedIconHtml(registry, wikiSlug, fallbackTitle) {
+    const slug = wikiSlug ? String(wikiSlug) : "";
+    const ent = slug && registry[slug];
+    if (ent && ent.src) {
+      const alt = ent.alt || fallbackTitle || slug;
+      return `<img class="set-checker-row-icon set-checker-equipped-icon" src="${escapeHtml(ent.src)}" alt="${escapeHtml(
+        alt
+      )}" loading="lazy" decoding="async" width="22" height="22">`;
+    }
+    return iconPlaceholderHtml("set-checker-equipped-icon");
   }
 
   function prefixBeforeColon(line) {
@@ -242,19 +335,67 @@
   }
 
   /**
+   * BiS decorative icons from the guide `<img class="icon-inline">` entries (typically `../icons/...`).
    * @param {HTMLLIElement} li
-   * @returns {{ slugs: string[], tokens: string[], omitIfNoMatch: boolean, equipmentSlotIndex: number | null }}
+   * @returns {{ src: string; alt: string }[]}
+   */
+  function parseBisIconImgs(li) {
+    /** @type {HTMLImageElement[]} */
+    let list = [...li.querySelectorAll("img.icon-inline")];
+    if (!list.length) {
+      list = [...li.querySelectorAll("img")];
+    }
+    return list.slice(0, 6).map((img) => ({
+      src: (img.getAttribute("src") || "").trim(),
+      alt: String(img.getAttribute("alt") || "").trim(),
+    }))
+      .filter((x) => x.src.length > 0);
+  }
+
+  /**
+   * Human-readable item label for set-checker headings (icon alt, aria-label, or slug words).
+   * @param {HTMLAnchorElement} a
+   */
+  function displayNameFromBisAnchor(a) {
+    const img = a.querySelector("img.icon-inline") || a.querySelector("img");
+    const alt = img ? String(img.getAttribute("alt") || "").trim() : "";
+    if (alt) {
+      return alt;
+    }
+    const aria = String(a.getAttribute("aria-label") || "").trim();
+    const fromAria = aria.replace(/\s+on RealmEye wiki\s*$/i, "").trim();
+    if (fromAria) {
+      return fromAria;
+    }
+    const slug = extractWikiSlugFromHref(a.getAttribute("href"));
+    if (!slug) {
+      return "";
+    }
+    return slug.replace(/-/g, " ").replace(/\b\w/g, (ch) => ch.toUpperCase());
+  }
+
+  /**
+   * @param {HTMLLIElement} li
+   * @returns {{ slugs: string[], bisItemTitle: string, tokens: string[], omitIfNoMatch: boolean, equipmentSlotIndex: number | null, bisIconImgs: { src: string; alt: string }[] }}
    */
   function parseBisEnchantLi(li) {
     const anchors = [...li.querySelectorAll('a[href*="/wiki/"]')];
     const slugs = [];
+    /** @type {string[]} */
+    const bisItemTitleParts = [];
     for (const a of anchors) {
       const s = extractWikiSlugFromHref(a.getAttribute("href"));
-      if (s) {
-        slugs.push(s);
+      if (!s) {
+        continue;
       }
+      slugs.push(s);
+      const label = displayNameFromBisAnchor(/** @type {HTMLAnchorElement} */ (a));
+      bisItemTitleParts.push(label || s);
     }
+    const bisItemTitle = bisItemTitleParts.join(" / ");
+    const bisIconImgs = parseBisIconImgs(li);
     const clone = li.cloneNode(true);
+
     clone.querySelectorAll("a").forEach((x) => x.remove());
     const raw = clone.textContent.replace(/\s+/g, " ").trim();
     const ci = raw.indexOf(":");
@@ -265,9 +406,11 @@
       .filter(Boolean);
     return {
       slugs: [...new Set(slugs)],
+      bisItemTitle,
       tokens,
       omitIfNoMatch: parseOmitIfNoMatch(li),
       equipmentSlotIndex: parseEquipmentSlotIndex(li),
+      bisIconImgs,
     };
   }
 
@@ -385,19 +528,14 @@
     return out;
   }
 
-  function escapeHtml(s) {
-    return String(s)
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;");
-  }
-
-  function roguesFromPayload(data) {
-    return (data.characters || []).filter((ch) => norm(ch.class) === "rogue");
-  }
-
-  function renderCompare(mount, character, results) {
+  /**
+   * @param {HTMLElement} mount
+   * @param {object} character
+   * @param {ReturnType<typeof compareCharacterToBis>} results
+   */
+  async function renderCompare(mount, character, results) {
+    /** @type {Record<string, { src: string; alt: string }>} */
+    const registry = await ensureIconRegistry();
     const parts = [];
     parts.push(
       `<p class="set-checker-summary"><strong>${escapeHtml(
@@ -409,22 +547,33 @@
 
     for (const block of results) {
       const { row, equipped, tokenResults, itemMismatch } = block;
-      const slugLabel = row.slugs.join(" / ");
+      const bisHeadingLabel =
+        (row.bisItemTitle && String(row.bisItemTitle).trim()) || row.slugs.join(" / ");
       const rowSectionClass = itemMismatch
         ? "set-checker-row set-checker-row--mismatch"
         : "set-checker-row";
       if (itemMismatch) {
         parts.push(`<section class="${rowSectionClass}">`);
-        parts.push(`<h3 class="set-checker-row-title">BiS: ${escapeHtml(slugLabel)}</h3>`);
         parts.push(
-          `<p class="set-checker-equipped-wrong"><span class="set-checker-mark" aria-hidden="true">✗</span> <strong>Equipped (RealmEye):</strong> ${escapeHtml(
-            equipped.title || equipped.wiki_slug || "—"
-          )}</p>`
+          `<h3 class="set-checker-row-title">${bisIconsRowHtml(row.bisIconImgs)}<span class="set-checker-row-title-text">BiS: ${escapeHtml(
+            bisHeadingLabel
+          )}</span></h3>`
+        );
+        parts.push(
+          `<p class="set-checker-equipped-wrong"><span class="set-checker-mark" aria-hidden="true">✗</span> <strong>Equipped (RealmEye):</strong> ${equippedIconHtml(
+            registry,
+            equipped.wiki_slug,
+            equipped.title || equipped.wiki_slug
+          )}<span class="set-checker-equipped-name">${escapeHtml(equipped.title || equipped.wiki_slug || "—")}</span></p>`
         );
       } else {
-        parts.push(`<section class="${rowSectionClass}"><h3 class="set-checker-row-title">${escapeHtml(
-          equipped.title || slugLabel
-        )}</h3>`);
+        parts.push(
+          `<section class="${rowSectionClass}"><h3 class="set-checker-row-title"><span class="set-checker-row-icons">${equippedIconHtml(
+            registry,
+            equipped.wiki_slug,
+            equipped.title || bisHeadingLabel
+          )}</span><span class="set-checker-row-title-text">${escapeHtml(equipped.title || bisHeadingLabel)}</span></h3>`
+        );
       }
       parts.push(
         "<table class=\"set-checker-enchant-table\" aria-label=\"BiS enchants compared to RealmEye lines\">"
@@ -501,46 +650,48 @@
   /**
    * @param {string} bisRootId
    */
-  function renderRoguePicker(mount, rogues, bisRootId, liveUsername) {
+  async function renderCharacterPicker(mount, characters, bisRootId, liveUsername) {
     const root = document.getElementById(bisRootId);
     const rows = parseBisRowsFromRoot(root);
     const banner = sourceBannerHtml(liveUsername);
-    if (rogues.length === 0) {
+    const classSlug = getSetCheckerClassSlug();
+    const classLabel = classSlugToDisplay(classSlug);
+    if (characters.length === 0) {
       mount.innerHTML =
-        banner +
-        "<p class=\"set-checker-bad\">No Rogue characters found in this data.</p>";
+        banner + `<p class="set-checker-bad">No ${escapeHtml(classLabel)} characters found in this data.</p>`;
       return;
     }
-    if (rogues.length === 1) {
+    if (characters.length === 1) {
       mount.innerHTML = banner;
       const wrap = document.createElement("div");
       mount.appendChild(wrap);
-      renderCompare(wrap, rogues[0], compareCharacterToBis(rogues[0], rows));
+      await renderCompare(wrap, characters[0], compareCharacterToBis(characters[0], rows));
       return;
     }
-    const opts = rogues
+    const opts = characters
       .map(
         (ch, i) =>
-          `<option value="${i}">${escapeHtml(ch.class)} Lv ${escapeHtml(
-            ch.level
-          )} — ${escapeHtml(ch.fame)} fame</option>`
+          `<option value="${i}">${escapeHtml(ch.class)} Lv ${escapeHtml(ch.level)} — ${escapeHtml(ch.fame)} fame</option>`
       )
       .join("");
+    const ariaChoose = escapeHtml(`Choose ${classLabel}`);
     mount.innerHTML =
       banner +
-      `<div class="set-checker-picker"><label class="set-checker-label"><span class="set-checker-label-text">Rogue</span> <select class="set-checker-select" aria-label="Choose rogue">${opts}</select></label><button type="button" class="set-checker-primary set-checker-run">Compare</button></div><div class="set-checker-results"></div>`;
+      `<div class="set-checker-picker"><label class="set-checker-label"><span class="set-checker-label-text">${escapeHtml(
+        classLabel
+      )}</span> <select class="set-checker-select" aria-label="${ariaChoose}">${opts}</select></label><button type="button" class="set-checker-primary set-checker-run">Compare</button></div><div class="set-checker-results"></div>`;
     const sel = mount.querySelector("select.set-checker-select");
     const run = mount.querySelector("button.set-checker-run");
     const res = mount.querySelector(".set-checker-results");
-    function runSelected() {
-      const ch = rogues[Number(/** @type {HTMLSelectElement} */ (sel).value)];
+    async function runSelected() {
+      const ch = characters[Number(/** @type {HTMLSelectElement} */ (sel).value)];
       if (ch && res) {
-        renderCompare(res, ch, compareCharacterToBis(ch, rows));
+        await renderCompare(res, ch, compareCharacterToBis(ch, rows));
       }
     }
-    run.addEventListener("click", runSelected);
-    sel.addEventListener("change", runSelected);
-    runSelected();
+    run.addEventListener("click", () => void runSelected());
+    sel.addEventListener("change", () => void runSelected());
+    await runSelected();
   }
 
   function init() {
@@ -658,9 +809,9 @@
         `<div class="set-checker-username-step"><div class="set-checker-username-row">` +
         `<label class="set-checker-label" for="set-checker-username-input"><span class="set-checker-label-text">RealmEye username</span></label> ` +
         `<input type="text" id="set-checker-username-input" name="realmeye_username" class="set-checker-input" autocomplete="username" value="${safeVal}" aria-required="true" spellcheck="false">` +
-        `</div>` +
+        `<button type="button" class="set-checker-primary set-checker-load-player">Load RealmEye data</button></div>` +
         `<p id="set-checker-username-error" class="set-checker-bad set-checker-username-error" hidden role="alert"></p>` +
-        `<button type="button" class="set-checker-primary set-checker-load-player">Load RealmEye data</button></div>`;
+        `</div>`;
       const inp = /** @type {HTMLInputElement | null} */ (mount.querySelector("#set-checker-username-input"));
       const btn = mount.querySelector(".set-checker-load-player");
       const errEl = mount.querySelector("#set-checker-username-error");
@@ -717,8 +868,8 @@
           /* ignore */
         }
         currentLiveUsername = name;
-        const rogues = roguesFromPayload(meta.data);
-        renderRoguePicker(mount, rogues, bisRootId, name);
+        const characters = charactersForClassFromPayload(meta.data, getSetCheckerClassSlug());
+        await renderCharacterPicker(mount, characters, bisRootId, name);
       } catch (err) {
         if (gen !== loadGeneration) {
           return;
