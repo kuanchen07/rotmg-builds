@@ -5,6 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Rogue — ROTMG Builds</title>
   <link rel="stylesheet" href="builds.css">
+  <script>
+    /* Optional: Vercel deployment origin only (no trailing slash). Set Vercel env CORS_ORIGIN to your GitHub Pages URL; ALLOWED_PLAYERS=evolz recommended. */
+    window.REALMEYE_LIVE_API_BASE = "";
+    window.REALMEYE_SET_CHECKER_PLAYER = "evolz";
+  </script>
 </head>
 <body>
   <main>
@@ -378,6 +383,11 @@
           <a class="icon-link" href="https://www.realmeye.com/wiki/ring-of-transcendent-vitality" target="_blank" rel="noopener noreferrer" aria-label="Ring of Transcendent Vitality on RealmEye wiki">
             <img class="icon-inline" src="icons/t7_vit.png" alt="Ring of Transcendent Vitality">
           </a>
+          <button type="button" class="set-checker-btn vit-set-checker-trigger" aria-label="Compare equipped enchants with Full Vitality Rogue BiS">
+            <svg class="set-checker-play" aria-hidden="true" viewBox="0 0 24 24" width="22" height="22" fill="currentColor" focusable="false">
+              <path d="M8 5v14l11-7L8 5z"/>
+            </svg>
+          </button>
         </p>
         <p>
           <strong>Swapouts:</strong>
@@ -596,6 +606,29 @@
       </section>
     </article>
     </section>
+
+    <dialog id="vit-set-checker-dialog" class="set-checker-dialog" aria-labelledby="vit-set-checker-title">
+      <div class="set-checker-dialog-inner">
+        <header class="set-checker-dialog-header">
+          <h2 id="vit-set-checker-title" class="set-checker-dialog-title">Full Vitality Rogue — set checker</h2>
+          <div class="set-checker-header-actions">
+            <button type="button" id="vit-set-checker-refresh" class="set-checker-secondary" aria-label="Refresh player data from RealmEye">Refresh</button>
+            <button type="button" class="set-checker-icon-close set-checker-close" aria-label="Close">&times;</button>
+          </div>
+        </header>
+        <p class="set-checker-fetch-hint">
+          With <code>window.REALMEYE_LIVE_API_BASE</code> set to your Vercel URL (same repo, <code>api/realmeye_player.py</code>),
+          gear is fetched live from RealmEye. Otherwise this uses <code>data/realmeye_evolz.json</code> — update it with
+          <code>python realmeye_player_scrape.py evolz --json-out data/realmeye_evolz.json</code> and serve over HTTP
+          (<code>python -m http.server</code>) so <code>fetch</code> works. Use <strong>Refresh</strong> to pull again without closing.
+        </p>
+        <div id="vit-set-checker-mount" class="set-checker-mount"></div>
+        <footer class="set-checker-dialog-footer">
+          <button type="button" class="set-checker-close set-checker-muted">Close</button>
+        </footer>
+      </div>
+    </dialog>
   </main>
+  <script src="set-checker.js" defer></script>
 </body>
 </html>

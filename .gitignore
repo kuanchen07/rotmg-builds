@@ -1,1 +1,4 @@
 /.cursor
+# Local RealmEye scrape outputs
+realmeye_*.txt
+realmeye_*.json

@@ -237,3 +237,241 @@ main > .class-picker__menu {
 .class-picker__option[aria-current="page"]:focus-visible {
   background: rgba(158, 199, 255, 0.16);
 }
+
+/* Set checker (Full Vitality Rogue prototype) */
+.set-checker-btn {
+  margin: 0 0 0 0.25rem;
+  padding: 0.2rem;
+  vertical-align: middle;
+  border: none;
+  border-radius: 0.3rem;
+  background: rgba(154, 199, 255, 0.15);
+  color: #cddfff;
+  cursor: pointer;
+  line-height: 0;
+  display: inline-block;
+}
+.set-checker-btn:hover {
+  background: rgba(154, 199, 255, 0.28);
+  color: #fff;
+}
+.set-checker-btn:focus-visible {
+  outline: 2px solid #6ab0ff;
+  outline-offset: 2px;
+}
+.set-checker-dialog {
+  max-width: 38rem;
+  width: calc(100vw - 2rem);
+  border: 1px solid #3a3a3a;
+  background: #1c1c1c;
+  color: #f5f5f5;
+  border-radius: 0.4rem;
+  padding: 0;
+  box-shadow: 0 10px 32px rgba(0, 0, 0, 0.45);
+}
+.set-checker-dialog::backdrop {
+  background: rgba(0, 0, 0, 0.72);
+}
+.set-checker-dialog-inner {
+  padding: 1rem clamp(1rem, 4vw, 1.35rem);
+  max-height: min(76vh, 36rem);
+  overflow: auto;
+}
+.set-checker-dialog-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.65rem;
+}
+.set-checker-header-actions {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.35rem;
+  flex-shrink: 0;
+}
+.set-checker-secondary {
+  font: inherit;
+  padding: 0.38rem 0.75rem;
+  border-radius: 0.35rem;
+  border: 1px solid #555;
+  background: #2a2a2a;
+  color: #eaeaea;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+.set-checker-secondary:hover,
+.set-checker-secondary:focus-visible {
+  background: #353535;
+}
+.set-checker-source {
+  margin: 0 0 0.85rem;
+  font-size: 0.82rem;
+  color: #b0b0b0;
+  line-height: 1.45;
+}
+.set-checker-source code {
+  font-size: 0.8em;
+  background: rgba(255, 255, 255, 0.06);
+  padding: 0.02em 0.28em;
+  border-radius: 0.22em;
+}
+.set-checker-source--live {
+  color: #8fd4a4;
+}
+.set-checker-source--warn {
+  color: #e8b070;
+}
+.set-checker-dialog-title {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 800;
+  line-height: 1.3;
+}
+.set-checker-icon-close {
+  flex-shrink: 0;
+  width: 2rem;
+  height: 2rem;
+  font-size: 1.35rem;
+  line-height: 1;
+  border: none;
+  border-radius: 0.3rem;
+  background: transparent;
+  color: #aaa;
+  cursor: pointer;
+}
+.set-checker-icon-close:hover,
+.set-checker-icon-close:focus-visible {
+  background: #333;
+  color: #fff;
+}
+.set-checker-fetch-hint {
+  margin: 0 0 0.85rem;
+  font-size: 0.85rem;
+  color: #b8b8b8;
+  line-height: 1.5;
+}
+.set-checker-fetch-hint code {
+  font-size: 0.8em;
+  background: rgba(255, 255, 255, 0.06);
+  padding: 0.02em 0.28em;
+  border-radius: 0.22em;
+}
+.set-checker-mount {
+  min-height: 2rem;
+  margin-bottom: 0.75rem;
+}
+.set-checker-loading {
+  margin: 0;
+  font-style: italic;
+  color: #999;
+}
+.set-checker-picker {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 0.65rem;
+  margin-bottom: 1rem;
+}
+.set-checker-label {
+  font-weight: 700;
+}
+.set-checker-select {
+  min-width: 14rem;
+  font: inherit;
+  padding: 0.38rem 0.5rem;
+  border-radius: 0.35rem;
+  border: 1px solid #444;
+  background: #111;
+  color: #eaeaea;
+}
+.set-checker-summary {
+  margin: 0 0 1rem;
+  font-size: 0.95rem;
+}
+.set-checker-row {
+  margin-bottom: 1.1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #2e2e2e;
+}
+.set-checker-row:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+.set-checker-row-title {
+  margin: 0 0 0.55rem;
+  font-size: 0.92rem;
+  font-weight: 700;
+}
+.set-checker-token-list {
+  margin: 0;
+  padding-left: 1.15rem;
+  list-style: none;
+}
+.set-checker-token-list li {
+  margin-bottom: 0.38rem;
+}
+.set-checker-mark {
+  margin-right: 0.35rem;
+}
+.set-checker-ok .set-checker-mark {
+  color: #6fd58a;
+}
+.set-checker-bad .set-checker-mark {
+  color: #e07070;
+}
+.set-checker-row--mismatch .set-checker-bad {
+  color: #f0ad7a;
+}
+.set-checker-yours {
+  margin-top: 0.55rem;
+  font-size: 0.82rem;
+  color: #c4c4c4;
+}
+.set-checker-yours summary {
+  cursor: pointer;
+  font-weight: 600;
+  margin-bottom: 0.35rem;
+}
+.set-checker-yours code {
+  word-break: break-word;
+}
+.set-checker-dialog-footer {
+  padding-top: 0.65rem;
+  margin-top: 0.75rem;
+  border-top: 1px solid #2e2e2e;
+}
+.set-checker-muted {
+  font: inherit;
+  padding: 0.45rem 0.95rem;
+  border-radius: 0.35rem;
+  border: 1px solid #444;
+  background: transparent;
+  color: #eaeaea;
+  cursor: pointer;
+}
+.set-checker-muted:hover,
+.set-checker-muted:focus-visible {
+  background: #2a2a2a;
+}
+.set-checker-primary {
+  font: inherit;
+  padding: 0.45rem 0.95rem;
+  border-radius: 0.35rem;
+  border: none;
+  background: #3d5cad;
+  color: #fff;
+  font-weight: 700;
+  cursor: pointer;
+}
+.set-checker-primary:hover,
+.set-checker-primary:focus-visible {
+  filter: brightness(1.06);
+}
+.set-checker-hint {
+  margin: 0.5rem 0 0;
+  font-size: 0.82rem;
+  color: #aaa;
+}
