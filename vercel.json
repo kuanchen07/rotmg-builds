@@ -1,0 +1,20 @@
+{
+  "redirects": [
+    { "source": "/rogue.html", "destination": "/classes/rogue.html", "permanent": true },
+    { "source": "/wizard.html", "destination": "/classes/wizard.html", "permanent": true },
+    { "source": "/ninja.html", "destination": "/classes/ninja.html", "permanent": true },
+    { "source": "/samurai.html", "destination": "/classes/samurai.html", "permanent": true },
+    { "source": "/kensei.html", "destination": "/classes/kensei.html", "permanent": true },
+    { "source": "/knight.html", "destination": "/classes/knight.html", "permanent": true },
+    { "source": "/warrior.html", "destination": "/classes/warrior.html", "permanent": true },
+    { "source": "/paladin.html", "destination": "/classes/paladin.html", "permanent": true },
+    { "source": "/priest.html", "destination": "/classes/priest.html", "permanent": true },
+    { "source": "/assassin.html", "destination": "/classes/assassin.html", "permanent": true },
+    { "source": "/mystic.html", "destination": "/classes/mystic.html", "permanent": true },
+    { "source": "/necromancer.html", "destination": "/classes/necromancer.html", "permanent": true },
+    { "source": "/summoner.html", "destination": "/classes/summoner.html", "permanent": true },
+    { "source": "/archer.html", "destination": "/classes/archer.html", "permanent": true },
+    { "source": "/bard.html", "destination": "/classes/bard.html", "permanent": true },
+    { "source": "/druid.html", "destination": "/classes/druid.html", "permanent": true }
+  ]
+}

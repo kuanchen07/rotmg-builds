@@ -8,24 +8,24 @@
   <script>
     (function () {
       var map = {
-        wizard: 'wizard.html',
-        ninja: 'ninja.html',
-        samurai: 'samurai.html',
-        kensei: 'kensei.html',
-        knight: 'knight.html',
-        warrior: 'warrior.html',
-        paladin: 'paladin.html',
-        priest: 'priest.html',
-        mystic: 'mystic.html',
-        necromancer: 'necromancer.html',
-        summoner: 'summoner.html',
-        assassin: 'assassin.html',
-        archer: 'archer.html',
-        bard: 'bard.html',
-        druid: 'druid.html'
+        wizard: 'classes/wizard.html',
+        ninja: 'classes/ninja.html',
+        samurai: 'classes/samurai.html',
+        kensei: 'classes/kensei.html',
+        knight: 'classes/knight.html',
+        warrior: 'classes/warrior.html',
+        paladin: 'classes/paladin.html',
+        priest: 'classes/priest.html',
+        mystic: 'classes/mystic.html',
+        necromancer: 'classes/necromancer.html',
+        summoner: 'classes/summoner.html',
+        assassin: 'classes/assassin.html',
+        archer: 'classes/archer.html',
+        bard: 'classes/bard.html',
+        druid: 'classes/druid.html'
       };
       var p = new URLSearchParams(window.location.search).get('class');
-      var target = map[p] || 'rogue.html';
+      var target = map[p] || 'classes/rogue.html';
       window.location.replace(target);
     })();
   </script>
@@ -36,22 +36,22 @@
     <p>JavaScript is off or the redirect did not run. Open a class page:</p>
     <nav class="class-picker__menu" aria-label="Choose class">
       <ul class="class-picker__options" role="list">
-        <li><a class="class-picker__option" href="rogue.html">Rogue</a></li>
-        <li><a class="class-picker__option" href="wizard.html">Wizard</a></li>
-        <li><a class="class-picker__option" href="ninja.html">Ninja</a></li>
-        <li><a class="class-picker__option" href="samurai.html">Samurai</a></li>
-        <li><a class="class-picker__option" href="kensei.html">Kensei</a></li>
-        <li><a class="class-picker__option" href="knight.html">Knight</a></li>
-        <li><a class="class-picker__option" href="warrior.html">Warrior</a></li>
-        <li><a class="class-picker__option" href="paladin.html">Paladin</a></li>
-        <li><a class="class-picker__option" href="priest.html">Priest</a></li>
-        <li><a class="class-picker__option" href="assassin.html">Assassin</a></li>
-        <li><a class="class-picker__option" href="mystic.html">Mystic</a></li>
-        <li><a class="class-picker__option" href="necromancer.html">Necromancer</a></li>
-        <li><a class="class-picker__option" href="summoner.html">Summoner</a></li>
-        <li><a class="class-picker__option" href="archer.html">Archer</a></li>
-        <li><a class="class-picker__option" href="bard.html">Bard</a></li>
-        <li><a class="class-picker__option" href="druid.html">Druid</a></li>
+        <li><a class="class-picker__option" href="classes/rogue.html">Rogue</a></li>
+        <li><a class="class-picker__option" href="classes/wizard.html">Wizard</a></li>
+        <li><a class="class-picker__option" href="classes/ninja.html">Ninja</a></li>
+        <li><a class="class-picker__option" href="classes/samurai.html">Samurai</a></li>
+        <li><a class="class-picker__option" href="classes/kensei.html">Kensei</a></li>
+        <li><a class="class-picker__option" href="classes/knight.html">Knight</a></li>
+        <li><a class="class-picker__option" href="classes/warrior.html">Warrior</a></li>
+        <li><a class="class-picker__option" href="classes/paladin.html">Paladin</a></li>
+        <li><a class="class-picker__option" href="classes/priest.html">Priest</a></li>
+        <li><a class="class-picker__option" href="classes/assassin.html">Assassin</a></li>
+        <li><a class="class-picker__option" href="classes/mystic.html">Mystic</a></li>
+        <li><a class="class-picker__option" href="classes/necromancer.html">Necromancer</a></li>
+        <li><a class="class-picker__option" href="classes/summoner.html">Summoner</a></li>
+        <li><a class="class-picker__option" href="classes/archer.html">Archer</a></li>
+        <li><a class="class-picker__option" href="classes/bard.html">Bard</a></li>
+        <li><a class="class-picker__option" href="classes/druid.html">Druid</a></li>
       </ul>
     </nav>
   </main>

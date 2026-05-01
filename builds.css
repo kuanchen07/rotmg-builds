@@ -1,14 +1,21 @@
 * {
   box-sizing: border-box;
 }
+:root {
+  --set-checker-panel-width: min(38rem, 100vw);
+}
 body {
   margin: 0;
   padding: 1.5rem clamp(1rem, 4vw, 2rem) 2.5rem;
+  transition: padding-right 0.25s ease;
   font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
   font-size: 16px;
   line-height: 1.55;
   color: #f5f5f5;
   background: #161616;
+}
+body.set-checker-sidebar-open {
+  padding-right: calc(clamp(1rem, 4vw, 2rem) + var(--set-checker-panel-width));
 }
 main {
   max-width: 52rem;
@@ -259,23 +266,55 @@ main > .class-picker__menu {
   outline: 2px solid #6ab0ff;
   outline-offset: 2px;
 }
-.set-checker-dialog {
-  max-width: 38rem;
-  width: calc(100vw - 2rem);
+.set-checker-shell {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: var(--set-checker-panel-width);
+  z-index: 1000;
+  pointer-events: none;
+}
+.set-checker-shell.is-open {
+  pointer-events: auto;
+}
+.set-checker-panel {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  max-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
   border: 1px solid #3a3a3a;
+  border-right: none;
+  border-radius: 0.4rem 0 0 0.4rem;
   background: #1c1c1c;
   color: #f5f5f5;
-  border-radius: 0.4rem;
-  padding: 0;
-  box-shadow: 0 10px 32px rgba(0, 0, 0, 0.45);
+  box-shadow: -8px 0 32px rgba(0, 0, 0, 0.45);
+  transform: translateX(100%);
+  transition: transform 0.25s ease;
 }
-.set-checker-dialog::backdrop {
-  background: rgba(0, 0, 0, 0.72);
+.set-checker-shell.is-open .set-checker-panel {
+  transform: translateX(0);
 }
-.set-checker-dialog-inner {
-  padding: 1rem clamp(1rem, 4vw, 1.35rem);
-  max-height: min(76vh, 36rem);
+.set-checker-panel-inner {
+  flex: 1;
+  min-height: 0;
   overflow: auto;
+  padding: 1rem clamp(1rem, 4vw, 1.35rem);
+}
+@media (prefers-reduced-motion: reduce) {
+  body {
+    transition: none;
+  }
+  .set-checker-panel {
+    transition: none;
+  }
 }
 .set-checker-dialog-header {
   display: flex;
@@ -404,6 +443,18 @@ main > .class-picker__menu {
   margin: 0 0 0.55rem;
   font-size: 0.92rem;
   font-weight: 700;
+}
+.set-checker-equipped-wrong {
+  margin: 0 0 0.65rem;
+  font-size: 0.88rem;
+  line-height: 1.35;
+  color: #e0dcd6;
+}
+.set-checker-row--mismatch .set-checker-equipped-wrong .set-checker-mark {
+  color: #e07070;
+}
+.set-checker-label-text {
+  margin-right: 0.35rem;
 }
 .set-checker-enchant-table {
   table-layout: fixed;
