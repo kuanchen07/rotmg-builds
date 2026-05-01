@@ -4,9 +4,12 @@ Vercel Python entrypoint (must be main.py / index.py / app.py per Vercel).
 Endpoint: GET /api/main?username=NAME
 
 Environment:
-  CORS_ORIGIN — Access-Control-Allow-Origin (default *). If set to a single origin, include every host that loads this
-  static site (e.g. https://yourname.github.io and any custom domain) or use * for anonymous GETs.
-  ALLOWED_PLAYERS — optional comma-separated lowercase names; if set, others get 403.
+  CORS_ORIGIN — CORS policy (default *). Use * for any caller. For GitHub project pages, browsers send
+  Origin: https://<user>.github.io only (no /repo path); set that exact origin, or a comma-separated list
+  (e.g. https://you.github.io,https://your-app.vercel.app,http://127.0.0.1:5500). Entries may include a path;
+  they are normalized to scheme://host[:port]. If * appears in the list, all origins are allowed.
+  ALLOWED_PLAYERS — optional comma-separated lowercase names; if set, others get 403. Include every player
+  you query (e.g. evolz) or unset this variable.
 """
 
 from __future__ import annotations
@@ -26,8 +29,49 @@ if str(_REPO_ROOT) not in sys.path:
 from realmeye_player_scrape import scrape_player_json
 
 
-def _cors_origin() -> str:
-    return (os.environ.get("CORS_ORIGIN") or "*").strip() or "*"
+def _normalize_cors_origin_token(token: str) -> str:
+    t = token.strip()
+    if not t or t == "*":
+        return t
+    if "://" not in t:
+        return t
+    u = urlparse(t)
+    if u.scheme and u.netloc:
+        return f"{u.scheme}://{u.netloc}"
+    return t
+
+
+def _cors_allowed_list() -> list[str]:
+    raw = (os.environ.get("CORS_ORIGIN") or "").strip()
+    if not raw:
+        return ["*"]
+    parts = [p.strip() for p in raw.split(",") if p.strip()]
+    if not parts:
+        return ["*"]
+    out: list[str] = []
+    for p in parts:
+        if p == "*":
+            out.append("*")
+        else:
+            out.append(_normalize_cors_origin_token(p))
+    return out
+
+
+def _access_control_allow_origin(handler: BaseHTTPRequestHandler) -> str | None:
+    """
+    Echo the request Origin when it is allowed; use * when configured as wildcard.
+    Return None when the request Origin is not allowed (cross-origin browsers will not read the body).
+    """
+    allowed = _cors_allowed_list()
+    if "*" in allowed:
+        return "*"
+    req = (handler.headers.get("Origin") or "").strip()
+    allowed_set = set(allowed)
+    if req and req in allowed_set:
+        return req
+    if not req and len(allowed) == 1:
+        return allowed[0]
+    return None
 
 
 def _allowed_players() -> set[str] | None:
@@ -73,12 +117,17 @@ class handler(BaseHTTPRequestHandler):
     def log_message(self, _format, *_args):
         return
 
+    def _send_cors_headers(self) -> None:
+        acao = _access_control_allow_origin(self)
+        if acao is not None:
+            self.send_header("Access-Control-Allow-Origin", acao)
+        self.send_header("Access-Control-Allow-Methods", "GET, OPTIONS")
+        self.send_header("Access-Control-Allow-Headers", "Content-Type")
+
     def _send_json(self, status: int, payload: dict) -> None:
         body = json.dumps(payload, ensure_ascii=False).encode("utf-8")
         self.send_response(status)
-        self.send_header("Access-Control-Allow-Origin", _cors_origin())
-        self.send_header("Access-Control-Allow-Methods", "GET, OPTIONS")
-        self.send_header("Access-Control-Allow-Headers", "Content-Type")
+        self._send_cors_headers()
         self.send_header("Cache-Control", "no-store")
         self.send_header("Content-Type", "application/json; charset=utf-8")
         self.send_header("Content-Length", str(len(body)))
@@ -87,9 +136,7 @@ class handler(BaseHTTPRequestHandler):
 
     def do_OPTIONS(self) -> None:
         self.send_response(204)
-        self.send_header("Access-Control-Allow-Origin", _cors_origin())
-        self.send_header("Access-Control-Allow-Methods", "GET, OPTIONS")
-        self.send_header("Access-Control-Allow-Headers", "Content-Type")
+        self._send_cors_headers()
         self.end_headers()
 
     def do_GET(self) -> None:
