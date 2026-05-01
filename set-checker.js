@@ -38,7 +38,7 @@
     let fallbackNote = null;
 
     if (base) {
-      const url = `${base}/api/realmeye_player?username=${encodeURIComponent(player)}`;
+      const url = `${base}/api/main?username=${encodeURIComponent(player)}`;
       try {
         const res = await fetch(url, { cache: "no-store", mode: "cors" });
         if (res.ok) {

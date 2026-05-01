@@ -1,5 +1,8 @@
 """
-Vercel serverless: GET /api/realmeye_player?username=NAME
+Vercel Python entrypoint (must be main.py / index.py / app.py per Vercel).
+
+Endpoint: GET /api/main?username=NAME
+
 Environment:
   CORS_ORIGIN — Access-Control-Allow-Origin (default *).
   ALLOWED_PLAYERS — optional comma-separated lowercase names; if set, others get 403.

@@ -6,7 +6,7 @@
   <title>Rogue — ROTMG Builds</title>
   <link rel="stylesheet" href="builds.css">
   <script>
-    /* Optional: Vercel deployment origin only (no trailing slash). Set Vercel env CORS_ORIGIN to your GitHub Pages URL; ALLOWED_PLAYERS=evolz recommended. */
+    /* Optional: Vercel origin (no trailing slash). Route GET /api/main?username=... (api/main.py). Set CORS_ORIGIN + ALLOWED_PLAYERS on Vercel. */
     window.REALMEYE_LIVE_API_BASE = "";
     window.REALMEYE_SET_CHECKER_PLAYER = "evolz";
   </script>
@@ -617,7 +617,7 @@
           </div>
         </header>
         <p class="set-checker-fetch-hint">
-          With <code>window.REALMEYE_LIVE_API_BASE</code> set to your Vercel URL (same repo, <code>api/realmeye_player.py</code>),
+          With <code>window.REALMEYE_LIVE_API_BASE</code> set to your Vercel URL (same repo, <code>api/main.py</code>),
           gear is fetched live from RealmEye. Otherwise this uses <code>data/realmeye_evolz.json</code> — update it with
           <code>python realmeye_player_scrape.py evolz --json-out data/realmeye_evolz.json</code> and serve over HTTP
           (<code>python -m http.server</code>) so <code>fetch</code> works. Use <strong>Refresh</strong> to pull again without closing.
