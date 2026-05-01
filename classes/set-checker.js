@@ -655,7 +655,7 @@
         const detailHint = baseForHint
           ? `<p class="set-checker-hint">Request URL: <code>${escapeHtml(
               `${baseForHint}/api/main?username=${encodeURIComponent(getCheckerPlayer())}`
-            )}</code>. On Vercel, set <code>CORS_ORIGIN</code> to <code>https://&lt;your-github-user&gt;.github.io</code> (GitHub project pages use that origin only—no <code>/repo</code> path), use <code>*</code>, or a comma-separated list (e.g. GitHub Pages + Vercel preview). If <code>ALLOWED_PLAYERS</code> is set, it must include this player name. Open the URL above in a new tab to confirm the API.</p>`
+            )}</code>. On Vercel, set <code>CORS_ORIGIN</code> to <code>https://&lt;your-github-user&gt;.github.io</code> (GitHub project pages use that origin only—no <code>/repo</code> path), use <code>*</code>, or a comma-separated list (e.g. GitHub Pages + Vercel preview). Open the URL above in a new tab to confirm the API.</p>`
           : `<p class="set-checker-hint">Set <code>window.REALMEYE_LIVE_API_BASE</code> in this page to your Vercel API origin (HTTPS, no path). See <code>classes/rogue.html</code>.</p>`;
         mount.innerHTML = `<p class="set-checker-source set-checker-source--warn"><strong>Not fetching live data.</strong> The set checker only uses the live API—no offline snapshot.</p><p class="set-checker-bad">Could not load player data.</p><p class="set-checker-hint">${msg}</p>${detailHint}`;
       }

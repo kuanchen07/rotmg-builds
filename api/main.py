@@ -8,8 +8,6 @@ Environment:
   Origin: https://<user>.github.io only (no /repo path); set that exact origin, or a comma-separated list
   (e.g. https://you.github.io,https://your-app.vercel.app,http://127.0.0.1:5500). Entries may include a path;
   they are normalized to scheme://host[:port]. If * appears in the list, all origins are allowed.
-  ALLOWED_PLAYERS — optional comma-separated lowercase names; if set, others get 403. Include every player
-  you query (e.g. evolz) or unset this variable.
 """
 
 from __future__ import annotations
@@ -72,13 +70,6 @@ def _access_control_allow_origin(handler: BaseHTTPRequestHandler) -> str | None:
     if not req and len(allowed) == 1:
         return allowed[0]
     return None
-
-
-def _allowed_players() -> set[str] | None:
-    raw = (os.environ.get("ALLOWED_PLAYERS") or "").strip()
-    if not raw:
-        return None
-    return {x.strip().lower() for x in raw.split(",") if x.strip()}
 
 
 def _query_string(handler: BaseHTTPRequestHandler) -> str:
@@ -148,14 +139,6 @@ class handler(BaseHTTPRequestHandler):
                     "error": "missing_username",
                     "detail": "Add ?username=yourname (or ?player=). Example: /api/main?username=evolz",
                 },
-            )
-            return
-
-        allowed = _allowed_players()
-        if allowed is not None and username.lower() not in allowed:
-            self._send_json(
-                403,
-                {"error": "forbidden", "detail": "Player not in ALLOWED_PLAYERS on this deployment."},
             )
             return
 
