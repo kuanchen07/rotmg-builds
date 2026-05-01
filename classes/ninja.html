@@ -5,8 +5,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Ninja — ROTMG Builds</title>
   <link rel="stylesheet" href="../builds.css">
+  <script>
+    /* GET /api/main?username=... (api/main.py). On Vercel-hosted pages, use same origin so preview + production work. Else set your API origin (https://…, no path). */
+    window.REALMEYE_LIVE_API_BASE =
+      typeof location !== "undefined" && /\.vercel\.app$/i.test(location.hostname || "")
+        ? location.origin
+        : "https://rotmg-builds.vercel.app";
+    window.REALMEYE_SET_CHECKER_CLASS = "ninja";
+  </script>
 </head>
 <body>
+  <p id="set-checker-script-error" class="set-checker-script-error" hidden role="alert">
+    Set checker could not load its script. Confirm <code>classes/set-checker.js</code> is present on the host (commit and redeploy if needed).
+  </p>
   <main>
     <header class="class-picker">
       <h1 class="class-heading">
@@ -69,6 +80,11 @@
           <a class="icon-link" href="https://www.realmeye.com/wiki/magical-lodestone" target="_blank" rel="noopener noreferrer" aria-label="Magical Lodestone on RealmEye wiki">
             <img class="icon-inline" src="../icons/potato.png" alt="Magical Lodestone">
           </a>
+          <button type="button" class="set-checker-btn set-checker-trigger" data-bis-root="full-speed-ninja-build" data-bis-dialog-title="Full Speed Ninja — set checker" aria-label="Compare equipped enchants with Full Speed Ninja BiS">
+            <svg class="set-checker-play" aria-hidden="true" viewBox="0 0 24 24" width="22" height="22" fill="currentColor" focusable="false">
+              <path d="M8 5v14l11-7L8 5z"/>
+            </svg>
+          </button>
         </p>
         <p>
           <strong>Swapouts:</strong>
@@ -124,7 +140,7 @@
       <section class="section-bis-enchants" aria-labelledby="nin-speed-enchants-heading">
         <h3 id="nin-speed-enchants-heading" class="section-title section-title--underline">BiS Enchants:</h3>
         <ul>
-          <li>
+          <li data-bis-equipment-slot="weapon">
             <a class="icon-link" href="https://www.realmeye.com/wiki/valor" target="_blank" rel="noopener noreferrer" aria-label="Valor on RealmEye wiki">
               <img class="icon-inline" src="../icons/valor.png" alt="Valor">
             </a>
@@ -139,13 +155,13 @@
             </a>
             : Overwhelming Strikes - Relative Speed IV - Speed Tradeoff IV - Onshoot Attack
           </li>
-          <li>
+          <li data-bis-equipment-slot="ability">
             <a class="icon-link" href="https://www.realmeye.com/wiki/midnight-star" target="_blank" rel="noopener noreferrer" aria-label="Midnight Star on RealmEye wiki">
               <img class="icon-inline" src="../icons/midnight_star.png" alt="Midnight Star">
             </a>
             : Stheno’s Swiftness - Speed Tradeoff IV - Stat Mod Multiplier IV - Percent Mana Regen IV
           </li>
-          <li>
+          <li data-bis-equipment-slot="armor">
             <a class="icon-link" href="https://www.realmeye.com/wiki/haori-of-the-wind" target="_blank" rel="noopener noreferrer" aria-label="Haori of the Wind on RealmEye wiki">
               <img class="icon-inline" src="../icons/haori.png" alt="Haori of the Wind">
             </a>
@@ -154,7 +170,7 @@
             </a>
             : Relative Speed IV - Speed Tradeoff IV - Onhit Dexterity
           </li>
-          <li>
+          <li data-bis-equipment-slot="ring">
             <a class="icon-link" href="https://www.realmeye.com/wiki/the-twilight-gemstone" target="_blank" rel="noopener noreferrer" aria-label="The Twilight Gemstone on RealmEye wiki">
               <img class="icon-inline" src="../icons/gemstone.png" alt="The Twilight Gemstone">
             </a>
@@ -163,7 +179,7 @@
             </a>
             : Relative Speed IV - Speed Tradeoff IV - Percent Mana Regen IV - Onhit/Onability Attack/Dexterity
           </li>
-          <li>
+          <li data-bis-equipment-slot="ring" data-bis-omit-if-no-match>
             <a class="icon-link" href="https://www.realmeye.com/wiki/esben-s-wedding-ring" target="_blank" rel="noopener noreferrer" aria-label="Esben's Wedding Ring on RealmEye wiki">
               <img class="icon-inline" src="../icons/esben_ring.png" alt="Esben's Wedding Ring">
             </a>
@@ -211,6 +227,11 @@
           <a class="icon-link" href="https://www.realmeye.com/wiki/chrysalis-of-eternity" target="_blank" rel="noopener noreferrer" aria-label="Chrysalis of Eternity on RealmEye wiki">
             <img class="icon-inline" src="../icons/lean.png" alt="Chrysalis of Eternity">
           </a>
+          <button type="button" class="set-checker-btn set-checker-trigger" data-bis-root="attack-dex-ninja-build" data-bis-dialog-title="Attack &amp; Dexterity Ninja — set checker" aria-label="Compare equipped enchants with Attack and Dexterity Ninja BiS">
+            <svg class="set-checker-play" aria-hidden="true" viewBox="0 0 24 24" width="22" height="22" fill="currentColor" focusable="false">
+              <path d="M8 5v14l11-7L8 5z"/>
+            </svg>
+          </button>
           (any DPS ring with good amount of atk)
         </p>
         <p>
@@ -275,7 +296,7 @@
       <section class="section-bis-enchants" aria-labelledby="nin-ad-enchants-heading">
         <h3 id="nin-ad-enchants-heading" class="section-title section-title--underline">BiS Enchants:</h3>
         <ul>
-          <li>
+          <li data-bis-equipment-slot="weapon">
             <a class="icon-link" href="https://www.realmeye.com/wiki/enforcer" target="_blank" rel="noopener noreferrer" aria-label="Enforcer on RealmEye wiki">
               <img class="icon-inline" src="../icons/enforcer.png" alt="Enforcer">
             </a>
@@ -290,7 +311,7 @@
             </a>
             : Flurry of Blows - Attack To Dexterity Bonus IV - Attack Tradeoff IV - Onshoot Attack IV
           </li>
-          <li>
+          <li data-bis-equipment-slot="ability">
             <a class="icon-link" href="https://www.realmeye.com/wiki/rage-claws" target="_blank" rel="noopener noreferrer" aria-label="Rage Claws on RealmEye wiki">
               <img class="icon-inline" src="../icons/claws.png" alt="Rage Claws">
             </a>
@@ -299,25 +320,25 @@
             </a>
             : Attack To Dexterity Bonus IV - Attack Tradeoff IV - Stat Mod Multiplier - Mana Regen IV
           </li>
-          <li>
+          <li data-bis-equipment-slot="ability" data-bis-omit-if-no-match>
             <a class="icon-link" href="https://www.realmeye.com/wiki/star-of-enlightenment" target="_blank" rel="noopener noreferrer" aria-label="Star of Enlightenment on RealmEye wiki">
               <img class="icon-inline" src="../icons/enlightment_star.png" alt="Star of Enlightenment">
             </a>
             : Attack To Dexterity Bonus IV - Attack Tradeoff IV - Onability Attack IV
           </li>
-          <li>
+          <li data-bis-equipment-slot="armor">
             <a class="icon-link" href="https://www.realmeye.com/wiki/cackling-straitjacket" target="_blank" rel="noopener noreferrer" aria-label="Cackling Straitjacket on RealmEye wiki">
               <img class="icon-inline" src="../icons/straitjacket.png" alt="Cackling Straitjacket">
             </a>
             : Attack To Dexterity Bonus IV - Attack Tradeoff IV - Onhit Attack IV
           </li>
-          <li>
+          <li data-bis-equipment-slot="ring">
             <a class="icon-link" href="https://www.realmeye.com/wiki/chrysalis-of-eternity" target="_blank" rel="noopener noreferrer" aria-label="Chrysalis of Eternity on RealmEye wiki">
               <img class="icon-inline" src="../icons/lean.png" alt="Chrysalis of Eternity">
             </a>
             : Attack To Dexterity Bonus IV - Attack Tradeoff IV - Mana Regen IV - Onhit/Onability Dexterity IV
           </li>
-          <li>
+          <li data-bis-equipment-slot="ring" data-bis-omit-if-no-match>
             <a class="icon-link" href="https://www.realmeye.com/wiki/esben-s-wedding-ring" target="_blank" rel="noopener noreferrer" aria-label="Esben's Wedding Ring on RealmEye wiki">
               <img class="icon-inline" src="../icons/esben_ring.png" alt="Esben's Wedding Ring">
             </a>
@@ -345,6 +366,36 @@
       </section>
     </article>
     </section>
+
+    <div id="vit-set-checker-shell" class="set-checker-shell" hidden aria-hidden="true">
+      <aside
+        id="vit-set-checker-panel"
+        class="set-checker-panel"
+        role="dialog"
+        aria-modal="false"
+        aria-labelledby="vit-set-checker-title"
+      >
+        <div class="set-checker-panel-inner">
+          <header class="set-checker-dialog-header">
+            <h2 id="vit-set-checker-title" class="set-checker-dialog-title">Ninja — set checker</h2>
+            <div class="set-checker-header-actions">
+              <button type="button" id="vit-set-checker-refresh" class="set-checker-secondary" aria-label="Refresh player data from RealmEye">Refresh</button>
+              <button type="button" class="set-checker-icon-close set-checker-close" aria-label="Close">&times;</button>
+            </div>
+          </header>
+          <p class="set-checker-fetch-hint">
+            Enter a RealmEye username in the panel below, then load live data (<code>GET /api/main?username=…</code> on your <code>REALMEYE_LIVE_API_BASE</code>).
+            If you see a network or CORS error, set Vercel env <code>CORS_ORIGIN</code> to this site&rsquo;s origin (e.g. <code>https://you.github.io</code>) or <code>*</code>.
+            Use <strong>Refresh</strong> to retry with the same username without closing.
+          </p>
+          <div id="vit-set-checker-mount" class="set-checker-mount"></div>
+          <footer class="set-checker-dialog-footer">
+            <button type="button" class="set-checker-close set-checker-muted">Close</button>
+          </footer>
+        </div>
+      </aside>
+    </div>
   </main>
+  <script src="set-checker.js" defer onerror="(function(){var e=document.getElementById('set-checker-script-error');if(e)e.hidden=false;})()"></script>
 </body>
 </html>

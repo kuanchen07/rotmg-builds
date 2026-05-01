@@ -658,7 +658,7 @@
     const classLabel = classSlugToDisplay(classSlug);
     if (characters.length === 0) {
       mount.innerHTML =
-        banner + `<p class="set-checker-bad">No ${escapeHtml(classLabel)} characters found in this data.</p>`;
+        banner + `<p class="set-checker-bad">No character found.</p>`;
       return;
     }
     if (characters.length === 1) {

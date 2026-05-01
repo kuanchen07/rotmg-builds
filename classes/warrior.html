@@ -5,8 +5,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Warrior — ROTMG Builds</title>
   <link rel="stylesheet" href="../builds.css">
+  <script>
+    /* GET /api/main?username=... (api/main.py). On Vercel-hosted pages, use same origin so preview + production work. Else set your API origin (https://…, no path). */
+    window.REALMEYE_LIVE_API_BASE =
+      typeof location !== "undefined" && /\.vercel\.app$/i.test(location.hostname || "")
+        ? location.origin
+        : "https://rotmg-builds.vercel.app";
+    window.REALMEYE_SET_CHECKER_CLASS = "warrior";
+  </script>
 </head>
 <body>
+  <p id="set-checker-script-error" class="set-checker-script-error" hidden role="alert">
+    Set checker could not load its script. Confirm <code>classes/set-checker.js</code> is present on the host (commit and redeploy if needed).
+  </p>
   <main>
     <header class="class-picker">
       <h1 class="class-heading">
@@ -65,6 +76,11 @@
           <a class="icon-link" href="https://www.realmeye.com/wiki/chrysalis-of-eternity" target="_blank" rel="noopener noreferrer" aria-label="Chrysalis of Eternity on RealmEye wiki">
             <img class="icon-inline" src="../icons/lean.png" alt="Chrysalis of Eternity">
           </a>
+          <button type="button" class="set-checker-btn set-checker-trigger" data-bis-root="attack-dex-warrior-build" data-bis-dialog-title="Attack &amp; Dexterity Warrior — set checker" aria-label="Compare equipped enchants with Attack and Dexterity Warrior BiS">
+            <svg class="set-checker-play" aria-hidden="true" viewBox="0 0 24 24" width="22" height="22" fill="currentColor" focusable="false">
+              <path d="M8 5v14l11-7L8 5z"/>
+            </svg>
+          </button>
           (any good dps ring)
         </p>
         <p>
@@ -107,25 +123,25 @@
       <section class="section-bis-enchants" aria-labelledby="war-ad-enchants-heading">
         <h3 id="war-ad-enchants-heading" class="section-title section-title--underline">BiS Enchants:</h3>
         <ul>
-          <li>
+          <li data-bis-equipment-slot="weapon">
             <a class="icon-link" href="https://www.realmeye.com/wiki/demon-blade" target="_blank" rel="noopener noreferrer" aria-label="Demon Blade on RealmEye wiki">
               <img class="icon-inline" src="../icons/dblade.png" alt="Demon Blade">
             </a>
             : Hellfire Edge - Attack to Dexterity IV - Attack Tradeoff IV - Onshoot dexterity IV
           </li>
-          <li>
+          <li data-bis-equipment-slot="weapon" data-bis-omit-if-no-match>
             <a class="icon-link" href="https://www.realmeye.com/wiki/atavistic-soul-sabre" target="_blank" rel="noopener noreferrer" aria-label="Atavistic Soul Sabre on RealmEye wiki">
               <img class="icon-inline" src="../icons/damnation_sword.png" alt="Atavistic Soul Sabre">
             </a>
             : Flurry of blows - Attack to Dexterity IV - Attack Tradeoff IV - Onshoot Dexterity IV
           </li>
-          <li>
+          <li data-bis-equipment-slot="ability">
             <a class="icon-link" href="https://www.realmeye.com/wiki/vanguard-s-visage" target="_blank" rel="noopener noreferrer" aria-label="Vanguard's Visage on RealmEye wiki">
               <img class="icon-inline" src="../icons/visage.png" alt="Vanguard's Visage">
             </a>
             : Attack to Dexterity IV - Attack Tradeoff IV - Onability Attack IV - Mana Regen IV
           </li>
-          <li>
+          <li data-bis-equipment-slot="armor">
             <a class="icon-link" href="https://www.realmeye.com/wiki/mercy-s-bane" target="_blank" rel="noopener noreferrer" aria-label="Mercy's Bane on RealmEye wiki">
               <img class="icon-inline" src="../icons/mercys.png" alt="Mercy's Bane">
             </a>
@@ -134,13 +150,13 @@
             </a>
             : Attack to Dexterity IV - Attack Tradeoff IV - Onhit Dexterity IV
           </li>
-          <li>
+          <li data-bis-equipment-slot="ring">
             <a class="icon-link" href="https://www.realmeye.com/wiki/chrysalis-of-eternity" target="_blank" rel="noopener noreferrer" aria-label="Chrysalis of Eternity on RealmEye wiki">
               <img class="icon-inline" src="../icons/lean.png" alt="Chrysalis of Eternity">
             </a>
             : Shaitan&#39;s Might - Attack Tradeoff IV - Onability/Onhit Attack IV - Mana Regen IV
           </li>
-          <li>
+          <li data-bis-equipment-slot="ring" data-bis-omit-if-no-match>
             <a class="icon-link" href="https://www.realmeye.com/wiki/esben-s-wedding-ring" target="_blank" rel="noopener noreferrer" aria-label="Esben's Wedding Ring on RealmEye wiki">
               <img class="icon-inline" src="../icons/esben_ring.png" alt="Esben's Wedding Ring">
             </a>
@@ -153,6 +169,36 @@
       </section>
     </article>
     </section>
+
+    <div id="vit-set-checker-shell" class="set-checker-shell" hidden aria-hidden="true">
+      <aside
+        id="vit-set-checker-panel"
+        class="set-checker-panel"
+        role="dialog"
+        aria-modal="false"
+        aria-labelledby="vit-set-checker-title"
+      >
+        <div class="set-checker-panel-inner">
+          <header class="set-checker-dialog-header">
+            <h2 id="vit-set-checker-title" class="set-checker-dialog-title">Warrior — set checker</h2>
+            <div class="set-checker-header-actions">
+              <button type="button" id="vit-set-checker-refresh" class="set-checker-secondary" aria-label="Refresh player data from RealmEye">Refresh</button>
+              <button type="button" class="set-checker-icon-close set-checker-close" aria-label="Close">&times;</button>
+            </div>
+          </header>
+          <p class="set-checker-fetch-hint">
+            Enter a RealmEye username in the panel below, then load live data (<code>GET /api/main?username=…</code> on your <code>REALMEYE_LIVE_API_BASE</code>).
+            If you see a network or CORS error, set Vercel env <code>CORS_ORIGIN</code> to this site&rsquo;s origin (e.g. <code>https://you.github.io</code>) or <code>*</code>.
+            Use <strong>Refresh</strong> to retry with the same username without closing.
+          </p>
+          <div id="vit-set-checker-mount" class="set-checker-mount"></div>
+          <footer class="set-checker-dialog-footer">
+            <button type="button" class="set-checker-close set-checker-muted">Close</button>
+          </footer>
+        </div>
+      </aside>
+    </div>
   </main>
+  <script src="set-checker.js" defer onerror="(function(){var e=document.getElementById('set-checker-script-error');if(e)e.hidden=false;})()"></script>
 </body>
 </html>
