@@ -1,0 +1,511 @@
+{
+  "items": {
+    "bow-of-deep-enchantment": {
+      "src": "../icons/t14_bow.png",
+      "alt": "Bow of Deep Enchantment"
+    },
+    "clockwork-repeater": {
+      "src": "../icons/clockwork.png",
+      "alt": "Clockwork Repeater"
+    },
+    "makakoyumi": {
+      "src": "../icons/maka_bow.png",
+      "alt": "Makakoyumi"
+    },
+    "quiver-of-thunder": {
+      "src": "../icons/qot.png",
+      "alt": "Quiver of Thunder"
+    },
+    "cackling-straitjacket": {
+      "src": "../icons/straitjacket.png",
+      "alt": "Cackling Straitjacket"
+    },
+    "chrysalis-of-eternity": {
+      "src": "../icons/lean.png",
+      "alt": "Chrysalis of Eternity"
+    },
+    "bolt-thrower": {
+      "src": "../icons/bolt_thrower.png",
+      "alt": "Bolt Thrower"
+    },
+    "centaur-s-shielding": {
+      "src": "../icons/centaur.png",
+      "alt": "Centaur's Shielding"
+    },
+    "quiver-of-shadows": {
+      "src": "../icons/voidquiver.png",
+      "alt": "Quiver of Shadows"
+    },
+    "armor-of-nil": {
+      "src": "../icons/nil.png",
+      "alt": "Armor of Nil"
+    },
+    "the-twilight-gemstone": {
+      "src": "../icons/gemstone.png",
+      "alt": "The Twilight Gemstone"
+    },
+    "fractal-blades": {
+      "src": "../icons/fractal_blades.png",
+      "alt": "Fractal Blades"
+    },
+    "dirk-of-cronos": {
+      "src": "../icons/cdirk.png",
+      "alt": "Dirk of Cronus"
+    },
+    "spirit-s-bane": {
+      "src": "../icons/hudl_poison.png",
+      "alt": "Spirit's Bane"
+    },
+    "coral-silk-armor": {
+      "src": "../icons/coral_silk.png",
+      "alt": "Coral Silk Armor"
+    },
+    "ring-of-cubed-wisdom": {
+      "src": "../icons/cubic_ring.png",
+      "alt": "Ring of Cubed Wisdom"
+    },
+    "archangel-s-judgement": {
+      "src": "../icons/archangel_dagger.png",
+      "alt": "Archangel Dagger"
+    },
+    "warmonger": {
+      "src": "../icons/warmonger.png",
+      "alt": "Warmonger"
+    },
+    "the-triangle": {
+      "src": "../icons/triangle.png",
+      "alt": "The Triangle"
+    },
+    "diplomatic-robe": {
+      "src": "../icons/diplo.png",
+      "alt": "Diplomatic Robe"
+    },
+    "vesture-of-duality": {
+      "src": "../icons/vesture.png",
+      "alt": "Vesture of Duality"
+    },
+    "ritual-robe": {
+      "src": "../icons/cult_robe.png",
+      "alt": "Ritual Robe"
+    },
+    "dusky-catalyst": {
+      "src": "../icons/dusky.png",
+      "alt": "Dusky Catalyst"
+    },
+    "draconic-insignia": {
+      "src": "../icons/draconic_sigil.png",
+      "alt": "Draconic Insignia"
+    },
+    "lumiaire": {
+      "src": "../icons/lumiaire.png",
+      "alt": "Lumiaire"
+    },
+    "earthen-ward": {
+      "src": "../icons/earthen_ward.png",
+      "alt": "Earthen Ward"
+    },
+    "wand-of-the-bulwark": {
+      "src": "../icons/bulwark.png",
+      "alt": "Wand of the Bulwark"
+    },
+    "fortitude": {
+      "src": "../icons/fortitude.png",
+      "alt": "Fortitude"
+    },
+    "enforcer": {
+      "src": "../icons/enforcer.png",
+      "alt": "Enforcer"
+    },
+    "irradiance-sheath": {
+      "src": "../icons/irradiance.png",
+      "alt": "Irradiance Sheath"
+    },
+    "sonic-wave-sheath": {
+      "src": "../icons/t7_sheath.png",
+      "alt": "Sonic Wave Sheath"
+    },
+    "mercy-s-bane": {
+      "src": "../icons/mercys.png",
+      "alt": "Mercy's Bane"
+    },
+    "gladiator-guard": {
+      "src": "../icons/gladguard.png",
+      "alt": "Gladiator Guard"
+    },
+    "kaiken": {
+      "src": "../icons/kaiken.png",
+      "alt": "Kaiken"
+    },
+    "loch-sheath": {
+      "src": "../icons/loch.png",
+      "alt": "Loch Sheath"
+    },
+    "blood-siphoning-katana": {
+      "src": "../icons/blood_katana.png",
+      "alt": "Blood Siphoning Katana"
+    },
+    "socket-blade": {
+      "src": "../icons/socket_blade.png",
+      "alt": "Socket Blade"
+    },
+    "void-blade": {
+      "src": "../icons/vblade.png",
+      "alt": "Void Blade"
+    },
+    "demon-blade": {
+      "src": "../icons/dblade.png",
+      "alt": "Demon Blade"
+    },
+    "shield-of-ogmur": {
+      "src": "../icons/ogmur.png",
+      "alt": "Shield of Ogmur"
+    },
+    "royal-guard-s-cuirass": {
+      "src": "../icons/cuirass.png",
+      "alt": "Royal Guard's Cuirass"
+    },
+    "brutal-buckler": {
+      "src": "../icons/buckler.png",
+      "alt": "Brutal Buckler"
+    },
+    "fungal-breastplate": {
+      "src": "../icons/fungal_bplate.png",
+      "alt": "Fungal Breastplate"
+    },
+    "nightmatter-circlet": {
+      "src": "../icons/circlet.png",
+      "alt": "Nightmatter Circlet"
+    },
+    "ring-of-transcendent-vitality": {
+      "src": "../icons/t7_vit.png",
+      "alt": "Ring of Transcendent Vitality"
+    },
+    "damnation": {
+      "src": "../icons/damnation.png",
+      "alt": "Damnation"
+    },
+    "kogbold-cower-shield": {
+      "src": "../icons/kog_shield.png",
+      "alt": "Kogbold Cower Shield"
+    },
+    "annihilation-armor": {
+      "src": "../icons/t14_armor.png",
+      "alt": "Annihilation Armor"
+    },
+    "boundless-vessel": {
+      "src": "../icons/boundless_vessel.png",
+      "alt": "Boundless Vessel"
+    },
+    "e-y-e": {
+      "src": "../icons/eye.png",
+      "alt": "E.Y.E."
+    },
+    "crystal-shield": {
+      "src": "../icons/crystal_shield.png",
+      "alt": "Crystal Shield"
+    },
+    "staff-of-unholy-sacrifice": {
+      "src": "../icons/cult_staff.png",
+      "alt": "Staff of Unholy Sacrifice"
+    },
+    "primal-arcana": {
+      "src": "../icons/arcana.png",
+      "alt": "Primal Arcana"
+    },
+    "vigor": {
+      "src": "../icons/vigor.png",
+      "alt": "Staff of Vigor"
+    },
+    "staff-of-extreme-prejudice": {
+      "src": "../icons/ep.png",
+      "alt": "Staff of Extreme Prejudice"
+    },
+    "frostfall-rod": {
+      "src": "../icons/ice_ep.png",
+      "alt": "Frostfall Rod"
+    },
+    "command-cornea": {
+      "src": "../icons/cornea.png",
+      "alt": "Command Cornea"
+    },
+    "flowering-kimono": {
+      "src": "../icons/flowering_kimono.png",
+      "alt": "Flowering Kimono"
+    },
+    "wretched-rags": {
+      "src": "../icons/rags.png",
+      "alt": "Wretched Rags"
+    },
+    "tlatoani-s-shroud": {
+      "src": "../icons/tlatoani_shroud.png",
+      "alt": "Tlatoani&rsquo;s Shroud"
+    },
+    "ring-of-transcendent-magic": {
+      "src": "../icons/t7_mana.png",
+      "alt": "Ring of Transcendent Magic"
+    },
+    "frozen-heart": {
+      "src": "../icons/frozen_heart.png",
+      "alt": "Frozen Heart"
+    },
+    "kagenohikari": {
+      "src": "../icons/lantern.png",
+      "alt": "Kagenohikari"
+    },
+    "elder-heartwood-staff": {
+      "src": "../icons/wlab_staff.png",
+      "alt": "Elder Heartwood Staff"
+    },
+    "skull-of-endless-torment": {
+      "src": "../icons/shaitan_skull.png",
+      "alt": "Skull of Endless Torment"
+    },
+    "demon-lord-s-skull": {
+      "src": "../icons/aoo_skull.png",
+      "alt": "Demon Lord&apos;s Skull"
+    },
+    "skullish-remains-of-esben": {
+      "src": "../icons/cit_skull.png",
+      "alt": "Skullish Remains of Esben"
+    },
+    "robe-of-the-ancient-intellect": {
+      "src": "../icons/t14_robe.png",
+      "alt": "Robe of the Ancient Intellect"
+    },
+    "magical-lodestone": {
+      "src": "../icons/potato.png",
+      "alt": "Magical Lodestone"
+    },
+    "sealed-crystal-skull": {
+      "src": "../icons/thicket_skull.png",
+      "alt": "Sealed Crystal Skull"
+    },
+    "skull-of-restless-souls": {
+      "src": "../icons/restless_skull.png",
+      "alt": "Skull of Restless Souls"
+    },
+    "skull-of-corrupted-souls": {
+      "src": "../icons/cult_skull.png",
+      "alt": "Skull of Corrupted Souls"
+    },
+    "ring-of-skeletal-specters": {
+      "src": "../icons/specter_ring.png",
+      "alt": "Ring of Skeletal Specters"
+    },
+    "ring-of-transcendent-wisdom": {
+      "src": "../icons/t7_wis.png",
+      "alt": "Ring of Transcendent Wisdom"
+    },
+    "valor": {
+      "src": "../icons/valor.png",
+      "alt": "Valor"
+    },
+    "midnight-star": {
+      "src": "../icons/midnight_star.png",
+      "alt": "Midnight Star"
+    },
+    "haori-of-the-wind": {
+      "src": "../icons/haori.png",
+      "alt": "Haori of the Wind"
+    },
+    "turncoat-cape": {
+      "src": "../icons/turncoat.png",
+      "alt": "Turncoat Cape"
+    },
+    "star-of-enlightenment": {
+      "src": "../icons/enlightment_star.png",
+      "alt": "Star of Enlightenment"
+    },
+    "esben-s-wedding-ring": {
+      "src": "../icons/esben_ring.png",
+      "alt": "Esben's Wedding Ring"
+    },
+    "spider-shuriken": {
+      "src": "../icons/speed_shuriken.png",
+      "alt": "Spider Shuriken"
+    },
+    "rage-claws": {
+      "src": "../icons/claws.png",
+      "alt": "Rage Claws"
+    },
+    "ballistic-star": {
+      "src": "../icons/ballistic.png",
+      "alt": "Ballistic Star"
+    },
+    "oryx-s-greatsword": {
+      "src": "../icons/oryx_sword.png",
+      "alt": "Oryx&apos;s Greatsword"
+    },
+    "seal-of-invocation": {
+      "src": "../icons/t7_seal.png",
+      "alt": "Seal of Invocation"
+    },
+    "scholar-s-seal": {
+      "src": "../icons/scholar_seal.png",
+      "alt": "Scholar&apos;s Seal"
+    },
+    "sandstone-seal": {
+      "src": "../icons/vit_seal.png",
+      "alt": "Sandstone Seal"
+    },
+    "doom-s-emblem": {
+      "src": "../icons/biome_seal.png",
+      "alt": "Doom&apos;s Emblem"
+    },
+    "ring-of-transcendent-dexterity": {
+      "src": "../icons/t7_dex.png",
+      "alt": "Ring of Transcendent Dexterity"
+    },
+    "overclocking-amulet": {
+      "src": "../icons/overclock.png",
+      "alt": "Overclocking Amulet"
+    },
+    "deliverance": {
+      "src": "../icons/deliverance.png",
+      "alt": "Deliverance"
+    },
+    "tome-of-hallowed-language": {
+      "src": "../icons/t7_tome.png",
+      "alt": "Tome of Hallowed Language"
+    },
+    "tome-of-holy-furor": {
+      "src": "../icons/dex_tome.png",
+      "alt": "Tome of Holy Furor"
+    },
+    "st-abraham-s-wand": {
+      "src": "../icons/manor_wand.png",
+      "alt": "St. Abraham's Wand"
+    },
+    "tome-of-purification": {
+      "src": "../icons/puri.png",
+      "alt": "Tome of Purification"
+    },
+    "mantle-of-the-monarchy": {
+      "src": "../icons/vit_robe.png",
+      "alt": "Mantle of the Monarchy"
+    },
+    "cloak-of-nightmares": {
+      "src": "../icons/t7_cloak.png",
+      "alt": "T7 cloak"
+    },
+    "mantle-of-skuld": {
+      "src": "../icons/mantle.png",
+      "alt": "Mantle"
+    },
+    "spectral-ring-of-horrors": {
+      "src": "../icons/cem_st_ring.png",
+      "alt": "Cemetery/Spectral trench ring"
+    },
+    "cloak-of-the-planewalker": {
+      "src": "../icons/planewalker_cloak.png",
+      "alt": "Planewalker cloak"
+    },
+    "ghastly-drape": {
+      "src": "../icons/drape_cloak.png",
+      "alt": "Drape cloak"
+    },
+    "cloak-of-the-deep": {
+      "src": "../icons/bubble_cloak.png",
+      "alt": "Cloak of the Deep"
+    },
+    "faded-heart-scarab": {
+      "src": "../icons/syndicate_dex.png",
+      "alt": "Faded Heart Scarab"
+    },
+    "cloak-of-the-darkened-sun": {
+      "src": "../icons/vit_cloak.png",
+      "alt": "Cloak of the Darkened Sun"
+    },
+    "vest-of-abandoned-shadows": {
+      "src": "../icons/vest.png",
+      "alt": "Vest of Abandoned Shadows"
+    },
+    "cloak-of-cubic-enigma": {
+      "src": "../icons/def_cloak.png",
+      "alt": "Cloak of Cubic Enigma"
+    },
+    "cloak-of-the-mad-god": {
+      "src": "../icons/mad_god_cloak.png",
+      "alt": "Cloak of the Mad God"
+    },
+    "ring-of-transcendent-defense": {
+      "src": "../icons/t7_def.png",
+      "alt": "Ring of Transcendent Defense"
+    },
+    "wakizashi-of-crossing-fires": {
+      "src": "../icons/fire_waki.png",
+      "alt": "Wakizashi of Crossing Fires"
+    },
+    "kogbold-multitool": {
+      "src": "../icons/multitool.png",
+      "alt": "Kogbold Multitool"
+    },
+    "wakizashi-of-eastern-winds": {
+      "src": "../icons/speed_waki.png",
+      "alt": "Wakizashi of Eastern Winds"
+    },
+    "virtuous-wakizashi": {
+      "src": "../icons/t7_waki.png",
+      "alt": "Virtuous Wakizashi"
+    },
+    "tools-of-the-tarnished": {
+      "src": "../icons/tools.png",
+      "alt": "Tools of the Tarnished"
+    },
+    "esben-s-twisted-heart": {
+      "src": "../icons/vit_waki.png",
+      "alt": "Esben's Twisted Heart"
+    },
+    "laser-pointer": {
+      "src": "../icons/laser_pointer.png",
+      "alt": "Laser Pointer"
+    },
+    "peacekeeper": {
+      "src": "../icons/peacekeeper.png",
+      "alt": "Peacekeeper"
+    },
+    "vanguard-s-visage": {
+      "src": "../icons/visage.png",
+      "alt": "Vanguard's Visage"
+    },
+    "atavistic-soul-sabre": {
+      "src": "../icons/damnation_sword.png",
+      "alt": "Atavistic Soul Sabre"
+    },
+    "helm-of-the-tribune": {
+      "src": "../icons/t7_helm.png",
+      "alt": "Helm of the Tribune"
+    },
+    "ancient-eminence": {
+      "src": "../icons/ancient_eminence.png",
+      "alt": "Ancient Eminence"
+    },
+    "burning-retribution-spell": {
+      "src": "../icons/t7_spell.png",
+      "alt": "Burning Retribution"
+    },
+    "tideturner-trident": {
+      "src": "../icons/ot_staff.png",
+      "alt": "Tideturner Trident"
+    },
+    "slurpian-sea-scroll": {
+      "src": "../icons/ot_spell.png",
+      "alt": "Slurpian Sea Scroll"
+    },
+    "oceanic-apparel": {
+      "src": "../icons/ot_robe.png",
+      "alt": "Oceanic Apparel"
+    },
+    "wandering-souls-spell": {
+      "src": "../icons/udl_spell.png",
+      "alt": "Wandering Souls Spell"
+    },
+    "recurring-terror-spell": {
+      "src": "../icons/para_spell.png",
+      "alt": "Recurring Terror Spell"
+    }
+  },
+  "aliases": {
+    "divine-vest-of-abandoned-shadows": "vest-of-abandoned-shadows"
+  }
+}
