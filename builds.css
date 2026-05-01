@@ -400,18 +400,6 @@ main > .class-picker__menu {
   background: #333;
   color: #fff;
 }
-.set-checker-fetch-hint {
-  margin: 0 0 0.85rem;
-  font-size: 0.85rem;
-  color: #b8b8b8;
-  line-height: 1.5;
-}
-.set-checker-fetch-hint code {
-  font-size: 0.8em;
-  background: rgba(255, 255, 255, 0.06);
-  padding: 0.02em 0.28em;
-  border-radius: 0.22em;
-}
 .set-checker-username-step {
   margin-bottom: 0.35rem;
 }
