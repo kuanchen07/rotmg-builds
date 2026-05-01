@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Rogue — ROTMG Builds</title>
+  <link rel="stylesheet" href="builds.css">
+</head>
+<body>
+  <main>
+    <header class="class-picker">
+      <h1 class="class-heading">
+        <details class="class-picker__details">
+          <summary class="class-picker__summary">
+            <span class="class-picker__caret" aria-hidden="true"></span>
+            Rogue
+          </summary>
+          <nav class="class-picker__menu" aria-label="Choose class">
+            <ul class="class-picker__options" role="list">
+              <li><a class="class-picker__option" href="rogue.html" aria-current="page">Rogue</a></li>
+              <li><a class="class-picker__option" href="wizard.html">Wizard</a></li>
+              <li><a class="class-picker__option" href="ninja.html">Ninja</a></li>
+              <li><a class="class-picker__option" href="assassin.html">Assassin</a></li>
+              <li><a class="class-picker__option" href="mystic.html">Mystic</a></li>
+            </ul>
+          </nav>
+        </details>
+      </h1>
+    </header>
+    <details class="rogue-mechanics-notes">
+      <summary>Rogue mechanics — Lethal Strike &amp; snapshot</summary>
+      <div class="mechanics-body">
+        <p>
+          <strong>Lethal Strike:</strong>
+          Rogue is very unique compared to other builds: it focuses on a specific stat based on the cloak&rsquo;s scaling, weapon rate of fire, and weapon total shots fired. With the exception of Planewalker, cloaks have a specific effect called Lethal Strike, and that&rsquo;s mainly where rogue&rsquo;s damage comes from. Lethal Strike fires 2 shots that deal damage equal to your lethal strike damage and shoot faster the faster your weapon shoots and the more shots it shoots. The Lethal Strike effect also applies additional flat damage to your weapon&rsquo;s shots based on your lethal strike damage, and your shots deal extra % damage based on the target&rsquo;s defense. The flat damage and the extra damage based on the target&rsquo;s defense both scale with the cloak&rsquo;s scaling stat (e.g. wisdom on that cloak). Additionally, Lethal Strike&rsquo;s rate of fire increases relative to how fast you&rsquo;re shooting, which makes enchants like Flurry of Blows (+35% rate of fire, &minus;20% weapon damage) and dexterity valuable too.
+        </p>
+        <p>
+          Rogue&rsquo;s main swapout is Planewalker because of its no-cooldown uniqueness compared to other cloaks, which allows for more uptime on Lethal Strike.
+        </p>
+        <p>
+          <strong>Snapshot:</strong>
+          Another unique thing about rogue and its cloaks is that the moment you get the Lethal Strike effect, the game checks your stats (e.g. 150 wisdom) and uses them for the current cloak&rsquo;s scaling — the same cloak you got Lethal Strike on. It also uses the Lethal Strike duration from that same cloak. This only lasts during the Lethal Strike duration, so if you swap to another item that gives less wisdom, it won&rsquo;t affect the current Lethal Strike scaling, but it will affect the next one unless you swap back before getting the next Lethal Strike.
+        </p>
+      </div>
+    </details>
+
+    <section class="wisdom-rogue-versions" aria-labelledby="wisdom-arch-heading">
+    <h2 id="wisdom-arch-heading" class="archetype-heading">Full Wisdom Rogue</h2>
+
+    <article id="version-1">
+    <h3 class="version">Version 1</h3>
+
+    <section aria-labelledby="bis-heading">
+      <h4 id="bis-heading" class="section-title section-title--underline">BiS Items &amp; Swapouts:</h4>
+      <p>
+        <strong>Main Set:</strong>
+        <a class="icon-link" href="https://www.realmeye.com/wiki/fractal-blades" target="_blank" rel="noopener noreferrer" aria-label="Fractal Blades on RealmEye wiki">
+          <img class="icon-inline" src="icons/fractal_blades.png" alt="Fractal Blades">
+        </a>
+        <strong>or</strong>
+        <a class="icon-link" href="https://www.realmeye.com/wiki/archangel-s-judgement" target="_blank" rel="noopener noreferrer" aria-label="Archangel's Judgement on RealmEye wiki">
+          <img class="icon-inline" src="icons/archangel_dagger.png" alt="Archangel Dagger">
+        </a>
+        -
+        <a class="icon-link" href="https://www.realmeye.com/wiki/cloak-of-nightmares" target="_blank" rel="noopener noreferrer" aria-label="Cloak of Nightmares on RealmEye wiki">
+          <img class="icon-inline" src="icons/t7_cloak.png" alt="T7 cloak">
+        </a>
+        -
+        <a class="icon-link" href="https://www.realmeye.com/wiki/mantle-of-skuld" target="_blank" rel="noopener noreferrer" aria-label="Mantle of Skuld on RealmEye wiki">
+          <img class="icon-inline" src="icons/mantle.png" alt="Mantle">
+        </a>
+        -
+        <a class="icon-link" href="https://www.realmeye.com/wiki/spectral-ring-of-horrors" target="_blank" rel="noopener noreferrer" aria-label="Spectral Ring of Horrors on RealmEye wiki">
+          <img class="icon-inline" src="icons/cem_st_ring.png" alt="Cemetery/Spectral trench ring">
+        </a>
+      </p>
+      <p>
+        <strong>Swapouts:</strong>
+        <a class="icon-link" href="https://www.realmeye.com/wiki/cloak-of-the-planewalker" target="_blank" rel="noopener noreferrer" aria-label="Cloak of the Planewalker on RealmEye wiki">
+          <img class="icon-inline" src="icons/planewalker_cloak.png" alt="Planewalker cloak">
+        </a>
+        <a class="icon-link" href="https://www.realmeye.com/wiki/ghastly-drape" target="_blank" rel="noopener noreferrer" aria-label="Ghastly Drape on RealmEye wiki">
+          <img class="icon-inline" src="icons/drape_cloak.png" alt="Drape cloak">
+        </a>
+      </p>
+    </section>
+
+    <section aria-labelledby="explanation-heading">
+      <h4 id="explanation-heading" class="section-title section-title--underline">Swapouts Explanation:</h4>
+      <p>
+        With snapshot in mind, we can utilize
+        <a class="icon-link" href="https://www.realmeye.com/wiki/ghastly-drape" target="_blank" rel="noopener noreferrer" aria-label="Ghastly Drape on RealmEye wiki">
+          <img class="icon-inline" src="icons/drape_cloak.png" alt="Drape cloak">
+        </a>'s
+        scalings since it scales better than
+        <a class="icon-link" href="https://www.realmeye.com/wiki/cloak-of-nightmares" target="_blank" rel="noopener noreferrer" aria-label="Cloak of Nightmares on RealmEye wiki">
+          <img class="icon-inline" src="icons/t7_cloak.png" alt="T7 cloak">
+        </a>
+        for damage + it has more lethal strike duration.
+      </p>
+      <p>
+        Also we use
+        <a class="icon-link" href="https://www.realmeye.com/wiki/ghastly-drape" target="_blank" rel="noopener noreferrer" aria-label="Ghastly Drape on RealmEye wiki">
+          <img class="icon-inline" src="icons/drape_cloak.png" alt="Drape cloak">
+        </a>
+        alongside
+        <a class="icon-link" href="https://www.realmeye.com/wiki/mantle-of-skuld" target="_blank" rel="noopener noreferrer" aria-label="Mantle of Skuld on RealmEye wiki">
+          <img class="icon-inline" src="icons/mantle.png" alt="Mantle">
+        </a>
+        for the 2-set piece bonus (+4 dex &amp; +4 wisdom)
+      </p>
+    </section>
+
+    <section class="section-bis-enchants" aria-labelledby="bis-enchants-heading">
+      <h4 id="bis-enchants-heading" class="section-title section-title--underline">BiS Enchants:</h4>
+      <ul>
+        <li>
+          <a class="icon-link" href="https://www.realmeye.com/wiki/fractal-blades" target="_blank" rel="noopener noreferrer" aria-label="Fractal Blades on RealmEye wiki">
+            <img class="icon-inline" src="icons/fractal_blades.png" alt="Fractal Blades">
+          </a>
+          <a class="icon-link" href="https://www.realmeye.com/wiki/archangel-s-judgement" target="_blank" rel="noopener noreferrer" aria-label="Archangel's Judgement on RealmEye wiki">
+            <img class="icon-inline" src="icons/archangel_dagger.png" alt="Archangel Dagger">
+          </a>
+          : Flurry of Blows - Relative Wisdom IV - Wisdom Tradeoff IV - Onshoot Wisdom IV
+        </li>
+        <li>
+          <a class="icon-link" href="https://www.realmeye.com/wiki/ghastly-drape" target="_blank" rel="noopener noreferrer" aria-label="Ghastly Drape on RealmEye wiki">
+            <img class="icon-inline" src="icons/drape_cloak.png" alt="Drape cloak">
+          </a>
+          : Stat Mod Multiplier IV - Percent Mana Regen IV - Avalon’s Intellect - Wisdom Tradeoff IV
+        </li>
+        <li>
+          <a class="icon-link" href="https://www.realmeye.com/wiki/mantle-of-skuld" target="_blank" rel="noopener noreferrer" aria-label="Mantle of Skuld on RealmEye wiki">
+            <img class="icon-inline" src="icons/mantle.png" alt="Mantle">
+          </a>
+          : Relative Wisdom IV - Wisdom Tradeoff IV - Onhit Wisdom IV
+        </li>
+        <li>
+          <a class="icon-link" href="https://www.realmeye.com/wiki/spectral-ring-of-horrors" target="_blank" rel="noopener noreferrer" aria-label="Spectral Ring of Horrors on RealmEye wiki">
+            <img class="icon-inline" src="icons/cem_st_ring.png" alt="Cemetery/Spectral trench ring">
+          </a>
+          : Relative Wisdom IV - Wisdom Tradeoff IV - Percent Mana Regen IV - Onhit/Onability Dexterity IV
+        </li>
+        <li>
+          <a class="icon-link" href="https://www.realmeye.com/wiki/cloak-of-the-planewalker" target="_blank" rel="noopener noreferrer" aria-label="Cloak of the Planewalker on RealmEye wiki">
+            <img class="icon-inline" src="icons/planewalker_cloak.png" alt="Planewalker cloak">
+          </a>
+          : MP Reduction IV - Percent Mana Regen IV - Onability Wisdom IV
+        </li>
+        <li>
+          <a class="icon-link" href="https://www.realmeye.com/wiki/cloak-of-nightmares" target="_blank" rel="noopener noreferrer" aria-label="Cloak of Nightmares on RealmEye wiki">
+            <img class="icon-inline" src="icons/t7_cloak.png" alt="T7 cloak">
+          </a>
+          : Wisdom to Dexterity IV - Percentage Mana Regeneration IV - Dexterity tradeoff IV
+        </li>
+      </ul>
+      <p>
+        Another main cloak to consider for <strong>Version 1</strong> of Wisdom Rogue is
+        <a class="icon-link" href="https://www.realmeye.com/wiki/cloak-of-the-deep" target="_blank" rel="noopener noreferrer" aria-label="Cloak of the Deep on RealmEye wiki">
+          <img class="icon-inline" src="icons/bubble_cloak.png" alt="Cloak of the Deep">
+        </a>.
+        This cloak has low scalings, but with the usage of snapshot, we can use
+        <a class="icon-link" href="https://www.realmeye.com/wiki/ghastly-drape" target="_blank" rel="noopener noreferrer" aria-label="Ghastly Drape on RealmEye wiki">
+          <img class="icon-inline" src="icons/drape_cloak.png" alt="Drape cloak">
+        </a>'s
+        scalings and shoot with
+        <a class="icon-link" href="https://www.realmeye.com/wiki/cloak-of-the-deep" target="_blank" rel="noopener noreferrer" aria-label="Cloak of the Deep on RealmEye wiki">
+          <img class="icon-inline" src="icons/bubble_cloak.png" alt="Cloak of the Deep">
+        </a>.
+        This cloak is <strong><u>viable only</u></strong> in fights like Oryx 3 because it has VERY high damage but also low uptime, less than
+        <a class="icon-link" href="https://www.realmeye.com/wiki/cloak-of-nightmares" target="_blank" rel="noopener noreferrer" aria-label="Cloak of Nightmares on RealmEye wiki">
+          <img class="icon-inline" src="icons/t7_cloak.png" alt="T7 cloak">
+        </a>.
+      </p>
+      <p>
+        If you were to use
+        <a class="icon-link" href="https://www.realmeye.com/wiki/cloak-of-the-deep" target="_blank" rel="noopener noreferrer" aria-label="Cloak of the Deep on RealmEye wiki">
+          <img class="icon-inline" src="icons/bubble_cloak.png" alt="Cloak of the Deep">
+        </a>,
+        just copy the enchants of
+        <a class="icon-link" href="https://www.realmeye.com/wiki/cloak-of-nightmares" target="_blank" rel="noopener noreferrer" aria-label="Cloak of Nightmares on RealmEye wiki">
+          <img class="icon-inline" src="icons/t7_cloak.png" alt="T7 cloak">
+        </a>
+        mentioned above. Tiered dual blades’ two shots have an offset fire rate leading to more bubbles from
+        <a class="icon-link" href="https://www.realmeye.com/wiki/cloak-of-the-deep" target="_blank" rel="noopener noreferrer" aria-label="Cloak of the Deep on RealmEye wiki">
+          <img class="icon-inline" src="icons/bubble_cloak.png" alt="Cloak of the Deep">
+        </a>,
+        so they are BiS for it, and the tier of the dagger doesn't matter too much due to cloak's self-weaken effect.
+      </p>
+      <p>
+        <strong><u>Mana management</u></strong> is important for using
+        <a class="icon-link" href="https://www.realmeye.com/wiki/cloak-of-the-deep" target="_blank" rel="noopener noreferrer" aria-label="Cloak of the Deep on RealmEye wiki">
+          <img class="icon-inline" src="icons/bubble_cloak.png" alt="Cloak of the Deep">
+        </a>.
+        Holding down spacebar with that cloak <strong><u>quiets you.</u></strong>
+      </p>
+    </section>
+
+    <section aria-labelledby="usage-heading">
+      <h4 id="usage-heading" class="section-title">Usage of Swapouts:</h4>
+      <p>
+        Use
+        <a class="icon-link" href="https://www.realmeye.com/wiki/cloak-of-the-planewalker" target="_blank" rel="noopener noreferrer" aria-label="Cloak of the Planewalker on RealmEye wiki">
+          <img class="icon-inline" src="icons/planewalker_cloak.png" alt="Planewalker cloak">
+        </a>
+        for invisibility (no cooldown) -&gt; Swap to
+        <a class="icon-link" href="https://www.realmeye.com/wiki/ghastly-drape" target="_blank" rel="noopener noreferrer" aria-label="Ghastly Drape on RealmEye wiki">
+          <img class="icon-inline" src="icons/drape_cloak.png" alt="Drape cloak">
+        </a>
+        for its scaling and break invisibility on it -&gt; Swap to
+        <a class="icon-link" href="https://www.realmeye.com/wiki/cloak-of-nightmares" target="_blank" rel="noopener noreferrer" aria-label="Cloak of Nightmares on RealmEye wiki">
+          <img class="icon-inline" src="icons/t7_cloak.png" alt="T7 cloak">
+        </a>
+        for firing the shots -&gt; Repeat
+      </p>
+    </section>
+    </article>
+
+    <article id="version-2">
+    <h3 class="version">Version 2</h3>
+    <p>
+      Similar to Version 1, except it excludes
+      <a class="icon-link" href="https://www.realmeye.com/wiki/ghastly-drape" target="_blank" rel="noopener noreferrer" aria-label="Ghastly Drape on RealmEye wiki">
+        <img class="icon-inline" src="icons/drape_cloak.png" alt="Drape cloak">
+      </a>
+      for less swapouts, but ends up with less total damage.
+    </p>
+
+    <section aria-labelledby="v2-bis-heading">
+      <h4 id="v2-bis-heading" class="section-title section-title--underline">BiS Items &amp; Swapouts:</h4>
+      <p>
+        <strong>Main Set:</strong>
+        <a class="icon-link" href="https://www.realmeye.com/wiki/fractal-blades" target="_blank" rel="noopener noreferrer" aria-label="Fractal Blades on RealmEye wiki">
+          <img class="icon-inline" src="icons/fractal_blades.png" alt="Fractal Blades">
+        </a>
+        <strong>or</strong>
+        <a class="icon-link" href="https://www.realmeye.com/wiki/archangel-s-judgement" target="_blank" rel="noopener noreferrer" aria-label="Archangel's Judgement on RealmEye wiki">
+          <img class="icon-inline" src="icons/archangel_dagger.png" alt="Archangel Dagger">
+        </a>
+        -
+        <a class="icon-link" href="https://www.realmeye.com/wiki/cloak-of-nightmares" target="_blank" rel="noopener noreferrer" aria-label="Cloak of Nightmares on RealmEye wiki">
+          <img class="icon-inline" src="icons/t7_cloak.png" alt="T7 cloak">
+        </a>
+        -
+        <a class="icon-link" href="https://www.realmeye.com/wiki/coral-silk-armor" target="_blank" rel="noopener noreferrer" aria-label="Coral Silk Armor on RealmEye wiki">
+          <img class="icon-inline" src="icons/coral_silk.png" alt="Coral Silk Armor">
+        </a>
+        -
+        <a class="icon-link" href="https://www.realmeye.com/wiki/ring-of-cubed-wisdom" target="_blank" rel="noopener noreferrer" aria-label="Ring of Cubed Wisdom on RealmEye wiki">
+          <img class="icon-inline" src="icons/cubic_ring.png" alt="Ring of Cubed Wisdom">
+        </a>
+      </p>
+      <p>
+        <strong>Swapouts:</strong>
+        <a class="icon-link" href="https://www.realmeye.com/wiki/cloak-of-the-planewalker" target="_blank" rel="noopener noreferrer" aria-label="Cloak of the Planewalker on RealmEye wiki">
+          <img class="icon-inline" src="icons/planewalker_cloak.png" alt="Planewalker cloak">
+        </a>
+        <a class="icon-link" href="https://www.realmeye.com/wiki/faded-heart-scarab" target="_blank" rel="noopener noreferrer" aria-label="Faded Heart Scarab on RealmEye wiki">
+          <img class="icon-inline" src="icons/syndicate_dex.png" alt="Faded Heart Scarab">
+        </a>
+      </p>
+    </section>
+
+    <section aria-labelledby="v2-usage-heading">
+      <h4 id="v2-usage-heading" class="section-title">Usage of Swapouts:</h4>
+      <p>
+        Use
+        <a class="icon-link" href="https://www.realmeye.com/wiki/cloak-of-the-planewalker" target="_blank" rel="noopener noreferrer" aria-label="Cloak of the Planewalker on RealmEye wiki">
+          <img class="icon-inline" src="icons/planewalker_cloak.png" alt="Planewalker cloak">
+        </a>
+        for invisibility (no cooldown) -&gt; Swap to
+        <a class="icon-link" href="https://www.realmeye.com/wiki/cloak-of-nightmares" target="_blank" rel="noopener noreferrer" aria-label="Cloak of Nightmares on RealmEye wiki">
+          <img class="icon-inline" src="icons/t7_cloak.png" alt="T7 cloak">
+        </a>
+        for breaking invis &amp; firing the shots -&gt; Repeat.
+      </p>
+      <p>
+        While in lethal strike, you can equip a dexterity ring while shooting, preferably
+        <a class="icon-link" href="https://www.realmeye.com/wiki/faded-heart-scarab" target="_blank" rel="noopener noreferrer" aria-label="Faded Heart Scarab on RealmEye wiki">
+          <img class="icon-inline" src="icons/syndicate_dex.png" alt="Faded Heart Scarab">
+        </a>,
+        then swap back to your main ring before next lethal strike.
+      </p>
+    </section>
+
+    <section class="section-bis-enchants" aria-labelledby="v2-bis-enchants-heading">
+      <h4 id="v2-bis-enchants-heading" class="section-title section-title--underline">BiS Enchants:</h4>
+      <ul>
+        <li>
+          <a class="icon-link" href="https://www.realmeye.com/wiki/fractal-blades" target="_blank" rel="noopener noreferrer" aria-label="Fractal Blades on RealmEye wiki">
+            <img class="icon-inline" src="icons/fractal_blades.png" alt="Fractal Blades">
+          </a>
+          <a class="icon-link" href="https://www.realmeye.com/wiki/archangel-s-judgement" target="_blank" rel="noopener noreferrer" aria-label="Archangel's Judgement on RealmEye wiki">
+            <img class="icon-inline" src="icons/archangel_dagger.png" alt="Archangel Dagger">
+          </a>
+          : Flurry of Blows - Relative Wisdom IV - Wisdom Tradeoff IV - Onshoot Wisdom IV
+        </li>
+        <li>
+          <a class="icon-link" href="https://www.realmeye.com/wiki/cloak-of-nightmares" target="_blank" rel="noopener noreferrer" aria-label="Cloak of Nightmares on RealmEye wiki">
+            <img class="icon-inline" src="icons/t7_cloak.png" alt="T7 cloak">
+          </a>
+          : Avalon’s Intellect - Stat Mod Multiplier IV - Mana Regen IV - Wisdom Tradeoff IV
+        </li>
+        <li>
+          <a class="icon-link" href="https://www.realmeye.com/wiki/coral-silk-armor" target="_blank" rel="noopener noreferrer" aria-label="Coral Silk Armor on RealmEye wiki">
+            <img class="icon-inline" src="icons/coral_silk.png" alt="Coral Silk Armor">
+          </a>
+          : Avalon’s Intellect - Wisdom Tradeoff IV - Onhit Wisdom IV
+        </li>
+        <li>
+          <a class="icon-link" href="https://www.realmeye.com/wiki/ring-of-cubed-wisdom" target="_blank" rel="noopener noreferrer" aria-label="Ring of Cubed Wisdom on RealmEye wiki">
+            <img class="icon-inline" src="icons/cubic_ring.png" alt="Ring of Cubed Wisdom">
+          </a>
+          : Relative Wisdom IV - Wisdom Tradeoff IV - Mana Regen IV - Onhit/Onability Dexterity IV
+        </li>
+        <li>
+          <a class="icon-link" href="https://www.realmeye.com/wiki/faded-heart-scarab" target="_blank" rel="noopener noreferrer" aria-label="Faded Heart Scarab on RealmEye wiki">
+            <img class="icon-inline" src="icons/syndicate_dex.png" alt="Faded Heart Scarab">
+          </a>
+          : Wisdom to Dexterity IV - Dexterity Tradeoff IV - Onhit Wisdom IV - Onshoot Dexterity IV
+        </li>
+        <li>
+          <a class="icon-link" href="https://www.realmeye.com/wiki/cloak-of-the-planewalker" target="_blank" rel="noopener noreferrer" aria-label="Cloak of the Planewalker on RealmEye wiki">
+            <img class="icon-inline" src="icons/planewalker_cloak.png" alt="Planewalker cloak">
+          </a>
+          : MP Reduction IV - Mana Regen IV - Onability Wisdom IV
+        </li>
+      </ul>
+      <p>
+        For Wisdom Tradeoff enchants, avoid getting -dexterity at all costs, -mana is also bad to have.
+      </p>
+    </section>
+    </article>
+    </section>
+
+    <section id="vitality-rogue" aria-labelledby="vitality-arch-heading">
+    <h2 id="vitality-arch-heading" class="archetype-heading">Full Vitality Rogue:</h2>
+    <p>
+      This is another viable rogue version, on average it does slightly less damage than Version 2 of Full Wisdom Rogue
+    </p>
+
+    <article id="vitality-build">
+      <section aria-labelledby="vit-bis-heading">
+        <h3 id="vit-bis-heading" class="section-title section-title--underline">BiS Items &amp; Swapouts:</h3>
+        <p>
+          <strong>Main Set:</strong>
+          <a class="icon-link" href="https://www.realmeye.com/wiki/fractal-blades" target="_blank" rel="noopener noreferrer" aria-label="Fractal Blades on RealmEye wiki">
+            <img class="icon-inline" src="icons/fractal_blades.png" alt="Fractal Blades">
+          </a>
+          <strong>or</strong>
+          <a class="icon-link" href="https://www.realmeye.com/wiki/archangel-s-judgement" target="_blank" rel="noopener noreferrer" aria-label="Archangel's Judgement on RealmEye wiki">
+            <img class="icon-inline" src="icons/archangel_dagger.png" alt="Archangel Dagger">
+          </a>
+          -
+          <a class="icon-link" href="https://www.realmeye.com/wiki/cloak-of-the-darkened-sun" target="_blank" rel="noopener noreferrer" aria-label="Cloak of the Darkened Sun on RealmEye wiki">
+            <img class="icon-inline" src="icons/vit_cloak.png" alt="Cloak of the Darkened Sun">
+          </a>
+          -
+          <a class="icon-link" href="https://www.realmeye.com/wiki/vest-of-abandoned-shadows" target="_blank" rel="noopener noreferrer" aria-label="Vest of Abandoned Shadows on RealmEye wiki">
+            <img class="icon-inline" src="icons/vest.png" alt="Vest of Abandoned Shadows">
+          </a>
+          -
+          <a class="icon-link" href="https://www.realmeye.com/wiki/nightmatter-circlet" target="_blank" rel="noopener noreferrer" aria-label="Nightmatter Circlet on RealmEye wiki">
+            <img class="icon-inline" src="icons/circlet.png" alt="Nightmatter Circlet">
+          </a>
+          <strong>or</strong>
+          <a class="icon-link" href="https://www.realmeye.com/wiki/ring-of-transcendent-vitality" target="_blank" rel="noopener noreferrer" aria-label="Ring of Transcendent Vitality on RealmEye wiki">
+            <img class="icon-inline" src="icons/t7_vit.png" alt="Ring of Transcendent Vitality">
+          </a>
+        </p>
+        <p>
+          <strong>Swapouts:</strong>
+          <a class="icon-link" href="https://www.realmeye.com/wiki/cloak-of-the-planewalker" target="_blank" rel="noopener noreferrer" aria-label="Cloak of the Planewalker on RealmEye wiki">
+            <img class="icon-inline" src="icons/planewalker_cloak.png" alt="Planewalker cloak">
+          </a>
+          <a class="icon-link" href="https://www.realmeye.com/wiki/faded-heart-scarab" target="_blank" rel="noopener noreferrer" aria-label="Faded Heart Scarab on RealmEye wiki">
+            <img class="icon-inline" src="icons/syndicate_dex.png" alt="Faded Heart Scarab">
+          </a>
+        </p>
+      </section>
+
+      <section aria-labelledby="vit-usage-heading">
+        <h3 id="vit-usage-heading" class="section-title">Usage of Swapouts:</h3>
+        <p>
+          Use
+          <a class="icon-link" href="https://www.realmeye.com/wiki/cloak-of-the-planewalker" target="_blank" rel="noopener noreferrer" aria-label="Cloak of the Planewalker on RealmEye wiki">
+            <img class="icon-inline" src="icons/planewalker_cloak.png" alt="Planewalker cloak">
+          </a>
+          for invisibility (no cooldown) -&gt; Swap to
+          <a class="icon-link" href="https://www.realmeye.com/wiki/cloak-of-the-darkened-sun" target="_blank" rel="noopener noreferrer" aria-label="Cloak of the Darkened Sun on RealmEye wiki">
+            <img class="icon-inline" src="icons/vit_cloak.png" alt="Cloak of the Darkened Sun">
+          </a>
+          for breaking invisibility &amp; firing the shots -&gt; Repeat. While in lethal strike, you can equip a dexterity ring while shooting, preferably
+          <a class="icon-link" href="https://www.realmeye.com/wiki/faded-heart-scarab" target="_blank" rel="noopener noreferrer" aria-label="Faded Heart Scarab on RealmEye wiki">
+            <img class="icon-inline" src="icons/syndicate_dex.png" alt="Faded Heart Scarab">
+          </a>,
+          then swap back to your main ring before next lethal strike.
+        </p>
+      </section>
+
+      <section class="section-bis-enchants" aria-labelledby="vit-bis-enchants-heading">
+        <h3 id="vit-bis-enchants-heading" class="section-title section-title--underline">BiS Enchants:</h3>
+        <ul>
+          <li>
+            <a class="icon-link" href="https://www.realmeye.com/wiki/fractal-blades" target="_blank" rel="noopener noreferrer" aria-label="Fractal Blades on RealmEye wiki">
+              <img class="icon-inline" src="icons/fractal_blades.png" alt="Fractal Blades">
+            </a>
+            <a class="icon-link" href="https://www.realmeye.com/wiki/archangel-s-judgement" target="_blank" rel="noopener noreferrer" aria-label="Archangel's Judgement on RealmEye wiki">
+              <img class="icon-inline" src="icons/archangel_dagger.png" alt="Archangel Dagger">
+            </a>
+            : Flurry of Blows - Relative Vitality IV - Vitality Tradeoff IV - Onshoot Vitality IV
+          </li>
+          <li>
+            <a class="icon-link" href="https://www.realmeye.com/wiki/cloak-of-the-darkened-sun" target="_blank" rel="noopener noreferrer" aria-label="Cloak of the Darkened Sun on RealmEye wiki">
+              <img class="icon-inline" src="icons/vit_cloak.png" alt="Cloak of the Darkened Sun">
+            </a>
+            : Vitality Tradeoff IV - Crystalline Vigor - Mana Regen IV - Stat Mod Multiplier IV
+          </li>
+          <li>
+            <a class="icon-link" href="https://www.realmeye.com/wiki/vest-of-abandoned-shadows" target="_blank" rel="noopener noreferrer" aria-label="Vest of Abandoned Shadows on RealmEye wiki">
+              <img class="icon-inline" src="icons/vest.png" alt="Vest of Abandoned Shadows">
+            </a>
+            : Vitality Tradeoff IV - Relative Vitality IV - Onhit Vitality IV
+          </li>
+          <li>
+            <a class="icon-link" href="https://www.realmeye.com/wiki/nightmatter-circlet" target="_blank" rel="noopener noreferrer" aria-label="Nightmatter Circlet on RealmEye wiki">
+              <img class="icon-inline" src="icons/circlet.png" alt="Nightmatter Circlet">
+            </a>
+            <a class="icon-link" href="https://www.realmeye.com/wiki/ring-of-transcendent-vitality" target="_blank" rel="noopener noreferrer" aria-label="Ring of Transcendent Vitality on RealmEye wiki">
+              <img class="icon-inline" src="icons/t7_vit.png" alt="Ring of Transcendent Vitality">
+            </a>
+            : Vitality Tradeoff IV - Relative Vitality IV - Mana Regen IV - Onhit/Onability Dexterity IV
+          </li>
+          <li>
+            <a class="icon-link" href="https://www.realmeye.com/wiki/faded-heart-scarab" target="_blank" rel="noopener noreferrer" aria-label="Faded Heart Scarab on RealmEye wiki">
+              <img class="icon-inline" src="icons/syndicate_dex.png" alt="Faded Heart Scarab">
+            </a>
+            : Vitality to Dexterity IV - Dexterity Tradeoff IV - Onhit Vitality IV - Onshoot Dexterity IV
+          </li>
+          <li>
+            <a class="icon-link" href="https://www.realmeye.com/wiki/cloak-of-the-planewalker" target="_blank" rel="noopener noreferrer" aria-label="Cloak of the Planewalker on RealmEye wiki">
+              <img class="icon-inline" src="icons/planewalker_cloak.png" alt="Planewalker cloak">
+            </a>
+            : MP Reduction IV - Mana Regen IV - Onability Vitality IV
+          </li>
+        </ul>
+        <p>
+          For Vitality Tradeoff enchants, avoid getting -dexterity at all costs, -mana is also bad to have.
+        </p>
+      </section>
+    </article>
+    </section>
+
+    <section id="defense-rogue" aria-labelledby="def-arch-heading">
+    <h2 id="def-arch-heading" class="archetype-heading">Full Defense Rogue:</h2>
+    <p>
+      Yet another viable rogue version. It does less damage than the other rogue versions mentioned above, but it is worth including because it stacks up well compared to most other rogue DPS setups.
+    </p>
+
+    <article id="defense-build">
+      <section aria-labelledby="def-bis-heading">
+        <h3 id="def-bis-heading" class="section-title section-title--underline">BiS Items &amp; Swapouts:</h3>
+        <p>
+          <strong>Main Set:</strong>
+          <a class="icon-link" href="https://www.realmeye.com/wiki/fractal-blades" target="_blank" rel="noopener noreferrer" aria-label="Fractal Blades on RealmEye wiki">
+            <img class="icon-inline" src="icons/fractal_blades.png" alt="Fractal Blades">
+          </a>
+          <strong>or</strong>
+          <a class="icon-link" href="https://www.realmeye.com/wiki/archangel-s-judgement" target="_blank" rel="noopener noreferrer" aria-label="Archangel's Judgement on RealmEye wiki">
+            <img class="icon-inline" src="icons/archangel_dagger.png" alt="Archangel Dagger">
+          </a>
+          -
+          <a class="icon-link" href="https://www.realmeye.com/wiki/cloak-of-cubic-enigma" target="_blank" rel="noopener noreferrer" aria-label="Cloak of Cubic Enigma on RealmEye wiki">
+            <img class="icon-inline" src="icons/def_cloak.png" alt="Cloak of Cubic Enigma">
+          </a>
+          <strong>or</strong>
+          <a class="icon-link" href="https://www.realmeye.com/wiki/cloak-of-the-mad-god" target="_blank" rel="noopener noreferrer" aria-label="Cloak of the Mad God on RealmEye wiki">
+            <img class="icon-inline" src="icons/mad_god_cloak.png" alt="Cloak of the Mad God">
+          </a>
+          -
+          <a class="icon-link" href="https://www.realmeye.com/wiki/armor-of-nil" target="_blank" rel="noopener noreferrer" aria-label="Armor of Nil on RealmEye wiki">
+            <img class="icon-inline" src="icons/nil.png" alt="Armor of Nil">
+          </a>
+          -
+          <a class="icon-link" href="https://www.realmeye.com/wiki/ring-of-transcendent-defense" target="_blank" rel="noopener noreferrer" aria-label="Ring of Transcendent Defense on RealmEye wiki">
+            <img class="icon-inline" src="icons/t7_def.png" alt="Ring of Transcendent Defense">
+          </a>
+        </p>
+        <p>
+          <strong>Swapouts:</strong>
+          <a class="icon-link" href="https://www.realmeye.com/wiki/cloak-of-the-planewalker" target="_blank" rel="noopener noreferrer" aria-label="Cloak of the Planewalker on RealmEye wiki">
+            <img class="icon-inline" src="icons/planewalker_cloak.png" alt="Planewalker cloak">
+          </a>
+          <a class="icon-link" href="https://www.realmeye.com/wiki/faded-heart-scarab" target="_blank" rel="noopener noreferrer" aria-label="Faded Heart Scarab on RealmEye wiki">
+            <img class="icon-inline" src="icons/syndicate_dex.png" alt="Faded Heart Scarab">
+          </a>
+          <a class="icon-link" href="https://www.realmeye.com/wiki/e-y-e" target="_blank" rel="noopener noreferrer" aria-label="E.Y.E. on RealmEye wiki">
+            <img class="icon-inline" src="icons/eye.png" alt="E.Y.E.">
+          </a>
+        </p>
+      </section>
+
+      <section aria-labelledby="def-usage-heading">
+        <h3 id="def-usage-heading" class="section-title">Usage of Swapouts:</h3>
+        <p>
+          Use
+          <a class="icon-link" href="https://www.realmeye.com/wiki/cloak-of-the-planewalker" target="_blank" rel="noopener noreferrer" aria-label="Cloak of the Planewalker on RealmEye wiki">
+            <img class="icon-inline" src="icons/planewalker_cloak.png" alt="Planewalker cloak">
+          </a>
+          for invisibility (no cooldown) -&gt; swap to
+          <a class="icon-link" href="https://www.realmeye.com/wiki/cloak-of-cubic-enigma" target="_blank" rel="noopener noreferrer" aria-label="Cloak of Cubic Enigma on RealmEye wiki">
+            <img class="icon-inline" src="icons/def_cloak.png" alt="Cloak of Cubic Enigma">
+          </a>
+          for breaking invisibility &amp; firing the shots -&gt; repeat.
+        </p>
+        <p>
+          While in lethal strike, you can equip a dexterity ring while shooting, preferably
+          <a class="icon-link" href="https://www.realmeye.com/wiki/faded-heart-scarab" target="_blank" rel="noopener noreferrer" aria-label="Faded Heart Scarab on RealmEye wiki">
+            <img class="icon-inline" src="icons/syndicate_dex.png" alt="Faded Heart Scarab">
+          </a>,
+          then swap back to your main ring before the next lethal strike.
+        </p>
+        <p>
+          <a class="icon-link" href="https://www.realmeye.com/wiki/e-y-e" target="_blank" rel="noopener noreferrer" aria-label="E.Y.E. on RealmEye wiki">
+            <img class="icon-inline" src="icons/eye.png" alt="E.Y.E.">
+          </a>&rsquo;s shots scale with lethal strike damage, but it is only really a viable option for defense rogue, not the other rogue versions, because of the tankiness aspect.
+        </p>
+      </section>
+
+      <section class="section-bis-enchants" aria-labelledby="def-bis-enchants-heading">
+        <h3 id="def-bis-enchants-heading" class="section-title section-title--underline">BiS Enchants:</h3>
+        <ul>
+          <li>
+            <a class="icon-link" href="https://www.realmeye.com/wiki/fractal-blades" target="_blank" rel="noopener noreferrer" aria-label="Fractal Blades on RealmEye wiki">
+              <img class="icon-inline" src="icons/fractal_blades.png" alt="Fractal Blades">
+            </a>
+            <a class="icon-link" href="https://www.realmeye.com/wiki/archangel-s-judgement" target="_blank" rel="noopener noreferrer" aria-label="Archangel's Judgement on RealmEye wiki">
+              <img class="icon-inline" src="icons/archangel_dagger.png" alt="Archangel Dagger">
+            </a>
+            : Relative Defense IV - Defense Tradeoff IV - Onshoot Defense IV
+          </li>
+          <li>
+            <a class="icon-link" href="https://www.realmeye.com/wiki/cloak-of-cubic-enigma" target="_blank" rel="noopener noreferrer" aria-label="Cloak of Cubic Enigma on RealmEye wiki">
+              <img class="icon-inline" src="icons/def_cloak.png" alt="Cloak of Cubic Enigma">
+            </a>
+            <a class="icon-link" href="https://www.realmeye.com/wiki/cloak-of-the-mad-god" target="_blank" rel="noopener noreferrer" aria-label="Cloak of the Mad God on RealmEye wiki">
+              <img class="icon-inline" src="icons/mad_god_cloak.png" alt="Cloak of the Mad God">
+            </a>
+            : Relative Defense IV - Defense Tradeoff IV - Mana Regen IV - Stat Mod Multiplier IV
+          </li>
+          <li>
+            <a class="icon-link" href="https://www.realmeye.com/wiki/armor-of-nil" target="_blank" rel="noopener noreferrer" aria-label="Armor of Nil on RealmEye wiki">
+              <img class="icon-inline" src="icons/nil.png" alt="Armor of Nil">
+            </a>
+            : Relative Defense IV - Defense Tradeoff IV - Onhit Defense IV
+          </li>
+          <li>
+            <a class="icon-link" href="https://www.realmeye.com/wiki/ring-of-transcendent-defense" target="_blank" rel="noopener noreferrer" aria-label="Ring of Transcendent Defense on RealmEye wiki">
+              <img class="icon-inline" src="icons/t7_def.png" alt="Ring of Transcendent Defense">
+            </a>
+            : Relative Defense IV - Defense Tradeoff IV - Mana Regen IV - Onhit/OnAbility Dexterity IV
+          </li>
+          <li>
+            <a class="icon-link" href="https://www.realmeye.com/wiki/faded-heart-scarab" target="_blank" rel="noopener noreferrer" aria-label="Faded Heart Scarab on RealmEye wiki">
+              <img class="icon-inline" src="icons/syndicate_dex.png" alt="Faded Heart Scarab">
+            </a>
+            : Defense to Dexterity IV - Dexterity Tradeoff IV - Onhit Defense IV - Onshoot Dexterity IV
+          </li>
+          <li>
+            <a class="icon-link" href="https://www.realmeye.com/wiki/e-y-e" target="_blank" rel="noopener noreferrer" aria-label="E.Y.E. on RealmEye wiki">
+              <img class="icon-inline" src="icons/eye.png" alt="E.Y.E.">
+            </a>
+            : Relative Defense IV - Defense Tradeoff IV - Mana Regen IV - Onhit Defense IV
+          </li>
+          <li>
+            <a class="icon-link" href="https://www.realmeye.com/wiki/cloak-of-the-planewalker" target="_blank" rel="noopener noreferrer" aria-label="Cloak of the Planewalker on RealmEye wiki">
+              <img class="icon-inline" src="icons/planewalker_cloak.png" alt="Planewalker cloak">
+            </a>
+            : MP Reduction IV - Mana Regen IV - Onability Defense IV
+          </li>
+        </ul>
+        <p>
+          For Defense Tradeoff enchants, avoid getting -dexterity at all costs, -mana is also bad to have.
+        </p>
+      </section>
+    </article>
+    </section>
+  </main>
+</body>
+</html>
