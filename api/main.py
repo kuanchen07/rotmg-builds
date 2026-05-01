@@ -36,8 +36,31 @@ def _allowed_players() -> set[str] | None:
     return {x.strip().lower() for x in raw.split(",") if x.strip()}
 
 
-def _read_username(path: str) -> str | None:
-    q = parse_qs(urlparse(path).query)
+def _query_string(handler: BaseHTTPRequestHandler) -> str:
+    """
+    Vercel's Python bridge may put query params only in QUERY_STRING, not in self.path.
+    Also try the raw request line as a fallback.
+    """
+    path = handler.path or ""
+    q = urlparse(path).query
+    if q:
+        return q
+    env_q = (os.environ.get("QUERY_STRING") or "").strip()
+    if env_q:
+        return env_q
+    rl = getattr(handler, "requestline", None) or ""
+    if rl and "?" in rl:
+        try:
+            request_target = rl.split(None, 2)[1]
+            if "?" in request_target:
+                return request_target.split("?", 1)[1]
+        except (IndexError, ValueError):
+            pass
+    return ""
+
+
+def _read_username(handler: BaseHTTPRequestHandler) -> str | None:
+    q = parse_qs(_query_string(handler), keep_blank_values=False)
     for key in ("username", "user", "player"):
         vals = q.get(key)
         if vals and vals[0]:
@@ -69,9 +92,15 @@ class handler(BaseHTTPRequestHandler):
         self.end_headers()
 
     def do_GET(self) -> None:
-        username = _read_username(self.path)
+        username = _read_username(self)
         if not username:
-            self._send_json(400, {"error": "missing_username", "detail": "Use ?username= or ?player="})
+            self._send_json(
+                400,
+                {
+                    "error": "missing_username",
+                    "detail": "Add ?username=yourname (or ?player=). Example: /api/main?username=evolz",
+                },
+            )
             return
 
         allowed = _allowed_players()

@@ -6,8 +6,11 @@
   <title>Rogue — ROTMG Builds</title>
   <link rel="stylesheet" href="builds.css">
   <script>
-    /* Optional: Vercel origin (no trailing slash). Route GET /api/main?username=... (api/main.py). Set CORS_ORIGIN + ALLOWED_PLAYERS on Vercel. */
-    window.REALMEYE_LIVE_API_BASE = "";
+    /* GET /api/main?username=... (api/main.py). On Vercel-hosted pages, use same origin so preview + production work. Else set your API origin (https://…, no path). */
+    window.REALMEYE_LIVE_API_BASE =
+      typeof location !== "undefined" && /\.vercel\.app$/i.test(location.hostname || "")
+        ? location.origin
+        : "https://rotmg-builds.vercel.app";
     window.REALMEYE_SET_CHECKER_PLAYER = "evolz";
   </script>
 </head>
@@ -617,10 +620,11 @@
           </div>
         </header>
         <p class="set-checker-fetch-hint">
-          With <code>window.REALMEYE_LIVE_API_BASE</code> set to your Vercel URL (same repo, <code>api/main.py</code>),
-          gear is fetched live from RealmEye. Otherwise this uses <code>data/realmeye_evolz.json</code> — update it with
-          <code>python realmeye_player_scrape.py evolz --json-out data/realmeye_evolz.json</code> and serve over HTTP
-          (<code>python -m http.server</code>) so <code>fetch</code> works. Use <strong>Refresh</strong> to pull again without closing.
+          With <code>window.REALMEYE_LIVE_API_BASE</code> set (Vercel, <code>api/main.py</code>), gear loads live from RealmEye;
+          if that request fails, the checker shows an error (no silent fallback). For snapshot-only mode, leave the base empty,
+          keep <code>data/realmeye_evolz.json</code> updated via
+          <code>python realmeye_player_scrape.py evolz --json-out data/realmeye_evolz.json</code>, and serve over HTTP
+          (<code>python -m http.server</code>). Use <strong>Refresh</strong> to fetch again without closing.
         </p>
         <div id="vit-set-checker-mount" class="set-checker-mount"></div>
         <footer class="set-checker-dialog-footer">

@@ -405,38 +405,65 @@ main > .class-picker__menu {
   font-size: 0.92rem;
   font-weight: 700;
 }
-.set-checker-token-list {
-  margin: 0;
-  padding-left: 1.15rem;
-  list-style: none;
+.set-checker-enchant-table {
+  table-layout: fixed;
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+  color: #e8e8e8;
 }
-.set-checker-token-list li {
-  margin-bottom: 0.38rem;
+.set-checker-enchant-table thead th {
+  text-align: left;
+  font-weight: 700;
+  font-size: 0.78rem;
+  color: #aaa;
+  padding: 0.25rem 0.5rem 0.45rem 0;
+  border-bottom: 1px solid #3a3a3a;
+}
+.set-checker-enchant-col-bis {
+  width: 52%;
+}
+.set-checker-enchant-col-real {
+  width: 48%;
+}
+.set-checker-enchant-table tbody td {
+  padding: 0.35rem 0.35rem 0.35rem 0;
+  vertical-align: top;
+  border-bottom: 1px solid #282828;
+}
+.set-checker-enchant-table tbody tr:last-child td {
+  border-bottom: none;
+}
+.set-checker-enchant-cell-bis {
+  padding-right: 0.6rem;
 }
 .set-checker-mark {
   margin-right: 0.35rem;
 }
-.set-checker-ok .set-checker-mark {
+.set-checker-enchant-row--ok .set-checker-mark {
   color: #6fd58a;
 }
-.set-checker-bad .set-checker-mark {
+.set-checker-enchant-row--bad .set-checker-mark {
   color: #e07070;
 }
 .set-checker-row--mismatch .set-checker-bad {
   color: #f0ad7a;
 }
-.set-checker-yours {
-  margin-top: 0.55rem;
-  font-size: 0.82rem;
-  color: #c4c4c4;
+.set-checker-enchant-none {
+  color: #888;
 }
-.set-checker-yours summary {
-  cursor: pointer;
-  font-weight: 600;
-  margin-bottom: 0.35rem;
+.set-checker-you-line {
+  display: block;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: inherit;
+  font-size: inherit;
+  color: inherit;
 }
-.set-checker-yours code {
-  word-break: break-word;
+.set-checker-enchant-muted {
+  color: #888;
 }
 .set-checker-dialog-footer {
   padding-top: 0.65rem;

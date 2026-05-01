@@ -1,7 +1,7 @@
 /**
  * Full Vitality Rogue — prototype set checker.
- * Optional live JSON: set window.REALMEYE_LIVE_API_BASE (Vercel origin, no trailing slash).
- * Falls back to data/realmeye_evolz.json. Player: window.REALMEYE_SET_CHECKER_PLAYER (default evolz).
+ * Live JSON: set window.REALMEYE_LIVE_API_BASE (Vercel origin, no trailing slash); failures do not use the snapshot.
+ * Snapshot only when REALMEYE_LIVE_API_BASE is unset: data/realmeye_evolz.json. Player: REALMEYE_SET_CHECKER_PLAYER (default evolz).
  */
 (function () {
   "use strict";
@@ -10,8 +10,18 @@
   const BACKPACK_SLUG = "backpack-extender";
 
   function getLiveApiBase() {
-    const v = typeof window.REALMEYE_LIVE_API_BASE === "string" ? window.REALMEYE_LIVE_API_BASE.trim() : "";
-    return v.replace(/\/$/, "");
+    let v = typeof window.REALMEYE_LIVE_API_BASE === "string" ? window.REALMEYE_LIVE_API_BASE.trim() : "";
+    v = v.replace(/\/$/, "");
+    if (!v) {
+      return "";
+    }
+    if (!/^https?:\/\//i.test(v)) {
+      const noLeadingSlash = v.replace(/^\/+/, "");
+      if (/^[a-z0-9][a-z0-9.-]*\.[a-z]{2,}/i.test(noLeadingSlash) || /\.vercel\.app$/i.test(noLeadingSlash)) {
+        v = `https://${noLeadingSlash}`;
+      }
+    }
+    return v;
   }
 
   function getCheckerPlayer() {
@@ -29,13 +39,11 @@
   }
 
   /**
-   * @returns {Promise<{ data: object, source: 'live' | 'snapshot' | 'snapshot_fallback', fallbackNote: string | null }>}
+   * @returns {Promise<{ data: object, source: 'live' | 'snapshot' }>}
    */
   async function loadPlayerData() {
     const base = getLiveApiBase();
     const player = getCheckerPlayer();
-    /** @type {string | null} */
-    let fallbackNote = null;
 
     if (base) {
       const url = `${base}/api/main?username=${encodeURIComponent(player)}`;
@@ -43,7 +51,7 @@
         const res = await fetch(url, { cache: "no-store", mode: "cors" });
         if (res.ok) {
           const data = await res.json();
-          return { data, source: "live", fallbackNote: null };
+          return { data, source: "live" };
         }
         let detail = "";
         try {
@@ -54,42 +62,33 @@
         } catch (_) {
           /* ignore */
         }
-        fallbackNote = `Live API returned HTTP ${res.status}${detail ? ": " + detail : ""}.`;
+        throw new Error(`Live API returned HTTP ${res.status}${detail ? ": " + detail : ""}.`);
       } catch (err) {
-        fallbackNote = `Live API failed: ${String(/** @type {Error} */ (err).message || err)}.`;
+        if (err instanceof Error && err.message.startsWith("Live API returned HTTP")) {
+          throw err;
+        }
+        throw new Error(`Live API failed: ${String(/** @type {Error} */ (err).message || err)}`);
       }
     }
 
     try {
       const data = await loadSnapshotJson();
-      return {
-        data,
-        source: base ? "snapshot_fallback" : "snapshot",
-        fallbackNote: base ? fallbackNote : null,
-      };
+      return { data, source: "snapshot" };
     } catch (snapErr) {
-      const extra = base && fallbackNote ? `${fallbackNote} ` : "";
-      throw new Error(
-        `${extra}Could not load ${JSON_PATH}: ${String(/** @type {Error} */ (snapErr).message || snapErr)}`
-      );
+      throw new Error(`Could not load ${JSON_PATH}: ${String(/** @type {Error} */ (snapErr).message || snapErr)}`);
     }
   }
 
-  function sourceBannerHtml(source, fallbackNote) {
+  function sourceBannerHtml(source) {
     const player = getCheckerPlayer();
     if (source === "live") {
       return `<p class="set-checker-source set-checker-source--live">Live data from RealmEye (<code>${escapeHtml(
         player
       )}</code>).</p>`;
     }
-    if (source === "snapshot_fallback" && fallbackNote) {
-      return `<p class="set-checker-source set-checker-source--warn">${escapeHtml(
-        fallbackNote
-      )} Using local snapshot <code>${escapeHtml(JSON_PATH)}</code>.</p>`;
-    }
     return `<p class="set-checker-source">Using local snapshot <code>${escapeHtml(
       JSON_PATH
-    )}</code>. For live gear on GitHub Pages, deploy the Vercel API in this repo and set <code>window.REALMEYE_LIVE_API_BASE</code> in <code>rogue.html</code>.</p>`;
+    )}</code>. For live gear, set <code>window.REALMEYE_LIVE_API_BASE</code> to your Vercel origin in <code>rogue.html</code>.</p>`;
   }
 
   function norm(s) {
@@ -103,6 +102,13 @@
   function prefixBeforeColon(line) {
     const i = String(line).indexOf(":");
     return norm(i >= 0 ? line.slice(0, i) : line);
+  }
+
+  /** RealmEye display label (before first colon), original casing — not for matching. */
+  function realmeyeLabelBeforeColon(line) {
+    const s = String(line);
+    const i = s.indexOf(":");
+    return (i >= 0 ? s.slice(0, i) : s).replace(/\s+/g, " ").trim();
   }
 
   /**
@@ -238,6 +244,42 @@
     );
   }
 
+  /**
+   * Assign each BiS token the first unused RealmEye line whose prefix individually matches (greedy).
+   * @returns {{ pairedLines: (string|null)[]; extraLines: string[] }}
+   */
+  function pairEnchantLinesToTokens(tokens, enchantLines) {
+    const lines = enchantLines || [];
+    const used = new Set();
+    const pairedLines = [];
+    for (const token of tokens) {
+      let found = /** @type {string | null} */ (null);
+      let foundIdx = -1;
+      for (let i = 0; i < lines.length; i++) {
+        if (used.has(i)) {
+          continue;
+        }
+        const p = prefixBeforeColon(lines[i]);
+        if (guideTokenMatches(token, [p])) {
+          found = lines[i];
+          foundIdx = i;
+          break;
+        }
+      }
+      if (foundIdx >= 0) {
+        used.add(foundIdx);
+      }
+      pairedLines.push(found);
+    }
+    const extraLines = [];
+    for (let i = 0; i < lines.length; i++) {
+      if (!used.has(i)) {
+        extraLines.push(lines[i]);
+      }
+    }
+    return { pairedLines, extraLines };
+  }
+
   function compareCharacterToVitBis(character) {
     const coreEq = filterCoreEquipment(character.equipment);
     const rows = parseVitBisRows();
@@ -252,17 +294,20 @@
             token: t,
             ok: false,
             reason: "wrong_or_missing_item",
+            pairedLine: null,
           })),
+          extraEnchantLines: [],
         });
         continue;
       }
-      const prefixList = (equipped.enchantments || []).map(prefixBeforeColon);
-      const tokenResults = row.tokens.map((token) => ({
+      const { pairedLines, extraLines } = pairEnchantLinesToTokens(row.tokens, equipped.enchantments);
+      const tokenResults = row.tokens.map((token, i) => ({
         token,
-        ok: guideTokenMatches(token, prefixList),
+        ok: pairedLines[i] != null,
+        pairedLine: pairedLines[i],
         reason: null,
       }));
-      out.push({ row, equipped, tokenResults });
+      out.push({ row, equipped, tokenResults, extraEnchantLines: extraLines });
     }
     return out;
   }
@@ -303,31 +348,83 @@
       parts.push(`<section class="set-checker-row"><h3 class="set-checker-row-title">${escapeHtml(
         equipped.title || slugLabel
       )}</h3>`);
-      parts.push("<ul class=\"set-checker-token-list\">");
+      parts.push(
+        "<table class=\"set-checker-enchant-table\" aria-label=\"BiS enchants compared to RealmEye lines\">"
+      );
+      parts.push(
+        "<thead><tr><th scope=\"col\" class=\"set-checker-enchant-col-bis\">BiS</th><th scope=\"col\" class=\"set-checker-enchant-col-real\">RealmEye</th></tr></thead><tbody>"
+      );
+      const spareQueue = [...(/** @type {string[]} */ (block.extraEnchantLines || []))];
+      /** @type {{ cls: string; mark: string; token: string; label: string | null; title: string | null }[]} */
+      const built = [];
+      let lastDequeRowIx = -1;
       for (const tr of tokenResults) {
-        const cls = tr.ok ? "set-checker-ok" : "set-checker-bad";
+        const cls = tr.ok ? "set-checker-enchant-row set-checker-enchant-row--ok" : "set-checker-enchant-row set-checker-enchant-row--bad";
         const mark = tr.ok ? "✓" : "✗";
+        let label = /** @type {string | null} */ (null);
+        let title = /** @type {string | null} */ (null);
+        if (tr.ok && tr.pairedLine) {
+          label = realmeyeLabelBeforeColon(tr.pairedLine);
+          title = tr.pairedLine;
+        } else if (!tr.ok) {
+          const line = spareQueue.shift();
+          if (line != null) {
+            label = realmeyeLabelBeforeColon(line);
+            title = line;
+            lastDequeRowIx = built.length;
+          }
+        }
+        built.push({ cls, mark, token: tr.token, label, title });
+      }
+      if (spareQueue.length > 0) {
+        const mergeIx = lastDequeRowIx >= 0 ? lastDequeRowIx : built.length - 1;
+        if (mergeIx >= 0) {
+          const row = built[mergeIx];
+          const labelParts = [];
+          const titleParts = [];
+          if (row.label) {
+            labelParts.push(row.label);
+          }
+          if (row.title) {
+            titleParts.push(row.title);
+          }
+          for (const line of spareQueue) {
+            labelParts.push(realmeyeLabelBeforeColon(line));
+            titleParts.push(line);
+          }
+          row.label = labelParts.join(" · ");
+          row.title = titleParts.join("\n");
+        }
+        spareQueue.length = 0;
+      }
+      for (const br of built) {
+        parts.push(`<tr class="${br.cls}">`);
         parts.push(
-          `<li class="${cls}"><span class="set-checker-mark" aria-hidden="true">${mark}</span> ${escapeHtml(
-            tr.token
-          )}</li>`
+          `<td class="set-checker-enchant-cell-bis"><span class="set-checker-mark" aria-hidden="true">${br.mark}</span> ${escapeHtml(
+            br.token
+          )}</td>`
         );
+        if (br.label) {
+          parts.push(
+            `<td class="set-checker-enchant-cell-real"><span class="set-checker-you-line" title="${escapeHtml(
+              br.title || ""
+            )}">${escapeHtml(br.label)}</span></td>`
+          );
+        } else {
+          parts.push("<td class=\"set-checker-enchant-cell-real set-checker-enchant-none\">—</td>");
+        }
+        parts.push("</tr>");
       }
-      parts.push("</ul>");
-      parts.push("<details class=\"set-checker-yours\"><summary>Your enchant lines (RealmEye)</summary><ul>");
-      for (const line of equipped.enchantments || []) {
-        parts.push(`<li><code>${escapeHtml(line)}</code></li>`);
-      }
-      parts.push("</ul></details></section>");
+      parts.push("</tbody></table></section>");
     }
     mount.innerHTML = parts.join("");
   }
 
   /**
-   * @param {{ source: string, fallbackNote: string | null }} meta
+   * @param {{ source: 'live' | 'snapshot' }} meta
    */
   function renderRoguePicker(mount, rogues, meta) {
-    const banner = sourceBannerHtml(meta.source, meta.fallbackNote);
+    const banner = sourceBannerHtml(meta.source);
     if (rogues.length === 0) {
       mount.innerHTML =
         banner +
@@ -385,9 +482,16 @@
         const rogues = roguesFromPayload(meta.data);
         renderRoguePicker(mount, rogues, meta);
       } catch (err) {
-        mount.innerHTML = `<p class="set-checker-bad">Could not load player data.</p><p class="set-checker-hint">${escapeHtml(
-          String(/** @type {Error} */ (err).message || err)
-        )}</p><p class="set-checker-hint">Serve the site over HTTP (for example <code>python -m http.server</code>) so <code>fetch</code> can read the snapshot. Check <code>window.REALMEYE_LIVE_API_BASE</code> if using the live API.</p>`;
+        const msg = escapeHtml(String(/** @type {Error} */ (err).message || err));
+        const liveHint = `<p class="set-checker-hint">Tried <code>${escapeHtml(
+          `${base}/api/main?username=${encodeURIComponent(getCheckerPlayer())}`
+        )}</code>. On Vercel, set <code>CORS_ORIGIN</code> to this page&rsquo;s origin and check <code>ALLOWED_PLAYERS</code>. Open that URL in a new tab to confirm the API.</p>`;
+        const snapHint = `<p class="set-checker-hint">Serve the site over HTTP (for example <code>python -m http.server</code>) so <code>fetch</code> can read <code>${escapeHtml(
+          JSON_PATH
+        )}</code>. Or set <code>window.REALMEYE_LIVE_API_BASE</code> for live data.</p>`;
+        mount.innerHTML = `<p class="set-checker-bad">Could not load player data.</p><p class="set-checker-hint">${msg}</p>${
+          base ? liveHint : snapHint
+        }`;
       }
     }
 
