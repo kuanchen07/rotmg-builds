@@ -4,7 +4,8 @@ Vercel Python entrypoint (must be main.py / index.py / app.py per Vercel).
 Endpoint: GET /api/main?username=NAME
 
 Environment:
-  CORS_ORIGIN — Access-Control-Allow-Origin (default *).
+  CORS_ORIGIN — Access-Control-Allow-Origin (default *). If set to a single origin, include every host that loads this
+  static site (e.g. https://yourname.github.io and any custom domain) or use * for anonymous GETs.
   ALLOWED_PLAYERS — optional comma-separated lowercase names; if set, others get 403.
 """
 

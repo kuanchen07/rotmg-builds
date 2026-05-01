@@ -17,6 +17,20 @@ body {
 body.set-checker-sidebar-open {
   padding-right: calc(clamp(1rem, 4vw, 2rem) + var(--set-checker-panel-width));
 }
+.set-checker-script-error {
+  margin: 0;
+  padding: 0.65rem 1rem;
+  background: rgba(220, 80, 80, 0.2);
+  color: #ffb3b3;
+  border-bottom: 1px solid rgba(220, 80, 80, 0.45);
+  font-size: 0.95rem;
+}
+.set-checker-script-error code {
+  font-size: 0.9em;
+  padding: 0.08em 0.28em;
+  border-radius: 0.2rem;
+  background: rgba(0, 0, 0, 0.25);
+}
 main {
   max-width: 52rem;
   margin: 0 auto;

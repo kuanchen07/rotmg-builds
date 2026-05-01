@@ -15,6 +15,9 @@
   </script>
 </head>
 <body>
+  <p id="set-checker-script-error" class="set-checker-script-error" hidden role="alert">
+    Set checker could not load its script. Confirm <code>classes/set-checker.js</code> is present on the host (commit and redeploy if needed).
+  </p>
   <main>
     <header class="class-picker">
       <h1 class="class-heading">
@@ -637,11 +640,9 @@
             </div>
           </header>
           <p class="set-checker-fetch-hint">
-            With <code>window.REALMEYE_LIVE_API_BASE</code> set (Vercel, <code>api/main.py</code>), gear loads live from RealmEye;
-            if that request fails, the checker shows an error (no silent fallback). For snapshot-only mode, leave the base empty,
-            keep <code>data/realmeye_evolz.json</code> updated via
-            <code>python realmeye_player_scrape.py evolz --json-out data/realmeye_evolz.json</code>, and serve over HTTP
-            (<code>python -m http.server</code>). Use <strong>Refresh</strong> to fetch again without closing.
+            Data is loaded only from the live API (<code>GET /api/main?username=…</code> on your <code>REALMEYE_LIVE_API_BASE</code>).
+            If the panel reports a network or CORS error, set Vercel env <code>CORS_ORIGIN</code> to this site&rsquo;s origin (e.g. <code>https://you.github.io</code>) or <code>*</code>.
+            Use <strong>Refresh</strong> to retry without closing.
           </p>
           <div id="vit-set-checker-mount" class="set-checker-mount"></div>
           <footer class="set-checker-dialog-footer">
@@ -651,6 +652,6 @@
       </aside>
     </div>
   </main>
-  <script src="../set-checker.js" defer></script>
+  <script src="set-checker.js" defer onerror="(function(){var e=document.getElementById('set-checker-script-error');if(e)e.hidden=false;})()"></script>
 </body>
 </html>

@@ -1,7 +1,7 @@
 /**
- * Rogue set checker — compares BiS enchant lines in the page to RealmEye player JSON.
- * Live JSON: set window.REALMEYE_LIVE_API_BASE (Vercel origin, no trailing slash); failures do not use the snapshot.
- * Snapshot only when REALMEYE_LIVE_API_BASE is unset: data/realmeye_evolz.json. Player: REALMEYE_SET_CHECKER_PLAYER (default evolz).
+ * Rogue set checker — compares BiS enchant lines in the page to live RealmEye player JSON only.
+ * Set window.REALMEYE_LIVE_API_BASE (Vercel origin, no trailing slash). There is no local snapshot fallback.
+ * Player: REALMEYE_SET_CHECKER_PLAYER (default evolz).
  *
  * Triggers: buttons with class `set-checker-trigger` and `data-bis-root` pointing to the build article id.
  * Each BiS enchant `<li>` may set `data-bis-equipment-slot` (weapon|ability|armor|ring) and `data-bis-omit-if-no-match`.
@@ -9,7 +9,6 @@
 (function () {
   "use strict";
 
-  const JSON_PATH = "data/realmeye_evolz.json";
   const BACKPACK_SLUG = "backpack-extender";
 
   /** RealmEye character table order after filtering backpack (weapon, ability/cloak, armor, ring). */
@@ -41,65 +40,49 @@
     return v || "evolz";
   }
 
-  async function loadSnapshotJson() {
-    const res = await fetch(JSON_PATH, { cache: "no-store" });
-    if (!res.ok) {
-      throw new Error(`HTTP ${res.status} loading ${JSON_PATH}`);
-    }
-    return res.json();
-  }
-
   /**
-   * @returns {Promise<{ data: object, source: 'live' | 'snapshot' }>}
+   * @returns {Promise<{ data: object, source: 'live' }>}
    */
   async function loadPlayerData() {
     const base = getLiveApiBase();
     const player = getCheckerPlayer();
 
-    if (base) {
-      const url = `${base}/api/main?username=${encodeURIComponent(player)}`;
-      try {
-        const res = await fetch(url, { cache: "no-store", mode: "cors" });
-        if (res.ok) {
-          const data = await res.json();
-          return { data, source: "live" };
-        }
-        let detail = "";
-        try {
-          const errBody = await res.json();
-          if (errBody && errBody.detail) {
-            detail = String(errBody.detail);
-          }
-        } catch (_) {
-          /* ignore */
-        }
-        throw new Error(`Live API returned HTTP ${res.status}${detail ? ": " + detail : ""}.`);
-      } catch (err) {
-        if (err instanceof Error && err.message.startsWith("Live API returned HTTP")) {
-          throw err;
-        }
-        throw new Error(`Live API failed: ${String(/** @type {Error} */ (err).message || err)}`);
-      }
+    if (!base) {
+      throw new Error(
+        "Live API base is not set. Define window.REALMEYE_LIVE_API_BASE in this class page (see classes/rogue.html)."
+      );
     }
 
+    const url = `${base}/api/main?username=${encodeURIComponent(player)}`;
     try {
-      const data = await loadSnapshotJson();
-      return { data, source: "snapshot" };
-    } catch (snapErr) {
-      throw new Error(`Could not load ${JSON_PATH}: ${String(/** @type {Error} */ (snapErr).message || snapErr)}`);
+      const res = await fetch(url, { cache: "no-store", mode: "cors" });
+      if (res.ok) {
+        const data = await res.json();
+        return { data, source: "live" };
+      }
+      let detail = "";
+      try {
+        const errBody = await res.json();
+        if (errBody && errBody.detail) {
+          detail = String(errBody.detail);
+        }
+      } catch (_) {
+        /* ignore */
+      }
+      throw new Error(`Live API returned HTTP ${res.status}${detail ? ": " + detail : ""}.`);
+    } catch (err) {
+      if (err instanceof Error && err.message.startsWith("Live API returned HTTP")) {
+        throw err;
+      }
+      throw new Error(`Live API failed: ${String(/** @type {Error} */ (err).message || err)}`);
     }
   }
 
-  function sourceBannerHtml(source) {
+  function sourceBannerHtml() {
     const player = getCheckerPlayer();
-    if (source === "live") {
-      return `<p class="set-checker-source set-checker-source--live">Live data from RealmEye (<code>${escapeHtml(
-        player
-      )}</code>).</p>`;
-    }
-    return `<p class="set-checker-source">Using local snapshot <code>${escapeHtml(
-      JSON_PATH
-    )}</code>. For live gear, set <code>window.REALMEYE_LIVE_API_BASE</code> to your Vercel origin in <code>classes/rogue.html</code> (or the class page that loads this script).</p>`;
+    return `<p class="set-checker-source set-checker-source--live">Live data from RealmEye (<code>${escapeHtml(
+      player
+    )}</code>).</p>`;
   }
 
   function norm(s) {
@@ -502,13 +485,12 @@
   }
 
   /**
-   * @param {{ source: 'live' | 'snapshot' }} meta
    * @param {string} bisRootId
    */
-  function renderRoguePicker(mount, rogues, meta, bisRootId) {
+  function renderRoguePicker(mount, rogues, bisRootId) {
     const root = document.getElementById(bisRootId);
     const rows = parseBisRowsFromRoot(root);
-    const banner = sourceBannerHtml(meta.source);
+    const banner = sourceBannerHtml();
     if (rogues.length === 0) {
       mount.innerHTML =
         banner +
@@ -656,30 +638,26 @@
       }
       const gen = ++loadGeneration;
       const base = getLiveApiBase();
-      mount.innerHTML = base
-        ? "<p class=\"set-checker-loading\">Fetching RealmEye…</p>"
-        : "<p class=\"set-checker-loading\">Loading snapshot…</p>";
+      mount.innerHTML = "<p class=\"set-checker-loading\">Fetching live RealmEye data…</p>";
       try {
         const meta = await loadPlayerData();
         if (gen !== loadGeneration) {
           return;
         }
         const rogues = roguesFromPayload(meta.data);
-        renderRoguePicker(mount, rogues, meta, bisRootId);
+        renderRoguePicker(mount, rogues, bisRootId);
       } catch (err) {
         if (gen !== loadGeneration) {
           return;
         }
         const msg = escapeHtml(String(/** @type {Error} */ (err).message || err));
-        const liveHint = `<p class="set-checker-hint">Tried <code>${escapeHtml(
-          `${base}/api/main?username=${encodeURIComponent(getCheckerPlayer())}`
-        )}</code>. On Vercel, set <code>CORS_ORIGIN</code> to this page&rsquo;s origin and check <code>ALLOWED_PLAYERS</code>. Open that URL in a new tab to confirm the API.</p>`;
-        const snapHint = `<p class="set-checker-hint">Serve the site over HTTP (for example <code>python -m http.server</code>) so <code>fetch</code> can read <code>${escapeHtml(
-          JSON_PATH
-        )}</code>. Or set <code>window.REALMEYE_LIVE_API_BASE</code> for live data.</p>`;
-        mount.innerHTML = `<p class="set-checker-bad">Could not load player data.</p><p class="set-checker-hint">${msg}</p>${
-          base ? liveHint : snapHint
-        }`;
+        const baseForHint = getLiveApiBase();
+        const detailHint = baseForHint
+          ? `<p class="set-checker-hint">Request URL: <code>${escapeHtml(
+              `${baseForHint}/api/main?username=${encodeURIComponent(getCheckerPlayer())}`
+            )}</code>. On Vercel, set <code>CORS_ORIGIN</code> to this page&rsquo;s origin (or <code>*</code>) and check <code>ALLOWED_PLAYERS</code>. Open that URL in a new tab to confirm the API.</p>`
+          : `<p class="set-checker-hint">Set <code>window.REALMEYE_LIVE_API_BASE</code> in this page to your Vercel API origin (HTTPS, no path). See <code>classes/rogue.html</code>.</p>`;
+        mount.innerHTML = `<p class="set-checker-source set-checker-source--warn"><strong>Not fetching live data.</strong> The set checker only uses the live API—no offline snapshot.</p><p class="set-checker-bad">Could not load player data.</p><p class="set-checker-hint">${msg}</p>${detailHint}`;
       }
     }
 
