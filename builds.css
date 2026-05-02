@@ -12,6 +12,7 @@
   --site-nav-body-gap: clamp(0.5rem, 2vw, 0.85rem);
   --site-brand-row-height: 3rem;
   --site-brand-main-offset: 2.25rem;
+  --builds-hub-max: 36rem;
 }
 body {
   margin: 0;
@@ -158,16 +159,47 @@ body.has-site-nav:has(#site-nav .site-nav__panel[open]) .site-nav {
   line-height: 1.2;
   color: #f5f5f5;
   pointer-events: none;
-  transition: left 0.2s ease;
+  overflow: hidden;
+  transition: left 0.2s ease, height 0.2s ease, padding-top 0.2s ease,
+    padding-bottom 0.2s ease;
 }
 body.has-site-nav:has(#site-nav .site-nav__panel[open]) .site-brand-strip {
   left: calc(env(safe-area-inset-left, 0px) + var(--site-nav-expanded));
 }
+body.site-brand-scroll-collapsed .site-brand-strip {
+  height: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+body.has-site-nav.site-nav-show-brand.site-brand-scroll-collapsed:not(.home-intro) {
+  padding-top: 1.5rem;
+}
+body.home-intro.has-site-nav.site-nav-show-brand.site-brand-scroll-collapsed {
+  padding-top: calc(0.35rem + env(safe-area-inset-top, 0px));
+}
+body.home-intro.has-site-nav.site-nav-show-brand.site-brand-scroll-collapsed
+  .home-intro__main {
+  padding-top: 2.75rem;
+}
 .site-brand-strip__text {
   margin: 0;
 }
+@media (prefers-reduced-motion: reduce) {
+  .site-brand-strip {
+    transition: left 0.2s ease;
+  }
+}
 
 /* Landing introduction copy (/, index.html) */
+body.home-intro {
+  /* rem/ch width lives on .home-intro__prose so one column width isn’t recomputed per heading font size */
+  --home-intro-prose-max: min(85ch, 100%);
+}
+body.home-intro.has-site-nav .home-intro__main .home-intro__prose {
+  max-width: var(--home-intro-prose-max);
+  margin-inline: auto;
+  font-size: 1rem;
+}
 body.home-intro.has-site-nav:not(.site-nav-show-brand) {
   padding-top: calc(0.35rem + env(safe-area-inset-top, 0px));
 }
@@ -184,31 +216,24 @@ body.home-intro.has-site-nav.site-nav-show-brand .home-intro__main {
   margin: 0;
   padding-top: 0;
 }
-body.home-intro.has-site-nav .home-intro__main h1 {
+body.home-intro.has-site-nav .home-intro__main .home-intro__prose h1 {
   text-align: left;
   margin-top: 0;
-  max-width: 52rem;
 }
-body.home-intro.has-site-nav .home-intro__main > h2,
-body.home-intro.has-site-nav .home-intro__main > p,
-body.home-intro.has-site-nav .home-intro__main > ul.home-intro__list {
-  max-width: 52rem;
-}
-body.home-intro.has-site-nav .home-intro__main > h2 {
+body.home-intro.has-site-nav .home-intro__main .home-intro__prose > h2 {
   font-size: 1.65rem;
   font-weight: 700;
   line-height: 1.25;
   margin: 2.5rem 0 1rem;
 }
-body.home-intro.has-site-nav .home-intro__main > h2:first-of-type {
+body.home-intro.has-site-nav .home-intro__main .home-intro__prose > h2:first-of-type {
   margin-top: 2.75rem;
 }
-body.home-intro.has-site-nav .home-intro__main > h2 + p {
+body.home-intro.has-site-nav .home-intro__main .home-intro__prose > h2 + p {
   margin-top: 0;
 }
 .home-intro__tools-lead {
   margin: 0 0 0.85rem;
-  max-width: 52rem;
 }
 .home-intro__tools-list {
   margin-bottom: 0;
@@ -283,6 +308,15 @@ body.home-intro.has-site-nav .home-intro__main > h2 + p {
 main {
   max-width: 52rem;
   margin: 0 auto;
+}
+main:has(> .builds-hub) {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+main:has(> .builds-hub) > h1,
+main:has(> .builds-hub) > .builds-hub {
+  width: min(var(--builds-hub-max), 100%);
 }
 h1 {
   margin: 0 0 1.35rem;
@@ -512,7 +546,7 @@ main > .class-picker__menu {
 /* Builds hub — dense dark grid (classes/builds.html only) */
 .builds-hub {
   margin: 0;
-  max-width: 36rem;
+  max-width: var(--builds-hub-max);
 }
 .builds-hub__panel {
   padding: 0;
