@@ -14,7 +14,8 @@
     window.REALMEYE_SET_CHECKER_CLASS = "archer";
   </script>
 </head>
-<body>
+<body class="has-site-nav">
+  <script src="../site-nav.js"></script>
   <p id="set-checker-script-error" class="set-checker-script-error" hidden role="alert">
     Set checker could not load its script. Confirm <code>classes/set-checker.js</code> is present on the host (commit and redeploy if needed).
   </p>
@@ -253,5 +254,6 @@
     </div>
   </main>
   <script src="set-checker.js" defer onerror="(function(){var e=document.getElementById('set-checker-script-error');if(e)e.hidden=false;})()"></script>
+  <script src="build-variant-nav.js" defer></script>
 </body>
 </html>

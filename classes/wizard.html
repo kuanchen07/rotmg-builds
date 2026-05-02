@@ -14,7 +14,8 @@
     window.REALMEYE_SET_CHECKER_CLASS = "wizard";
   </script>
 </head>
-<body>
+<body class="has-site-nav">
+  <script src="../site-nav.js"></script>
   <p id="set-checker-script-error" class="set-checker-script-error" hidden role="alert">
     Set checker could not load its script. Confirm <code>classes/set-checker.js</code> is present on the host (commit and redeploy if needed).
   </p>
@@ -50,7 +51,7 @@
       </h1>
     </header>
     <section class="wisdom-wizard-versions" aria-labelledby="wiz-full-wis-heading">
-    <h2 id="wiz-full-wis-heading" class="archetype-heading">Full Wisdom Wizard</h2>
+    <h2 id="wiz-full-wis-heading" class="archetype-heading">Full Wisdom Wizard:</h2>
     <p>
       With the recent nerfs and changes to spells, we shift from
       <a class="icon-link" href="https://www.realmeye.com/wiki/ancient-eminence" target="_blank" rel="noopener noreferrer" aria-label="Ancient Eminence on RealmEye wiki">
@@ -555,5 +556,6 @@
     </div>
   </main>
   <script src="set-checker.js" defer onerror="(function(){var e=document.getElementById('set-checker-script-error');if(e)e.hidden=false;})()"></script>
+  <script src="build-variant-nav.js" defer></script>
 </body>
 </html>
