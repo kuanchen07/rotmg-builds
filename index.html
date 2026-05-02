@@ -3,11 +3,12 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>ROTMG Builds</title>
+  <title>ROTMG Builds — Introduction</title>
   <link rel="stylesheet" href="builds.css">
   <script>
     (function () {
       var map = {
+        rogue: 'classes/rogue.html',
         wizard: 'classes/wizard.html',
         ninja: 'classes/ninja.html',
         samurai: 'classes/samurai.html',
@@ -25,35 +26,43 @@
         druid: 'classes/druid.html'
       };
       var p = new URLSearchParams(window.location.search).get('class');
-      var target = map[p] || 'classes/rogue.html';
-      window.location.replace(target);
+      if (p && map[p]) {
+        window.location.replace(map[p]);
+      }
     })();
   </script>
 </head>
-<body>
-  <main>
-    <h1>ROTMG Builds</h1>
-    <p>JavaScript is off or the redirect did not run. Open a class page:</p>
-    <nav class="class-picker__menu" aria-label="Choose class">
-      <ul class="class-picker__options" role="list">
-        <li><a class="class-picker__option" href="classes/rogue.html">Rogue</a></li>
-        <li><a class="class-picker__option" href="classes/wizard.html">Wizard</a></li>
-        <li><a class="class-picker__option" href="classes/ninja.html">Ninja</a></li>
-        <li><a class="class-picker__option" href="classes/samurai.html">Samurai</a></li>
-        <li><a class="class-picker__option" href="classes/kensei.html">Kensei</a></li>
-        <li><a class="class-picker__option" href="classes/knight.html">Knight</a></li>
-        <li><a class="class-picker__option" href="classes/warrior.html">Warrior</a></li>
-        <li><a class="class-picker__option" href="classes/paladin.html">Paladin</a></li>
-        <li><a class="class-picker__option" href="classes/priest.html">Priest</a></li>
-        <li><a class="class-picker__option" href="classes/assassin.html">Assassin</a></li>
-        <li><a class="class-picker__option" href="classes/mystic.html">Mystic</a></li>
-        <li><a class="class-picker__option" href="classes/necromancer.html">Necromancer</a></li>
-        <li><a class="class-picker__option" href="classes/summoner.html">Summoner</a></li>
-        <li><a class="class-picker__option" href="classes/archer.html">Archer</a></li>
-        <li><a class="class-picker__option" href="classes/bard.html">Bard</a></li>
-        <li><a class="class-picker__option" href="classes/druid.html">Druid</a></li>
-      </ul>
-    </nav>
+<body class="home-intro has-site-nav">
+  <script src="site-nav.js"></script>
+  <main class="home-intro__main">
+    <h1>Introduction</h1>
+    <p>As game balance continues to shift with each update, it’s important to stay up to date with which builds perform best at any given time. This guide focuses on the current best builds, providing a practical overview of what’s strong right now and how to make the most of each setup. I’ll be updating this regularly as balance changes roll out.</p>
+    <p>In addition to listing top builds, this guide also aims to help you understand the core concepts of creating your own build—covering things like:</p>
+    <ul class="home-intro__list">
+      <li>Building around a specific weapon or ability</li>
+      <li>Optimizing Attack and Dexterity Ratios for highest DPS</li>
+      <li>Effective item swapouts for different situations</li>
+    </ul>
+    <p>Whether you’re following the meta or experimenting with your own setups, this guide should give you a solid foundation to work from.</p>
+
+    <h2>Building Around a Specific Weapon or Ability</h2>
+    <p>When creating a meta build, the first thing to decide is <strong>which stat (or stats)</strong> you want to focus on to make your setup as strong as possible. Most of the time, <strong>Attack and Dexterity</strong> are the go-to, since they directly boost your weapon’s damage and fire rate.</p>
+    <p>However, if you plan to build around a <strong>different stat</strong>, like <strong>Wisdom</strong> or <strong>Vitality</strong>, you’ll need a solid reason—usually tied to how your <strong>ability</strong> or <strong>weapon</strong> scales. The main thing is understanding what part of your build benefits the most from additional stats and building around that.</p>
+    <p>For example, take the <strong>Full Wisdom Rogue</strong>, which currently has the <strong>highest single-target DPS</strong> in the game. Instead of stacking Attack or Dexterity, it invests heavily in <strong>Wisdom</strong> because its cloak’s scaling becomes incredibly strong as Wisdom increases. This justifies skipping traditional DPS enchants and items—though adding a touch of <strong>Dexterity</strong> still helps smooth out damage. (We’ll explore the Rogue in more detail later.)</p>
+
+    <h2>Balancing DPS Stats for Optimal Damage (Attack/Dexterity Builds)</h2>
+    <p>When building around <strong>Attack and Dexterity</strong>, finding the right balance between the two is what maximizes your DPS. <strong>Attack</strong> makes each shot hit harder, while <strong>Dexterity</strong> increases how fast those shots fire — and stacking one without the other often leads to wasted potential.</p>
+    <p>This balance point isn’t fixed — it depends on your <strong>weapon’s average damage, rate of fire, number of shots, and even the enemy’s defense.</strong> For example, high-damage weapons usually benefit more from <strong>Dexterity</strong>, while low-damage or multi-shot weapons tend to scale better with <strong>Attack</strong>.</p>
+
+    <h2>Effective Item Swapouts and When to Use Them</h2>
+    <p>Item swapouts are pieces of gear you can quickly switch to for a specific advantage — whether that’s boosting your <strong>damage</strong> or increasing <strong>survivability</strong> (which sometimes increases your <strong>DPS</strong>).</p>
+
+    <h2>Current Meta-Builds:-</h2>
+    <p class="home-intro__tools-lead"><strong>Those two tools will help you during making your builds:</strong></p>
+    <ul class="home-intro__list home-intro__tools-list">
+      <li><a class="home-intro__tool-link" href="https://outsmited.github.io/EnchantingSimulator/main" target="_blank" rel="noopener noreferrer">Enchanting Simulator</a> (Precision Cog &amp; Honeycomb &amp; Premium Cards currently have inaccurate weight multipliers, will be fixed later)</li>
+      <li><a class="home-intro__tool-link" href="https://outsmited.github.io/OptimizeDPS/main" target="_blank" rel="noopener noreferrer">DPS Optimization Tool</a> automatically calculates your ideal Attack/Dexterity split. Just enter your weapon’s stats and the target’s defense, and it will show you which combination gives the highest possible DPS for your setup.</li>
+    </ul>
   </main>
 </body>
 </html>

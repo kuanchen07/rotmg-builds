@@ -217,7 +217,9 @@
    * Keys are norm(guideToken).
    */
   const SPECIAL_PREFIX_TESTERS = {
-    "mana regen iv": (p) => /percentage\s*mana\s*regeneration/i.test(p),
+    "mana regen iv": (p) =>
+      /\biv\b/i.test(p) &&
+      (/\bflat\s*mana\s*regeneration\b/i.test(p) || /\bpercentage\s*mana\s*regeneration\b/i.test(p)),
     "relative vitality iv": (p) =>
       /\brelative\s+vitality\b/.test(p) && /\biv\b/i.test(p),
     "vitality tradeoff iv": (p) =>
@@ -232,6 +234,24 @@
       /\bon\s*ability\b/.test(p) && /\bvitality\b/.test(p) && /\biv\b/i.test(p),
     "onshoot dexterity iv": (p) =>
       /\bon\s*shoot\b/.test(p) && /\bdexterity\b/.test(p) && /\biv\b/i.test(p),
+    "onhit attack iv": (p) =>
+      /\bon\s*hit\b/.test(p) && /\battack\b/.test(p) && /\biv\b/i.test(p),
+    "onability attack iv": (p) =>
+      /\bon\s*ability\b/.test(p) && /\battack\b/.test(p) && /\biv\b/i.test(p),
+    "onshoot attack iv": (p) =>
+      /\bon\s*shoot\b/.test(p) && /\battack\b/.test(p) && /\biv\b/i.test(p),
+    "onhit defense iv": (p) =>
+      /\bon\s*hit\b/.test(p) && /\bdefense\b/.test(p) && /\biv\b/i.test(p),
+    "onability defense iv": (p) =>
+      /\bon\s*ability\b/.test(p) && /\bdefense\b/.test(p) && /\biv\b/i.test(p),
+    "onshoot defense iv": (p) =>
+      /\bon\s*shoot\b/.test(p) && /\bdefense\b/.test(p) && /\biv\b/i.test(p),
+    "onhit speed iv": (p) =>
+      /\bon\s*hit\b/.test(p) && /\bspeed\b/.test(p) && /\biv\b/i.test(p),
+    "onability speed iv": (p) =>
+      /\bon\s*ability\b/.test(p) && /\bspeed\b/.test(p) && /\biv\b/i.test(p),
+    "onshoot speed iv": (p) =>
+      /\bon\s*shoot\b/.test(p) && /\bspeed\b/.test(p) && /\biv\b/i.test(p),
     "mp reduction iv": (p) =>
       /\bmp\s*reduction\b/.test(p) && /\biv\b/i.test(p),
     "vitality to dexterity iv": (p) =>
@@ -255,11 +275,76 @@
       /\bon\s*ability\b/.test(p) && /\bwisdom\b/.test(p) && /\biv\b/i.test(p),
     "wisdom to dexterity iv": (p) =>
       /\bwisdom\b/.test(p) && /\bdexterity\b/.test(p) && /\biv\b/i.test(p),
-    "percent mana regen iv": (p) => /percentage\s*mana\s*regeneration/i.test(p),
+    "percent mana regen iv": (p) =>
+      /\biv\b/i.test(p) && /\bpercentage\s*mana\s*regeneration\b/i.test(p),
+    "percent health regen iv": (p) =>
+      /\biv\b/i.test(p) && /\bpercentage\s*life\s*regeneration\b/i.test(p),
+    "onability magic iv": (p) =>
+      /\bon\s*ability\b/.test(p) && /\bmagic\b/.test(p) && /\biv\b/i.test(p),
     "avalon's intellect": (p) => /avalon/.test(p) && /intellect/i.test(p),
   };
 
+  /**
+   * Bare On-hit / On-ability / On-shoot fragments must not match RealmEye lines via substring (e.g. "onhit" ⊂ "onhit vitality boost i").
+   * @param {string} guideNorm result of norm() on a guide variant
+   */
+  function isProcOnlyGuideStub(guideNorm) {
+    const g = String(guideNorm || "").replace(/\s+/g, " ").trim();
+    if (!g) {
+      return false;
+    }
+    return /^(on\s*)?(hit|ability|shoot)$/.test(g) || /^on(hit|ability|shoot)$/.test(g);
+  }
+
+  /**
+   * Expands guide tokens such as "Onhit/Onability Dexterity IV" or "Onhit/Onability Attack/Dexterity IV"
+   * into full OR-variants (RealmEye matching uses each variant separately).
+   * Roman tier is optional to support shorthand like "Onhit/Onability Attack/Dexterity".
+   * @param {string} raw
+   * @returns {string[]}
+   */
+  function expandGuideEnchantAlternations(raw) {
+    const s = String(raw || "").trim();
+    if (!s) {
+      return [];
+    }
+    const onProc = "(?:on\\s*)?(?:hit|ability|shoot)";
+    const headRe = new RegExp(`^(${onProc}(?:\\s*/\\s*${onProc})*)\\s+(.+)$`, "i");
+    const m = s.match(headRe);
+    if (!m) {
+      return [s];
+    }
+    const procBlock = m[1];
+    const tail = m[2].trim();
+    let statBody = tail;
+    /** @type {string} */
+    let tier = "";
+    const romanM = tail.match(/^(.*?)\s+(I{1,3}V?|IV)\s*$/i);
+    if (romanM) {
+      statBody = romanM[1].trim();
+      tier = String(romanM[2] || "").toUpperCase();
+    }
+    const statLabels = statBody.split(/\s*\/\s*/).map((x) => x.trim()).filter(Boolean);
+    const procLabels = procBlock.split(/\s*\/\s*/).map((x) => x.trim()).filter(Boolean);
+    if (!statLabels.length || !procLabels.length) {
+      return [s];
+    }
+    const tierSuffix = tier ? ` ${tier}` : "";
+    /** @type {string[]} */
+    const expanded = [];
+    for (const proc of procLabels) {
+      for (const stat of statLabels) {
+        expanded.push(`${proc} ${stat}${tierSuffix}`);
+      }
+    }
+    const uniq = [...new Set(expanded)];
+    return uniq.length ? uniq : [s];
+  }
+
   function genericLooseMatch(guideNorm, prefixNorm) {
+    if (isProcOnlyGuideStub(guideNorm)) {
+      return false;
+    }
     if (prefixNorm.includes(guideNorm) || guideNorm.includes(prefixNorm)) {
       return true;
     }
@@ -283,17 +368,14 @@
     return prefixList.some((p) => genericLooseMatch(g, p));
   }
 
-  /** "Onhit/Onability Dexterity IV" → OR of two variants */
+  /** OR-expands On-hit/on-ability slash patterns, then matches each variant. */
   function guideTokenMatches(guideToken, prefixList) {
     const raw = String(guideToken).trim();
     if (!raw) {
       return false;
     }
-    const parts = raw.split(/\s*\/\s*/).map((x) => x.trim()).filter(Boolean);
-    if (parts.length > 1) {
-      return parts.some((p) => guideVariantMatches(p, prefixList));
-    }
-    return guideVariantMatches(raw, prefixList);
+    const variants = expandGuideEnchantAlternations(raw);
+    return variants.some((v) => guideVariantMatches(v, prefixList));
   }
 
   function filterCoreEquipment(equipment) {
