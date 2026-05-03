@@ -14,6 +14,12 @@
 
   const BACKPACK_SLUG = "backpack-extender";
 
+  /**
+   * Public equipment sprite base URL (S3-compatible B2). Keys in `data/wiki-slug-icon-paths.json` are
+   * relative to this. Keep in sync with `scripts/lib/icon-cdn-base.cjs`.
+   */
+  const EQUIP_ICON_CDN_BASE = "https://rotmg-icons.s3.us-east-005.backblazeb2.com/";
+
   /** Captured synchronously — used to resolve `item-icon-registry.json` next to this script on GitHub Pages. */
   const SET_CHECKER_SCRIPT_SRC =
     typeof document !== "undefined" && /** @type {HTMLScriptElement | null} */ (document.currentScript)
@@ -129,6 +135,10 @@
   /** @type {Promise<Record<string, { src: string; alt: string }>> | null} */
   let iconRegistryLoadPromise = null;
 
+  /** Wiki slug → object key under EQUIP_ICON_CDN_BASE (from `data/wiki-slug-icon-paths.json`). */
+  /** @type {Promise<Record<string, string>> | null} */
+  let wikiSlugIconPathsPromise = null;
+
   /** Cached `data/weapon-stats.json`. */
   /** @type {object | null} */
   let weaponStatsBundle = null;
@@ -177,7 +187,8 @@
   }
 
   /**
-   * Wiki slug → local icon `{ src, alt }` from `item-icon-registry.json` (beside this script).
+   * Wiki slug → `{ src, alt }` from `item-icon-registry.json` (beside this script).
+   * Equipped gear falls back to `data/wiki-slug-icon-paths.json` + EQUIP_ICON_CDN_BASE when missing here.
    * @returns {Promise<Record<string, { src: string; alt: string }>>}
    */
   function ensureIconRegistry() {
@@ -205,6 +216,27 @@
     return iconRegistryLoadPromise;
   }
 
+  /**
+   * RealmEye wiki slug → icon path (e.g. staves/tiered/t14.png) for equipped gear when registry misses.
+   * @returns {Promise<Record<string, string>>}
+   */
+  function ensureWikiSlugIconPaths() {
+    if (!wikiSlugIconPathsPromise) {
+      const url = SET_CHECKER_SCRIPT_SRC
+        ? new URL("../data/wiki-slug-icon-paths.json", SET_CHECKER_SCRIPT_SRC).href
+        : new URL("data/wiki-slug-icon-paths.json", window.location.href).href;
+      wikiSlugIconPathsPromise = fetch(url, { cache: "force-cache", mode: "cors" })
+        .then((r) => (r.ok ? r.json() : {}))
+        .then((json) =>
+          json && typeof json === "object" && !Array.isArray(json)
+            ? /** @type {Record<string, string>} */ (json)
+            : {}
+        )
+        .catch(() => ({}));
+    }
+    return wikiSlugIconPathsPromise;
+  }
+
   function iconPlaceholderHtml(/** @type {string} */ extraClasses) {
     const ec = extraClasses ? ` ${extraClasses}` : "";
     return `<span class="set-checker-icon-placeholder${ec}" aria-hidden="true">?</span>`;
@@ -227,15 +259,24 @@
 
   /**
    * @param {Record<string, { src: string; alt: string }>} registry
+   * @param {Record<string, string>} slugToRelPath from ensureWikiSlugIconPaths()
    * @param {string | null | undefined} wikiSlug
    * @param {string | null | undefined} fallbackTitle
    */
-  function equippedIconHtml(registry, wikiSlug, fallbackTitle) {
+  function equippedIconHtml(registry, slugToRelPath, wikiSlug, fallbackTitle) {
     const slug = wikiSlug ? String(wikiSlug) : "";
     const ent = slug && registry[slug];
     if (ent && ent.src) {
       const alt = ent.alt || fallbackTitle || slug;
       return `<img class="set-checker-row-icon set-checker-equipped-icon" src="${escapeHtml(ent.src)}" alt="${escapeHtml(
+        alt
+      )}" loading="lazy" decoding="async" width="22" height="22">`;
+    }
+    const rel = slug && slugToRelPath && slugToRelPath[slug];
+    if (rel) {
+      const src = EQUIP_ICON_CDN_BASE + String(rel).replace(/^\/+/, "");
+      const alt = fallbackTitle || slug;
+      return `<img class="set-checker-row-icon set-checker-equipped-icon" src="${escapeHtml(src)}" alt="${escapeHtml(
         alt
       )}" loading="lazy" decoding="async" width="22" height="22">`;
     }
@@ -464,7 +505,7 @@
   }
 
   /**
-   * BiS decorative icons from the guide `<img class="icon-inline">` entries (public B2 URLs under `rotmg-icons/`).
+   * BiS decorative icons from the guide `<img class="icon-inline">` entries (equipment CDN URLs).
    * @param {HTMLLIElement} li
    * @returns {{ src: string; alt: string }[]}
    */
@@ -679,6 +720,8 @@
   async function renderCompare(mount, character, results) {
     /** @type {Record<string, { src: string; alt: string }>} */
     const registry = await ensureIconRegistry();
+    /** @type {Record<string, string>} */
+    const slugPaths = await ensureWikiSlugIconPaths();
     const parts = [];
     parts.push(
       `<p class="set-checker-summary"><strong>${escapeHtml(
@@ -718,6 +761,7 @@
         parts.push(
           `<p class="set-checker-equipped-wrong"><span class="set-checker-mark" aria-hidden="true">✗</span> <strong>Equipped (RealmEye):</strong> ${equippedIconHtml(
             registry,
+            slugPaths,
             equipped.wiki_slug,
             equipped.title || equipped.wiki_slug
           )}<span class="set-checker-equipped-name">${escapeHtml(equipped.title || equipped.wiki_slug || "—")}</span></p>`
@@ -731,6 +775,7 @@
           parts.push(
             `<section class="${rowSectionClass}"><h3 class="${titleClass}"><span class="set-checker-row-title-start"><span class="set-checker-row-icons">${equippedIconHtml(
               registry,
+              slugPaths,
               equipped.wiki_slug,
               equipped.title || bisHeadingLabel
             )}</span><span class="set-checker-row-title-text">BiS: ${escapeHtml(equipped.title || bisHeadingLabel)}</span></span><span class="set-checker-row-dps-actions" role="group" aria-label="Weapon DPS shortcuts">${pauseHtml}</span></h3>`
@@ -739,6 +784,7 @@
           parts.push(
             `<section class="${rowSectionClass}"><h3 class="${titleClass}"><span class="set-checker-row-icons">${equippedIconHtml(
               registry,
+              slugPaths,
               equipped.wiki_slug,
               equipped.title || bisHeadingLabel
             )}</span><span class="set-checker-row-title-text">${escapeHtml(equipped.title || bisHeadingLabel)}</span></h3>`
