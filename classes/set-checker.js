@@ -189,6 +189,8 @@
   /**
    * Wiki slug → `{ src, alt }` from `item-icon-registry.json` (beside this script).
    * Equipped gear falls back to `data/wiki-slug-icon-paths.json` + EQUIP_ICON_CDN_BASE when missing here.
+   * Fetch uses `cache: "no-cache"` so the browser revalidates after deploys; `force-cache` can serve stale JSON on
+   * GitHub Pages and leave equipped rows as `?` placeholders until a hard refresh.
    * @returns {Promise<Record<string, { src: string; alt: string }>>}
    */
   function ensureIconRegistry() {
@@ -196,7 +198,7 @@
       const url = SET_CHECKER_SCRIPT_SRC
         ? new URL("item-icon-registry.json", SET_CHECKER_SCRIPT_SRC).href
         : new URL("item-icon-registry.json", window.location.href).href;
-      iconRegistryLoadPromise = fetch(url, { cache: "force-cache", mode: "cors" })
+      iconRegistryLoadPromise = fetch(url, { cache: "no-cache", mode: "cors" })
         .then((r) => (r.ok ? r.json() : {}))
         .then((json) => {
           const base =
@@ -218,6 +220,7 @@
 
   /**
    * RealmEye wiki slug → icon path (e.g. staves/tiered/t14.png) for equipped gear when registry misses.
+   * Same `no-cache` policy as `ensureIconRegistry()` — avoids stale slug map after deploy.
    * @returns {Promise<Record<string, string>>}
    */
   function ensureWikiSlugIconPaths() {
@@ -225,7 +228,7 @@
       const url = SET_CHECKER_SCRIPT_SRC
         ? new URL("../data/wiki-slug-icon-paths.json", SET_CHECKER_SCRIPT_SRC).href
         : new URL("data/wiki-slug-icon-paths.json", window.location.href).href;
-      wikiSlugIconPathsPromise = fetch(url, { cache: "force-cache", mode: "cors" })
+      wikiSlugIconPathsPromise = fetch(url, { cache: "no-cache", mode: "cors" })
         .then((r) => (r.ok ? r.json() : {}))
         .then((json) =>
           json && typeof json === "object" && !Array.isArray(json)
