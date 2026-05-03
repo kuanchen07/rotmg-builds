@@ -310,8 +310,9 @@
    * @param {Record<string, string>} slugToRelPath from ensureWikiSlugIconPaths()
    * @param {string | null | undefined} wikiSlug
    * @param {string | null | undefined} fallbackTitle
+   * @param {{ registryOnly?: boolean } | undefined} opts If `registryOnly`, skip wiki-slug path map and tiered-ring heuristic (ability slot).
    */
-  function equippedIconHtml(registry, slugToRelPath, wikiSlug, fallbackTitle) {
+  function equippedIconHtml(registry, slugToRelPath, wikiSlug, fallbackTitle, opts) {
     const slug = wikiSlug ? String(wikiSlug) : "";
     const ent = slug && registry[slug];
     if (ent && ent.src) {
@@ -320,21 +321,24 @@
         alt
       )}" loading="lazy" decoding="async" width="22" height="22">`;
     }
-    const rel = slug && slugToRelPath && slugToRelPath[slug];
-    if (rel) {
-      const src = EQUIP_ICON_CDN_BASE + String(rel).replace(/^\/+/, "");
-      const alt = fallbackTitle || slug;
-      return `<img class="set-checker-row-icon set-checker-equipped-icon" src="${escapeHtml(src)}" alt="${escapeHtml(
-        alt
-      )}" loading="lazy" decoding="async" width="22" height="22">`;
-    }
-    const tieredRingRel = tieredRingPathFromSlug(slug);
-    if (tieredRingRel) {
-      const src = EQUIP_ICON_CDN_BASE + tieredRingRel;
-      const alt = fallbackTitle || slug;
-      return `<img class="set-checker-row-icon set-checker-equipped-icon" src="${escapeHtml(src)}" alt="${escapeHtml(
-        alt
-      )}" loading="lazy" decoding="async" width="22" height="22">`;
+    const registryOnly = !!(opts && opts.registryOnly);
+    if (!registryOnly) {
+      const rel = slug && slugToRelPath && slugToRelPath[slug];
+      if (rel) {
+        const src = EQUIP_ICON_CDN_BASE + String(rel).replace(/^\/+/, "");
+        const alt = fallbackTitle || slug;
+        return `<img class="set-checker-row-icon set-checker-equipped-icon" src="${escapeHtml(src)}" alt="${escapeHtml(
+          alt
+        )}" loading="lazy" decoding="async" width="22" height="22">`;
+      }
+      const tieredRingRel = tieredRingPathFromSlug(slug);
+      if (tieredRingRel) {
+        const src = EQUIP_ICON_CDN_BASE + tieredRingRel;
+        const alt = fallbackTitle || slug;
+        return `<img class="set-checker-row-icon set-checker-equipped-icon" src="${escapeHtml(src)}" alt="${escapeHtml(
+          alt
+        )}" loading="lazy" decoding="async" width="22" height="22">`;
+      }
     }
     return iconPlaceholderHtml("set-checker-equipped-icon");
   }
@@ -792,6 +796,8 @@
       const bisHeadingLabel =
         (row.bisItemTitle && String(row.bisItemTitle).trim()) || row.slugs.join(" / ");
       const isWeaponRow = row.equipmentSlotIndex === EQUIPMENT_SLOT_TO_INDEX.weapon;
+      const isAbilitySlot = row.equipmentSlotIndex === EQUIPMENT_SLOT_TO_INDEX.ability;
+      const iconOpts = { registryOnly: isAbilitySlot };
       const rowSectionClass = itemMismatch
         ? "set-checker-row set-checker-row--mismatch"
         : "set-checker-row";
@@ -819,7 +825,8 @@
             registry,
             slugPaths,
             equipped.wiki_slug,
-            equipped.title || equipped.wiki_slug
+            equipped.title || equipped.wiki_slug,
+            iconOpts
           )}<span class="set-checker-equipped-name">${escapeHtml(equipped.title || equipped.wiki_slug || "—")}</span></p>`
         );
       } else {
@@ -833,7 +840,8 @@
               registry,
               slugPaths,
               equipped.wiki_slug,
-              equipped.title || bisHeadingLabel
+              equipped.title || bisHeadingLabel,
+              iconOpts
             )}</span><span class="set-checker-row-title-text">BiS: ${escapeHtml(equipped.title || bisHeadingLabel)}</span></span><span class="set-checker-row-dps-actions" role="group" aria-label="Weapon DPS shortcuts">${pauseHtml}</span></h3>`
           );
         } else {
@@ -842,7 +850,8 @@
               registry,
               slugPaths,
               equipped.wiki_slug,
-              equipped.title || bisHeadingLabel
+              equipped.title || bisHeadingLabel,
+              iconOpts
             )}</span><span class="set-checker-row-title-text">${escapeHtml(equipped.title || bisHeadingLabel)}</span></h3>`
           );
         }

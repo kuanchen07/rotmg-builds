@@ -262,7 +262,7 @@
     },
     "demon-lord-s-skull": {
       "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/skulls/untiered/demon-lord-s-skull.png",
-      "alt": "Demon Lord&apos;s Skull"
+      "alt": "Demon Lord's Skull"
     },
     "skullish-remains-of-esben": {
       "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/skulls/untiered/skullish-remains-of-esben.png",
@@ -342,7 +342,7 @@
     },
     "scholar-s-seal": {
       "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/seals/untiered/scholar-s-seal.png",
-      "alt": "Scholar&apos;s Seal"
+      "alt": "Scholar's Seal"
     },
     "sandstone-seal": {
       "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/seals/untiered/sandstone-seal.png",
@@ -350,7 +350,7 @@
     },
     "doom-s-emblem": {
       "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/seals/untiered/doom-s-emblem.png",
-      "alt": "Doom&apos;s Emblem"
+      "alt": "Doom's Emblem"
     },
     "ring-of-transcendent-dexterity": {
       "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/rings/tiered/t7-dex.png",
@@ -386,7 +386,7 @@
     },
     "cloak-of-nightmares": {
       "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/cloaks/tiered/t7-cloak.png",
-      "alt": "T7 cloak"
+      "alt": "Cloak of Nightmares"
     },
     "mantle-of-skuld": {
       "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/armors/set-tiered/leather-armors/mantle-of-skuld.png",
@@ -398,11 +398,11 @@
     },
     "cloak-of-the-planewalker": {
       "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/cloaks/untiered/cloak-of-the-planewalker.png",
-      "alt": "Planewalker cloak"
+      "alt": "Cloak of the Planewalker"
     },
     "ghastly-drape": {
       "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/cloaks/set-tiered/ghastly-drape.png",
-      "alt": "Drape cloak"
+      "alt": "Ghastly Drape"
     },
     "cloak-of-the-deep": {
       "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/cloaks/untiered/cloak-of-the-deep.png",
@@ -482,7 +482,7 @@
     },
     "burning-retribution-spell": {
       "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/spells/tiered/t7-spell.png",
-      "alt": "Burning Retribution"
+      "alt": "Burning Retribution Spell"
     },
     "tideturner-trident": {
       "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/staves/set-tiered/tideturner-trident.png",
@@ -987,6 +987,1898 @@
     "ring-of-unbound-wisdom": {
       "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/rings/tiered/t6-wis.png",
       "alt": "Ring of Unbound Wisdom"
+    },
+    "cloak-of-shadows": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/cloaks/tiered/t0-cloak.png",
+      "alt": "Cloak of Shadows"
+    },
+    "magic-quiver": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/quivers/tiered/t0-quiver.png",
+      "alt": "Magic Quiver"
+    },
+    "fire-spray-spell": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/spells/tiered/t0-spell.png",
+      "alt": "Fire Spray Spell"
+    },
+    "healing-tome": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/tomes/tiered/t0-tome.png",
+      "alt": "Healing Tome"
+    },
+    "combat-helm": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/helms/tiered/t0-helm.png",
+      "alt": "Combat Helm"
+    },
+    "wooden-shield": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/shields/tiered/t0-shield.png",
+      "alt": "Wooden Shield"
+    },
+    "seal-of-the-initiate": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/seals/tiered/t0-seal.png",
+      "alt": "Seal of the Initiate"
+    },
+    "centipede-poison": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/poisons/tiered/t0-poison.png",
+      "alt": "Centipede Poison"
+    },
+    "necrotic-skull": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/skulls/tiered/t0-skull.png",
+      "alt": "Necrotic Skull"
+    },
+    "hunting-trap": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/traps/tiered/t0-trap.png",
+      "alt": "Hunting Trap"
+    },
+    "stasis-orb": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/orbs/tiered/t0-orb.png",
+      "alt": "Stasis Orb"
+    },
+    "decoy-prism": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/prisms/tiered/t0-prism.png",
+      "alt": "Decoy Prism"
+    },
+    "lightning-scepter": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/scepters/tiered/t0-scepter.png",
+      "alt": "Lightning Scepter"
+    },
+    "basic-star": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/stars/tiered/t0-star.png",
+      "alt": "Basic Star"
+    },
+    "simple-wakizashi": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/wakizashi/tiered/t0-wakizashi.png",
+      "alt": "Simple Wakizashi"
+    },
+    "novice-s-lute": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/lutes/tiered/t0-lute.png",
+      "alt": "Novice's Lute"
+    },
+    "summoning-mace": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/maces/tiered/t0-mace.png",
+      "alt": "Summoning Mace"
+    },
+    "slashing-sheath": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/sheaths/tiered/t0-sheath.png",
+      "alt": "Slashing Sheath"
+    },
+    "sigil-of-the-chicken": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/sigils/tiered/t0-sigil.png",
+      "alt": "Sigil of the Chicken"
+    },
+    "cloak-of-darkness": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/cloaks/tiered/t1-cloak.png",
+      "alt": "Cloak of Darkness"
+    },
+    "reinforced-quiver": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/quivers/tiered/t1-quiver.png",
+      "alt": "Reinforced Quiver"
+    },
+    "flame-burst-spell": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/spells/tiered/t1-spell.png",
+      "alt": "Flame Burst Spell"
+    },
+    "remedy-tome": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/tomes/tiered/t1-tome.png",
+      "alt": "Remedy Tome"
+    },
+    "bronze-helm": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/helms/tiered/t1-helm.png",
+      "alt": "Bronze Helm"
+    },
+    "iron-shield": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/shields/tiered/t1-shield.png",
+      "alt": "Iron Shield"
+    },
+    "seal-of-the-pilgrim": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/seals/tiered/t1-seal.png",
+      "alt": "Seal of the Pilgrim"
+    },
+    "spider-venom": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/poisons/tiered/t1-poison.png",
+      "alt": "Spider Venom"
+    },
+    "breathtaker-skull": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/skulls/tiered/t1-skull.png",
+      "alt": "Breathtaker Skull"
+    },
+    "wilderlands-trap": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/traps/tiered/t1-trap.png",
+      "alt": "Wilderlands Trap"
+    },
+    "suspension-orb": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/orbs/tiered/t1-orb.png",
+      "alt": "Suspension Orb"
+    },
+    "deception-prism": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/prisms/tiered/t1-prism.png",
+      "alt": "Deception Prism"
+    },
+    "discharge-scepter": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/scepters/tiered/t1-scepter.png",
+      "alt": "Discharge Scepter"
+    },
+    "four-point-star": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/stars/tiered/t1-star.png",
+      "alt": "Four Point Star"
+    },
+    "steel-wakizashi": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/wakizashi/tiered/t1-wakizashi.png",
+      "alt": "Steel Wakizashi"
+    },
+    "oakwood-lute": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/lutes/tiered/t1-lute.png",
+      "alt": "Oakwood Lute"
+    },
+    "ritual-mace": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/maces/tiered/t1-mace.png",
+      "alt": "Ritual Mace"
+    },
+    "timber-sheath": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/sheaths/tiered/t1-sheath.png",
+      "alt": "Timber Sheath"
+    },
+    "sigil-of-the-bunny": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/sigils/tiered/t1-sigil.png",
+      "alt": "Sigil of the Bunny"
+    },
+    "cloak-of-speed": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/cloaks/tiered/t2-cloak.png",
+      "alt": "Cloak of Speed"
+    },
+    "iron-quiver": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/quivers/tiered/t2-quiver.png",
+      "alt": "Iron Quiver"
+    },
+    "fire-nova-spell": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/spells/tiered/t2-spell.png",
+      "alt": "Fire Nova Spell"
+    },
+    "spirit-salve-tome": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/tomes/tiered/t2-tome.png",
+      "alt": "Spirit Salve Tome"
+    },
+    "black-iron-helm": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/helms/tiered/t2-helm.png",
+      "alt": "Black Iron Helm"
+    },
+    "steel-shield": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/shields/tiered/t2-shield.png",
+      "alt": "Steel Shield"
+    },
+    "seal-of-the-seeker": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/seals/tiered/t2-seal.png",
+      "alt": "Seal of the Seeker"
+    },
+    "pit-viper-poison": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/poisons/tiered/t2-poison.png",
+      "alt": "Pit Viper Poison"
+    },
+    "heartstealer-skull": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/skulls/tiered/t2-skull.png",
+      "alt": "Heartstealer Skull"
+    },
+    "deepforest-trap": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/traps/tiered/t2-trap.png",
+      "alt": "Deepforest Trap"
+    },
+    "imprisonment-orb": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/orbs/tiered/t2-orb.png",
+      "alt": "Imprisonment Orb"
+    },
+    "illusion-prism": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/prisms/tiered/t2-prism.png",
+      "alt": "Illusion Prism"
+    },
+    "thunderclap-scepter": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/scepters/tiered/t2-scepter.png",
+      "alt": "Thunderclap Scepter"
+    },
+    "spiral-shuriken": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/stars/tiered/t2-star.png",
+      "alt": "Spiral Shuriken"
+    },
+    "crimson-wakizashi": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/wakizashi/tiered/t2-wakizashi.png",
+      "alt": "Crimson Wakizashi"
+    },
+    "iron-lute": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/lutes/tiered/t2-lute.png",
+      "alt": "Iron Lute"
+    },
+    "disciple-mace": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/maces/tiered/t2-mace.png",
+      "alt": "Disciple Mace"
+    },
+    "vineland-sheath": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/sheaths/tiered/t2-sheath.png",
+      "alt": "Vineland Sheath"
+    },
+    "sigil-of-the-skunk": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/sigils/tiered/t2-sigil.png",
+      "alt": "Sigil of the Skunk"
+    },
+    "cloak-of-the-night-thief": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/cloaks/tiered/t3-cloak.png",
+      "alt": "Cloak of the Night Thief"
+    },
+    "elvencraft-quiver": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/quivers/tiered/t3-quiver.png",
+      "alt": "Elvencraft Quiver"
+    },
+    "scorching-blast-spell": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/spells/tiered/t3-spell.png",
+      "alt": "Scorching Blast Spell"
+    },
+    "tome-of-rejuvenation": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/tomes/tiered/t3-tome.png",
+      "alt": "Tome of Rejuvenation"
+    },
+    "red-iron-helm": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/helms/tiered/t3-helm.png",
+      "alt": "Red Iron Helm"
+    },
+    "reinforced-shield": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/shields/tiered/t3-shield.png",
+      "alt": "Reinforced Shield"
+    },
+    "seal-of-the-aspirant": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/seals/tiered/t3-seal.png",
+      "alt": "Seal of the Aspirant"
+    },
+    "stingray-poison": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/poisons/tiered/t3-poison.png",
+      "alt": "Stingray Poison"
+    },
+    "soul-siphon-skull": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/skulls/tiered/t3-skull.png",
+      "alt": "Soul Siphon Skull"
+    },
+    "savage-trap": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/traps/tiered/t3-trap.png",
+      "alt": "Savage Trap"
+    },
+    "neutralization-orb": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/orbs/tiered/t3-orb.png",
+      "alt": "Neutralization Orb"
+    },
+    "hallucination-prism": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/prisms/tiered/t3-prism.png",
+      "alt": "Hallucination Prism"
+    },
+    "arcblast-scepter": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/scepters/tiered/t3-scepter.png",
+      "alt": "Arcblast Scepter"
+    },
+    "silver-star": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/stars/tiered/t3-star.png",
+      "alt": "Silver Star"
+    },
+    "enforced-wakizashi": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/wakizashi/tiered/t3-wakizashi.png",
+      "alt": "Enforced Wakizashi"
+    },
+    "silver-lute": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/lutes/tiered/t3-lute.png",
+      "alt": "Silver Lute"
+    },
+    "specialist-mace": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/maces/tiered/t3-mace.png",
+      "alt": "Specialist Mace"
+    },
+    "haze-sheath": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/sheaths/tiered/t3-sheath.png",
+      "alt": "Haze Sheath"
+    },
+    "sigil-of-the-fox": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/sigils/tiered/t3-sigil.png",
+      "alt": "Sigil of the Fox"
+    },
+    "cloak-of-the-red-agent": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/cloaks/tiered/t4-cloak.png",
+      "alt": "Cloak of the Red Agent"
+    },
+    "magesteel-quiver": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/quivers/tiered/t4-quiver.png",
+      "alt": "Magesteel Quiver"
+    },
+    "destruction-sphere-spell": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/spells/tiered/t4-spell.png",
+      "alt": "Destruction Sphere Spell"
+    },
+    "tome-of-renewing": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/tomes/tiered/t4-tome.png",
+      "alt": "Tome of Renewing"
+    },
+    "steel-helm": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/helms/tiered/t4-helm.png",
+      "alt": "Steel Helm"
+    },
+    "golden-shield": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/shields/tiered/t4-shield.png",
+      "alt": "Golden Shield"
+    },
+    "seal-of-the-divine": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/seals/tiered/t4-seal.png",
+      "alt": "Seal of the Divine"
+    },
+    "felwasp-toxin": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/poisons/tiered/t4-poison.png",
+      "alt": "Felwasp Toxin"
+    },
+    "essence-tap-skull": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/skulls/tiered/t4-skull.png",
+      "alt": "Essence Tap Skull"
+    },
+    "demonhunter-trap": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/traps/tiered/t4-trap.png",
+      "alt": "Demonhunter Trap"
+    },
+    "timelock-orb": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/orbs/tiered/t4-orb.png",
+      "alt": "Timelock Orb"
+    },
+    "prism-of-figments": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/prisms/tiered/t4-prism.png",
+      "alt": "Prism of Figments"
+    },
+    "cloudflash-scepter": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/scepters/tiered/t4-scepter.png",
+      "alt": "Cloudflash Scepter"
+    },
+    "wind-circle": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/stars/tiered/t4-star.png",
+      "alt": "Wind Circle"
+    },
+    "turquoise-wakizashi": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/wakizashi/tiered/t4-wakizashi.png",
+      "alt": "Turquoise Wakizashi"
+    },
+    "battle-lute": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/lutes/tiered/t4-lute.png",
+      "alt": "Battle Lute"
+    },
+    "adept-mace": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/maces/tiered/t4-mace.png",
+      "alt": "Adept Mace"
+    },
+    "ichor-sheath": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/sheaths/tiered/t4-sheath.png",
+      "alt": "Ichor Sheath"
+    },
+    "sigil-of-the-wolf": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/sigils/tiered/t4-sigil.png",
+      "alt": "Sigil of the Wolf"
+    },
+    "cloak-of-endless-twilight": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/cloaks/tiered/t5-cloak.png",
+      "alt": "Cloak of Endless Twilight"
+    },
+    "golden-quiver": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/quivers/tiered/t5-quiver.png",
+      "alt": "Golden Quiver"
+    },
+    "magic-nova-spell": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/spells/tiered/t5-spell.png",
+      "alt": "Magic Nova Spell"
+    },
+    "tome-of-divine-favor": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/tomes/tiered/t5-tome.png",
+      "alt": "Tome of Divine Favor"
+    },
+    "golden-helm": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/helms/tiered/t5-helm.png",
+      "alt": "Golden Helm"
+    },
+    "mithril-shield": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/shields/tiered/t5-shield.png",
+      "alt": "Mithril Shield"
+    },
+    "seal-of-the-holy-warrior": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/seals/tiered/t5-seal.png",
+      "alt": "Seal of the Holy Warrior"
+    },
+    "nightwing-venom": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/poisons/tiered/t5-poison.png",
+      "alt": "Nightwing Venom"
+    },
+    "lifedrinker-skull": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/skulls/tiered/t5-skull.png",
+      "alt": "Lifedrinker Skull"
+    },
+    "dragonstalker-trap": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/traps/tiered/t5-trap.png",
+      "alt": "Dragonstalker Trap"
+    },
+    "banishment-orb": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/orbs/tiered/t5-orb.png",
+      "alt": "Banishment Orb"
+    },
+    "prism-of-phantoms": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/prisms/tiered/t5-prism.png",
+      "alt": "Prism of Phantoms"
+    },
+    "scepter-of-skybolts": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/scepters/tiered/t5-scepter.png",
+      "alt": "Scepter of Skybolts"
+    },
+    "ice-star": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/stars/tiered/t5-star.png",
+      "alt": "Ice Star"
+    },
+    "jade-imbued-wakizashi": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/wakizashi/tiered/t5-wakizashi.png",
+      "alt": "Jade-Imbued Wakizashi"
+    },
+    "regal-lute": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/lutes/tiered/t5-lute.png",
+      "alt": "Regal Lute"
+    },
+    "monarch-mace": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/maces/tiered/t5-mace.png",
+      "alt": "Monarch Mace"
+    },
+    "serpentine-sheath": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/sheaths/tiered/t5-sheath.png",
+      "alt": "Serpentine Sheath"
+    },
+    "sigil-of-the-boar": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/sigils/tiered/t5-sigil.png",
+      "alt": "Sigil of the Boar"
+    },
+    "cloak-of-ghostly-concealment": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/cloaks/tiered/t6-cloak.png",
+      "alt": "Cloak of Ghostly Concealment"
+    },
+    "quiver-of-elvish-mastery": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/quivers/tiered/t6-quiver.png",
+      "alt": "Quiver of Elvish Mastery"
+    },
+    "elemental-detonation-spell": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/spells/tiered/t6-spell.png",
+      "alt": "Elemental Detonation Spell"
+    },
+    "tome-of-holy-guidance": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/tomes/tiered/t6-tome.png",
+      "alt": "Tome of Holy Guidance"
+    },
+    "helm-of-the-great-general": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/helms/tiered/t6-helm.png",
+      "alt": "Helm of the Great General"
+    },
+    "colossus-shield": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/shields/tiered/t6-shield.png",
+      "alt": "Colossus Shield"
+    },
+    "seal-of-the-blessed-champion": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/seals/tiered/t6-seal.png",
+      "alt": "Seal of the Blessed Champion"
+    },
+    "baneserpent-poison": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/poisons/tiered/t6-poison.png",
+      "alt": "Baneserpent Poison"
+    },
+    "bloodsucker-skull": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/skulls/tiered/t6-skull.png",
+      "alt": "Bloodsucker Skull"
+    },
+    "giantcatcher-trap": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/traps/tiered/t6-trap.png",
+      "alt": "Giantcatcher Trap"
+    },
+    "planefetter-orb": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/orbs/tiered/t6-orb.png",
+      "alt": "Planefetter Orb"
+    },
+    "prism-of-apparitions": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/prisms/tiered/t6-prism.png",
+      "alt": "Prism of Apparitions"
+    },
+    "scepter-of-storms": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/scepters/tiered/t6-scepter.png",
+      "alt": "Scepter of Storms"
+    },
+    "doom-circle": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/stars/tiered/t6-star.png",
+      "alt": "Doom Circle"
+    },
+    "royal-wakizashi": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/wakizashi/tiered/t6-wakizashi.png",
+      "alt": "Royal Wakizashi"
+    },
+    "skyward-lute": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/lutes/tiered/t6-lute.png",
+      "alt": "Skyward Lute"
+    },
+    "sovereign-mace": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/maces/tiered/t6-mace.png",
+      "alt": "Sovereign Mace"
+    },
+    "great-shinobi-sheath": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/sheaths/tiered/t6-sheath.png",
+      "alt": "Great Shinobi Sheath"
+    },
+    "sigil-of-the-horse": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/sigils/tiered/t6-sigil.png",
+      "alt": "Sigil of the Horse"
+    },
+    "quiver-of-the-autumn-king": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/quivers/tiered/t7-quiver.png",
+      "alt": "Quiver of the Autumn King"
+    },
+    "shield-of-orcish-regalia": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/shields/tiered/t7-shield.png",
+      "alt": "Shield of Orcish Regalia"
+    },
+    "necrofish-poison": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/poisons/tiered/t7-poison.png",
+      "alt": "Necrofish Poison"
+    },
+    "mindwaster-skull": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/skulls/tiered/t7-skull.png",
+      "alt": "Mindwaster Skull"
+    },
+    "depthchaser-trap": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/traps/tiered/t7-trap.png",
+      "alt": "Depthchaser Trap"
+    },
+    "dimensiongate-orb": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/orbs/tiered/t7-orb.png",
+      "alt": "Dimensiongate Orb"
+    },
+    "prism-of-reveries": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/prisms/tiered/t7-prism.png",
+      "alt": "Prism of Reveries"
+    },
+    "scepter-of-the-firmament": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/scepters/tiered/t7-scepter.png",
+      "alt": "Scepter of the Firmament"
+    },
+    "dynastic-star": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/stars/tiered/t7-star.png",
+      "alt": "Dynastic Star"
+    },
+    "nebular-lute": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/lutes/tiered/t7-lute.png",
+      "alt": "Nebular Lute"
+    },
+    "grandmaster-mace": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/maces/tiered/t7-mace.png",
+      "alt": "Grandmaster Mace"
+    },
+    "sigil-of-the-rhino": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/sigils/tiered/t7-sigil.png",
+      "alt": "Sigil of the Rhino"
+    },
+    "mirror-cloak": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/cloaks/untiered/mirror-cloak.png",
+      "alt": "Mirror cloak"
+    },
+    "cloak-of-refraction": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/cloaks/untiered/cloak-of-refraction.png",
+      "alt": "Cloak of Refraction"
+    },
+    "cloak-of-bloody-surprises": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/cloaks/untiered/cloak-of-bloody-surprises.png",
+      "alt": "Cloak of Bloody Surprises"
+    },
+    "cocoon-quiver": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/quivers/untiered/cocoon-quiver.png",
+      "alt": "Cocoon Quiver"
+    },
+    "archerang": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/quivers/untiered/archerang.png",
+      "alt": "Archerang"
+    },
+    "double-vision-darts": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/quivers/untiered/double-vision-darts.png",
+      "alt": "Double Vision Darts"
+    },
+    "mad-javelin": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/quivers/untiered/mad-javelin.png",
+      "alt": "Mad Javelin"
+    },
+    "huntsman-s-volley": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/quivers/untiered/huntsman-s-volley.png",
+      "alt": "Huntsman's Volley"
+    },
+    "q-u-i-v-e-r": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/quivers/untiered/q-u-i-v-e-r.png",
+      "alt": "Q.I.U.V.E.R."
+    },
+    "sinister-syringes": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/quivers/untiered/sinister-syringes.png",
+      "alt": "Sinister Syringes"
+    },
+    "spelling-spell": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/spells/untiered/spelling-spell.png",
+      "alt": "Spelling Spell"
+    },
+    "penetrating-blast-spell": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/spells/untiered/penetrating-blast-spell.png",
+      "alt": "Penetrating Blast Spell"
+    },
+    "cursed-spire-spell": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/spells/untiered/cursed-spire-spell.png",
+      "alt": "Cursed Spire Spell"
+    },
+    "jade-storm": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/spells/untiered/jade-storm.png",
+      "alt": "Jade Storm"
+    },
+    "sporous-spray-spell": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/spells/untiered/sporous-spray-spell.png",
+      "alt": "Sporous Spray Spell"
+    },
+    "runes-of-knowledge": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/spells/untiered/runes-of-knowledge.png",
+      "alt": "Runes of Knowledge"
+    },
+    "esben-s-vows": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/spells/untiered/esben-s-vows.png",
+      "alt": "Esben's Vows"
+    },
+    "tablet-of-the-king-s-avatar": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/spells/untiered/tablet-of-the-king-s-avatar.png",
+      "alt": "Tablet of the King's Avatar"
+    },
+    "genesis-spell": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/spells/untiered/genesis-spell.png",
+      "alt": "Genesis Spell"
+    },
+    "tome-of-moral-support": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/tomes/untiered/tome-of-moral-support.png",
+      "alt": "Tome of Moral Support"
+    },
+    "necronomicon": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/tomes/untiered/necronomicon.png",
+      "alt": "Necronomicon"
+    },
+    "tome-of-the-tarnished-gods": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/tomes/untiered/tome-of-the-tarnished-gods.png",
+      "alt": "Tome of the Tarnished Gods"
+    },
+    "tome-of-pain": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/tomes/untiered/tome-of-pain.png",
+      "alt": "Tome of Pain"
+    },
+    "tome-of-the-mushroom-tribes": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/tomes/untiered/tome-of-the-mushroom-tribes.png",
+      "alt": "Tome of the Mushroom Tribes"
+    },
+    "tome-of-holy-protection": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/tomes/untiered/tome-of-holy-protection.png",
+      "alt": "Tome of Holy Protection"
+    },
+    "evolutionary-records": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/tomes/untiered/evolutionary-records.png",
+      "alt": "Evolutionary Records"
+    },
+    "chaotic-scripture": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/tomes/untiered/chaotic-scripture.png",
+      "alt": "Chaotic Scripture"
+    },
+    "challenger-helm": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/helms/untiered/challenger-helm.png",
+      "alt": "Challenger Helm"
+    },
+    "amber-encrusted-helmet": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/helms/untiered/amber-encrusted-helmet.png",
+      "alt": "Amber Encrusted Helmet"
+    },
+    "bubblegum-bucket": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/helms/untiered/bubblegum-bucket.png",
+      "alt": "Bubblegum Bucket"
+    },
+    "tipsy-topper": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/helms/untiered/tipsy-topper.png",
+      "alt": "Tipsy Topper"
+    },
+    "adamantine-helm": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/helms/untiered/adamantine-helm.png",
+      "alt": "Adamantine Helm"
+    },
+    "helm-of-exalted-might": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/helms/untiered/helm-of-exalted-might.png",
+      "alt": "Helm of Exalted Might"
+    },
+    "hivemaster-helm": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/helms/untiered/hivemaster-helm.png",
+      "alt": "Hivemaster Helm"
+    },
+    "helm-of-the-juggernaut": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/helms/untiered/helm-of-the-juggernaut.png",
+      "alt": "Helm of the Juggernaut"
+    },
+    "snakeskin-shield": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/shields/untiered/snakeskin-shield.png",
+      "alt": "Snakeskin Shield"
+    },
+    "shield-of-pogmur": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/shields/untiered/shield-of-pogmur.png",
+      "alt": "Shield of Pogmur"
+    },
+    "spiteful-scutum": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/shields/untiered/spiteful-scutum.png",
+      "alt": "Spiteful Scutum"
+    },
+    "shield-of-flowing-clarity": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/shields/untiered/shield-of-flowing-clarity.png",
+      "alt": "Shield of Flowing Clarity"
+    },
+    "cavalry-lance": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/shields/untiered/cavalry-lance.png",
+      "alt": "Cavalry Lance"
+    },
+    "oryx-s-escutcheon": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/shields/untiered/oryx-s-escutcheon.png",
+      "alt": "Oryx's Escutcheon"
+    },
+    "seal-of-eternal-life": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/seals/untiered/seal-of-eternal-life.png",
+      "alt": "Seal of Eternal Life"
+    },
+    "seal-of-the-battle-god": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/seals/untiered/seal-of-the-battle-god.png",
+      "alt": "Seal of the Battle God"
+    },
+    "seal-of-cubic-conundra": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/seals/untiered/seal-of-cubic-conundra.png",
+      "alt": "Seal of Cubic Conundra"
+    },
+    "seal-of-blasphemous-prayer": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/seals/untiered/seal-of-blasphemous-prayer.png",
+      "alt": "Seal of Blasphemous Prayer"
+    },
+    "marble-seal": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/seals/untiered/marble-seal.png",
+      "alt": "Marble Seal"
+    },
+    "lightning-in-a-bottle": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/poisons/untiered/lightning-in-a-bottle.png",
+      "alt": "Lightning in a Bottle"
+    },
+    "mighty-stein": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/poisons/untiered/mighty-stein.png",
+      "alt": "Mighty Stein"
+    },
+    "tyrant-s-toxin": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/poisons/untiered/tyrant-s-toxin.png",
+      "alt": "Tyrant's Toxin"
+    },
+    "murky-toxin": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/poisons/untiered/murky-toxin.png",
+      "alt": "Murky Toxin"
+    },
+    "bottled-medusozoan": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/poisons/untiered/bottled-medusozoan.png",
+      "alt": "Bottled Medusozoan"
+    },
+    "plague-poison": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/poisons/untiered/plague-poison.png",
+      "alt": "Plague Poison"
+    },
+    "rusted-barrel": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/poisons/untiered/rusted-barrel.png",
+      "alt": "Rusted Barrel"
+    },
+    "pollen-incendiary": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/poisons/untiered/pollen-incendiary.png",
+      "alt": "Pollen Incendiary"
+    },
+    "crystallised-fang-s-venom": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/poisons/untiered/crystallised-fang-s-venom.png",
+      "alt": "Crystallised Fang's Venom"
+    },
+    "polarity-poison": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/poisons/untiered/polarity-poison.png",
+      "alt": "Polarity Poison"
+    },
+    "pandemic-poison": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/poisons/untiered/pandemic-poison.png",
+      "alt": "Pandemic Poison"
+    },
+    "cracked-crystal-skull": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/skulls/untiered/cracked-crystal-skull.png",
+      "alt": "Cracked Crystal Skull"
+    },
+    "epiphany-skull": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/skulls/untiered/epiphany-skull.png",
+      "alt": "Epiphany Skull"
+    },
+    "maw-of-malignance": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/skulls/untiered/maw-of-malignance.png",
+      "alt": "Maw of Malignance"
+    },
+    "perennial-cranium": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/skulls/untiered/perennial-cranium.png",
+      "alt": "Perennial Cranium"
+    },
+    "brain-cube": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/skulls/untiered/brain-cube.png",
+      "alt": "Brain Cube"
+    },
+    "helium-trap": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/traps/untiered/helium-trap.png",
+      "alt": "Helium Trap"
+    },
+    "mouse-trap": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/traps/untiered/mouse-trap.png",
+      "alt": "Mouse Trap"
+    },
+    "sulfuric-stone": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/traps/untiered/sulfuric-stone.png",
+      "alt": "Sulfuric Stone"
+    },
+    "deadly-keg": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/traps/untiered/deadly-keg.png",
+      "alt": "Deadly Keg"
+    },
+    "blacklight-artifice": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/traps/untiered/blacklight-artifice.png",
+      "alt": "Blacklight Artifice"
+    },
+    "coral-venom-trap": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/traps/untiered/coral-venom-trap.png",
+      "alt": "Coral Venom Trap"
+    },
+    "cave-dweller-trap": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/traps/untiered/cave-dweller-trap.png",
+      "alt": "Cave Dweller Trap"
+    },
+    "rain-maker": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/traps/untiered/rain-maker.png",
+      "alt": "Rain Maker"
+    },
+    "ocular-entrapment": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/traps/untiered/ocular-entrapment.png",
+      "alt": "Ocular Entrapment"
+    },
+    "mimicry-trap": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/traps/untiered/mimicry-trap.png",
+      "alt": "Mimicry Trap"
+    },
+    "trap-of-the-vile-spirit": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/traps/untiered/trap-of-the-vile-spirit.png",
+      "alt": "Trap of the Vile Spirit"
+    },
+    "orb-of-sweet-demise": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/orbs/untiered/orb-of-sweet-demise.png",
+      "alt": "Orb of Sweet Demise"
+    },
+    "karma-orb": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/orbs/untiered/karma-orb.png",
+      "alt": "Karma Orb"
+    },
+    "enchantment-orb": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/orbs/untiered/enchantment-orb.png",
+      "alt": "Enchantment Orb"
+    },
+    "orb-of-aether": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/orbs/untiered/orb-of-aether.png",
+      "alt": "Orb of Aether"
+    },
+    "orb-of-conquest": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/orbs/untiered/orb-of-conquest.png",
+      "alt": "Orb of Conquest"
+    },
+    "vision-of-draconis": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/orbs/untiered/vision-of-draconis.png",
+      "alt": "Vision of Draconis"
+    },
+    "forbidden-artifact": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/orbs/untiered/forbidden-artifact.png",
+      "alt": "Forbidden Artifact"
+    },
+    "orb-of-conflict": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/orbs/untiered/orb-of-conflict.png",
+      "alt": "Orb of Conflict"
+    },
+    "fool-s-prism": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/prisms/untiered/fool-s-prism.png",
+      "alt": "Fool's Prism"
+    },
+    "prism-of-dancing-swords": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/prisms/untiered/prism-of-dancing-swords.png",
+      "alt": "Prism of Dancing Swords"
+    },
+    "prism-of-shattered-light": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/prisms/untiered/prism-of-shattered-light.png",
+      "alt": "Prism of Shattered Light"
+    },
+    "prism-of-dire-instability": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/prisms/untiered/prism-of-dire-instability.png",
+      "alt": "Prism of Dire Instability"
+    },
+    "ase-s-echo": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/prisms/untiered/ase-s-echo.png",
+      "alt": "Ase's Echo"
+    },
+    "echoes-prism": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/prisms/untiered/echoes-prism.png",
+      "alt": "Echoes Prism"
+    },
+    "corsair-s-crown-jewel": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/prisms/untiered/corsair-s-crown-jewel.png",
+      "alt": "Corsair's Crown Jewel"
+    },
+    "ghostly-prism": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/prisms/untiered/ghostly-prism.png",
+      "alt": "Ghostly Prism"
+    },
+    "prismimic": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/prisms/untiered/prismimic.png",
+      "alt": "Prismimic"
+    },
+    "gambler-s-fate": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/prisms/untiered/gambler-s-fate.png",
+      "alt": "Gambler's Fate"
+    },
+    "honey-scepter": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/scepters/untiered/honey-scepter.png",
+      "alt": "Honey Scepter"
+    },
+    "honey-scepter-supreme": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/scepters/untiered/honey-scepter-supreme.png",
+      "alt": "Honey Scepter Supreme"
+    },
+    "siege-scepter": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/scepters/untiered/siege-scepter.png",
+      "alt": "Siege Scepter"
+    },
+    "scepter-of-rust": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/scepters/untiered/scepter-of-rust.png",
+      "alt": "Scepter of Rust"
+    },
+    "scepter-of-fulmination": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/scepters/untiered/scepter-of-fulmination.png",
+      "alt": "Scepter of Fulmination"
+    },
+    "storm-caller": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/scepters/untiered/storm-caller.png",
+      "alt": "Storm Caller"
+    },
+    "cnidaria-rod": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/scepters/untiered/cnidaria-rod.png",
+      "alt": "Cnidaria Rod"
+    },
+    "scepter-of-devastation": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/scepters/untiered/scepter-of-devastation.png",
+      "alt": "Scepter of Devastation"
+    },
+    "tezutsu-hanabi": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/scepters/untiered/tezutsu-hanabi.png",
+      "alt": "Tezutsu Hanabi"
+    },
+    "unshuriken": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/stars/untiered/unshuriken.png",
+      "alt": "Unshuriken"
+    },
+    "igneous-starblossom": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/stars/untiered/igneous-starblossom.png",
+      "alt": "Igneous Starblossom"
+    },
+    "hanagasaku": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/stars/untiered/hanagasaku.png",
+      "alt": "Hanagasaku"
+    },
+    "combcutter-kunai": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/stars/untiered/combcutter-kunai.png",
+      "alt": "Combcutter Kunai"
+    },
+    "storied-blades": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/stars/untiered/storied-blades.png",
+      "alt": "Storied Blades"
+    },
+    "overwhelming-axehead": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/stars/untiered/overwhelming-axehead.png",
+      "alt": "Overwhelming Axehead"
+    },
+    "kageboshi": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/stars/untiered/kageboshi.png",
+      "alt": "Kageboshi"
+    },
+    "nsfwakizashi": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/wakizashi/untiered/nsfwakizashi.png",
+      "alt": "NSFWakizashi"
+    },
+    "ronin-s-wakizashi": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/wakizashi/untiered/ronin-s-wakizashi.png",
+      "alt": "Ronin's Wakizashi"
+    },
+    "shadow-serpent-sidearm": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/wakizashi/untiered/shadow-serpent-sidearm.png",
+      "alt": "Shadow Serpent Sidearm"
+    },
+    "amaterasu": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/wakizashi/untiered/amaterasu.png",
+      "alt": "Amaterasu"
+    },
+    "fractured-gemstone-wakizashi": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/wakizashi/untiered/fractured-gemstone-wakizashi.png",
+      "alt": "Fractured Gemstone Wakizashi"
+    },
+    "sentinel-s-sidearm": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/wakizashi/untiered/sentinel-s-sidearm.png",
+      "alt": "Sentinel's Sidearm"
+    },
+    "lullaby": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/lutes/untiered/lullaby.png",
+      "alt": "Lullaby"
+    },
+    "piper-s-pan-flute": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/lutes/untiered/piper-s-pan-flute.png",
+      "alt": "Piper's Pan Flute"
+    },
+    "snake-charmer-pungi": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/lutes/untiered/snake-charmer-pungi.png",
+      "alt": "Snake Charmer Pungi"
+    },
+    "chief-s-war-horn": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/lutes/untiered/chief-s-war-horn.png",
+      "alt": "Chief's War Horn"
+    },
+    "wavecrest-concertina": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/lutes/untiered/wavecrest-concertina.png",
+      "alt": "Wavecrest Concertina"
+    },
+    "pharaoh-s-requiem": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/lutes/untiered/pharaoh-s-requiem.png",
+      "alt": "Pharaoh's Requiem"
+    },
+    "taiko-drums": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/lutes/untiered/taiko-drums.png",
+      "alt": "Taiko Drums"
+    },
+    "motivational-megaphone": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/lutes/untiered/motivational-megaphone.png",
+      "alt": "Motivational Megaphone"
+    },
+    "noble-mandolin": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/lutes/untiered/noble-mandolin.png",
+      "alt": "Noble Mandolin"
+    },
+    "recursion-mace": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/maces/untiered/recursion-mace.png",
+      "alt": "Recursion Mace"
+    },
+    "mace-of-the-celestial-forest": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/maces/untiered/mace-of-the-celestial-forest.png",
+      "alt": "Mace of the Celestial Forest"
+    },
+    "mechanical-mace": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/maces/untiered/mechanical-mace.png",
+      "alt": "Mechanical Mace"
+    },
+    "mace-of-the-depths": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/maces/untiered/mace-of-the-depths.png",
+      "alt": "Mace of the Depths"
+    },
+    "crystal-mace": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/maces/untiered/crystal-mace.png",
+      "alt": "Crystal Mace"
+    },
+    "mace-of-the-pumpkin-effigy": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/maces/untiered/mace-of-the-pumpkin-effigy.png",
+      "alt": "Mace of the Pumpkin Effigy"
+    },
+    "hivemind-mace": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/maces/untiered/hivemind-mace.png",
+      "alt": "Hivemind Mace"
+    },
+    "paper-machete": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/sheaths/untiered/paper-machete.png",
+      "alt": "Paper Machete"
+    },
+    "volcanic-sheath": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/sheaths/untiered/volcanic-sheath.png",
+      "alt": "Volcanic Sheath"
+    },
+    "blitz-sheath": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/sheaths/untiered/blitz-sheath.png",
+      "alt": "Blitz Sheath"
+    },
+    "quartermaster-scabbard": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/sheaths/untiered/quartermaster-scabbard.png",
+      "alt": "Quartermaster Scabbard"
+    },
+    "labyrinth-dweller-s-sheath": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/sheaths/untiered/labyrinth-dweller-s-sheath.png",
+      "alt": "Labyrinth Dweller's Sheath"
+    },
+    "s-h-e-a-t-h": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/sheaths/untiered/s-h-e-a-t-h.png",
+      "alt": "S.H.E.A.T.H"
+    },
+    "sheath-of-thunderous-rites": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/sheaths/untiered/sheath-of-thunderous-rites.png",
+      "alt": "Sheath of Thunderous Rites"
+    },
+    "elegant-parasol": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/sheaths/untiered/elegant-parasol.png",
+      "alt": "Elegant Parasol"
+    },
+    "sigil-of-the-rubber-duck": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/sigils/untiered/sigil-of-the-rubber-duck.png",
+      "alt": "Sigil of the Rubber Duck"
+    },
+    "silken-sigil": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/sigils/untiered/silken-sigil.png",
+      "alt": "Silken Sigil"
+    },
+    "hawkmaster-sigil": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/sigils/untiered/hawkmaster-sigil.png",
+      "alt": "Hawkmaster Sigil"
+    },
+    "sharktooth-sigil": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/sigils/untiered/sharktooth-sigil.png",
+      "alt": "Sharktooth Sigil"
+    },
+    "swarmlord-s-sigil": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/sigils/untiered/swarmlord-s-sigil.png",
+      "alt": "Swarmlord's Sigil"
+    },
+    "crystalline-sigil": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/sigils/untiered/crystalline-sigil.png",
+      "alt": "Crystalline Sigil"
+    },
+    "blue-beehemoth-quiver": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/quivers/untiered/blue-beehemoth-quiver.png",
+      "alt": "Blue Beehemoth Quiver"
+    },
+    "red-beehemoth-quiver": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/quivers/untiered/red-beehemoth-quiver.png",
+      "alt": "Red Beehemoth Quiver"
+    },
+    "yellow-beehemoth-quiver": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/quivers/untiered/yellow-beehemoth-quiver.png",
+      "alt": "Yellow Beehemoth Quiver"
+    },
+    "green-beehemoth-quiver": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/quivers/untiered/green-beehemoth-quiver.png",
+      "alt": "Green Beehemoth Quiver"
+    },
+    "vampiric-cape": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/cloaks/set-tiered/vampiric-cape.png",
+      "alt": "Vampiric Cape"
+    },
+    "spectre-cloak": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/cloaks/set-tiered/spectre-cloak.png",
+      "alt": "Spectre Cloak"
+    },
+    "quiver-of-shrieking-specters": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/quivers/set-tiered/quiver-of-shrieking-specters.png",
+      "alt": "Quiver of Shrieking Scepters"
+    },
+    "embellished-quiver": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/quivers/set-tiered/embellished-quiver.png",
+      "alt": "Embellished Quiver"
+    },
+    "sentry-turret": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/quivers/set-tiered/sentry-turret.png",
+      "alt": "Sentry Turret"
+    },
+    "unstable-firework": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/spells/set-tiered/unstable-firework.png",
+      "alt": "Unstable Firework"
+    },
+    "bloodletting-leeches": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/tomes/set-tiered/bloodletting-leeches.png",
+      "alt": "Bloodletting Leeches"
+    },
+    "book-of-geb": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/tomes/set-tiered/book-of-geb.png",
+      "alt": "Book of Geb"
+    },
+    "ceremonial-merlot": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/tomes/set-tiered/ceremonial-merlot.png",
+      "alt": "Ceremonial Merlot"
+    },
+    "burlap-cowl": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/helms/set-tiered/burlap-cowl.png",
+      "alt": "Burlap Cowl"
+    },
+    "helm-of-draconic-dominance": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/helms/set-tiered/helm-of-draconic-dominance.png",
+      "alt": "Helm of Draconic Dominance"
+    },
+    "tricorne-of-the-high-seas": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/helms/set-tiered/tricorne-of-the-high-seas.png",
+      "alt": "Tricorne of the High Seas"
+    },
+    "sunken-buckler": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/shields/set-tiered/sunken-buckler.png",
+      "alt": "Sunken Buckler"
+    },
+    "shockwave-shield": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/shields/set-tiered/shockwave-shield.png",
+      "alt": "Shockwave Shield"
+    },
+    "champion-s-bastion": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/shields/set-tiered/champion-s-bastion.png",
+      "alt": "Champion's Bastion"
+    },
+    "seal-of-the-enchanted-forest": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/seals/set-tiered/seal-of-the-enchanted-forest.png",
+      "alt": "Seal of the Enchanted Forest"
+    },
+    "abyssal-insignia": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/seals/set-tiered/abyssal-insignia.png",
+      "alt": "Abyssal Insignia"
+    },
+    "symbol-of-the-lost": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/seals/set-tiered/symbol-of-the-lost.png",
+      "alt": "Symbol of the Lost"
+    },
+    "makeshift-blowpipe": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/poisons/set-tiered/makeshift-blowpipe.png",
+      "alt": "Makeshift Blowpipe"
+    },
+    "parasitic-concoction": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/poisons/set-tiered/parasitic-concoction.png",
+      "alt": "Parasitic Concoction"
+    },
+    "virulent-venom": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/poisons/set-tiered/virulent-venom.png",
+      "alt": "Virulent Venom"
+    },
+    "cubic-frame": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/skulls/set-tiered/cubic-frame.png",
+      "alt": "Cubic Frame"
+    },
+    "ritual-skull": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/skulls/set-tiered/ritual-skull.png",
+      "alt": "Ritual Skull"
+    },
+    "memento-mori": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/skulls/set-tiered/memento-mori.png",
+      "alt": "Memento Mori"
+    },
+    "honeytomb-snare": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/traps/set-tiered/honeytomb-snare.png",
+      "alt": "Honeytomb Snare"
+    },
+    "lifebringing-lotus": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/traps/set-tiered/lifebringing-lotus.png",
+      "alt": "Lifebringing Lotus"
+    },
+    "lightning-rod": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/traps/set-tiered/lightning-rod.png",
+      "alt": "Lightning Rod"
+    },
+    "soul-of-the-bearer": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/orbs/set-tiered/soul-of-the-bearer.png",
+      "alt": "Soul of the Bearer"
+    },
+    "scorchium-stone": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/orbs/set-tiered/scorchium-stone.png",
+      "alt": "Scorchium Stone"
+    },
+    "cosmic-astrolabe": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/orbs/set-tiered/cosmic-astrolabe.png",
+      "alt": "Cosmic Astrolabe"
+    },
+    "daevite-progenitor": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/prisms/set-tiered/daevite-progenitor.png",
+      "alt": "Daevite Progenitor"
+    },
+    "brain-of-the-golem": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/prisms/set-tiered/brain-of-the-golem.png",
+      "alt": "Brain of the Golem"
+    },
+    "accursed-memory": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/prisms/set-tiered/accursed-memory.png",
+      "alt": "Accursed Memory"
+    },
+    "grotesque-scepter": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/scepters/set-tiered/grotesque-scepter.png",
+      "alt": "Grotesque Scepter"
+    },
+    "totem-scepter": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/scepters/set-tiered/totem-scepter.png",
+      "alt": "Totem Scepter"
+    },
+    "lightshow-scepter": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/scepters/set-tiered/lightshow-scepter.png",
+      "alt": "Lightshow Scepter"
+    },
+    "invocation-scroll": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/stars/set-tiered/invocation-scroll.png",
+      "alt": "Invocation Scroll"
+    },
+    "daybreak-chakram": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/stars/set-tiered/daybreak-chakram.png",
+      "alt": "Daybreak Chakram"
+    },
+    "crystalline-kunai": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/stars/set-tiered/crystalline-kunai.png",
+      "alt": "Crystalline Kunai"
+    },
+    "ryu-s-blade": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/wakizashi/set-tiered/ryu-s-blade.png",
+      "alt": "Ryu's Blade"
+    },
+    "watarimono": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/wakizashi/set-tiered/watarimono.png",
+      "alt": "Watarimono"
+    },
+    "sublimation-sidearm": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/wakizashi/set-tiered/sublimation-sidearm.png",
+      "alt": "Sublimation Sidearm"
+    },
+    "thundering-chorus": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/lutes/set-tiered/thundering-chorus.png",
+      "alt": "Thundering Chorus"
+    },
+    "sacred-lute": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/lutes/set-tiered/sacred-lute.png",
+      "alt": "Sacred Lute"
+    },
+    "angel-s-fanfare": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/lutes/set-tiered/angel-s-fanfare.png",
+      "alt": "Angel's Fanfare"
+    },
+    "b-o-o-m": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/maces/set-tiered/b-o-o-m.png",
+      "alt": "B.O.O.M."
+    },
+    "stonemould-mace": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/maces/set-tiered/stonemould-mace.png",
+      "alt": "Stonemould Mace"
+    },
+    "pyro-sheath": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/sheaths/set-tiered/pyro-sheath.png",
+      "alt": "Pyro Sheath"
+    },
+    "mechraptor-sigil": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/sigils/set-tiered/mechraptor-sigil.png",
+      "alt": "Mechraptor Sigil"
+    },
+    "legion-elite-cloak": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/cloaks/limited/legion-elite-cloak.png",
+      "alt": "Legion Elite Cloak"
+    },
+    "hydroflow-cloak": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/cloaks/limited/hydroflow-cloak.png",
+      "alt": "Hydroflow Cloak"
+    },
+    "cloak-of-winter": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/cloaks/limited/cloak-of-winter.png",
+      "alt": "Cloak of Winter"
+    },
+    "cloak-of-eerie-trepidation": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/cloaks/limited/cloak-of-eerie-trepidation.png",
+      "alt": "Cloak of Eerie Trepidation"
+    },
+    "legacy-ghastly-drape": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/cloaks/limited/legacy-ghastly-drape.png",
+      "alt": "Legacy Ghastly Drape"
+    },
+    "legion-elite-quiver": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/quivers/limited/legion-elite-quiver.png",
+      "alt": "Legion Elite Quiver"
+    },
+    "hydroflow-quiver": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/quivers/limited/hydroflow-quiver.png",
+      "alt": "Hydroflow Quiver"
+    },
+    "coalbearing-quiver": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/quivers/limited/coalbearing-quiver.png",
+      "alt": "Coalbearing Quiver"
+    },
+    "brine-quiver": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/quivers/limited/brine-quiver.png",
+      "alt": "Brine Quiver"
+    },
+    "freezing-quiver": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/quivers/limited/freezing-quiver.png",
+      "alt": "Freezing Quiver"
+    },
+    "quintessential-quiver": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/quivers/limited/quintessential-quiver.png",
+      "alt": "Quintessential Quiver"
+    },
+    "spinal-quiver": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/quivers/limited/spinal-quiver.png",
+      "alt": "Spinal Quiver"
+    },
+    "fresh-breeze-quiver": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/quivers/limited/fresh-breeze-quiver.png",
+      "alt": "Fresh Breeze Quiver"
+    },
+    "snow-critters": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/quivers/limited/snow-critters.png",
+      "alt": "Snow Critters"
+    },
+    "quiver-of-dazing-love": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/quivers/limited/quiver-of-dazing-love.png",
+      "alt": "Quiver of Dazing Love"
+    },
+    "random-spell-extraction-device": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/spells/limited/random-spell-extraction-device.png",
+      "alt": "Random Spell Extraction Device"
+    },
+    "thousand-suns-spell": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/spells/limited/thousand-suns-spell.png",
+      "alt": "Thousand Suns Spell"
+    },
+    "legion-elite-spell": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/spells/limited/legion-elite-spell.png",
+      "alt": "Legion Elite Spell"
+    },
+    "hydroflow-spell": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/spells/limited/hydroflow-spell.png",
+      "alt": "Hydroflow Spell"
+    },
+    "vitamine-buster": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/spells/limited/vitamine-buster.png",
+      "alt": "Vitamine Buster"
+    },
+    "vigil-spell": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/spells/limited/vigil-spell.png",
+      "alt": "Vigil Spell"
+    },
+    "x-marks-the-spot-spell": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/spells/limited/x-marks-the-spot-spell.png",
+      "alt": "X-Marks-the-spot Spell"
+    },
+    "cobra-serpentis-scroll": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/spells/limited/cobra-serpentis-scroll.png",
+      "alt": "Cobra Serpentis Scroll"
+    },
+    "legacy-ancient-spell-pierce": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/spells/limited/legacy-ancient-spell-pierce.png",
+      "alt": "Legacy Ancient Spell: Pierce"
+    },
+    "depth-charge": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/spells/limited/depth-charge.png",
+      "alt": "Depth Charge"
+    },
+    "spectral-spell": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/spells/limited/spectral-spell.png",
+      "alt": "Spectral Spell"
+    },
+    "legion-elite-tome": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/tomes/limited/legion-elite-tome.png",
+      "alt": "Legion Elite Tome"
+    },
+    "hydroflow-tome": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/tomes/limited/hydroflow-tome.png",
+      "alt": "Hydroflow Tome"
+    },
+    "tome-of-frigid-protection": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/tomes/limited/tome-of-frigid-protection.png",
+      "alt": "Tome of Frigid Protection"
+    },
+    "nativity-tome": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/tomes/limited/nativity-tome.png",
+      "alt": "Nativity Tome"
+    },
+    "tome-of-piracy": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/tomes/limited/tome-of-piracy.png",
+      "alt": "Tome of Piracy"
+    },
+    "tome-of-the-dragon": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/tomes/limited/tome-of-the-dragon.png",
+      "alt": "Tome of the Dragon"
+    },
+    "botany-book": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/tomes/limited/botany-book.png",
+      "alt": "Botany Book"
+    },
+    "void-leeches": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/tomes/limited/void-leeches.png",
+      "alt": "Void Leeches"
+    },
+    "tome-of-exorcism": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/tomes/limited/tome-of-exorcism.png",
+      "alt": "Tome of Exorcism"
+    },
+    "legion-elite-helm": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/helms/limited/legion-elite-helm.png",
+      "alt": "Legion Elite Helm"
+    },
+    "hydroflow-helm": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/helms/limited/hydroflow-helm.png",
+      "alt": "Hydroflow Helm"
+    },
+    "helm-of-the-swift-bunny": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/helms/limited/helm-of-the-swift-bunny.png",
+      "alt": "Helm of the Swift Bunny"
+    },
+    "pathfinder-s-helm": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/helms/limited/pathfinder-s-helm.png",
+      "alt": "Pathfinder's Helm"
+    },
+    "vanguard-s-visage-rehearsal": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/helms/limited/vanguard-s-visage-rehearsal.png",
+      "alt": "Vanguard's Visage (Rehearsal)"
+    },
+    "helm-of-the-jack-o-naut": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/helms/limited/helm-of-the-jack-o-naut.png",
+      "alt": "Helm of the Jack-o'-naut"
+    },
+    "beastly-mane": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/helms/limited/beastly-mane.png",
+      "alt": "Beastly Mane"
+    },
+    "legion-elite-shield": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/shields/limited/legion-elite-shield.png",
+      "alt": "Legion Elite Shield"
+    },
+    "hydroflow-shield": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/shields/limited/hydroflow-shield.png",
+      "alt": "Hydroflow Shield"
+    },
+    "resounding-shield": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/shields/limited/resounding-shield.png",
+      "alt": "Resounding Shield"
+    },
+    "ship-s-wheel-shield": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/shields/limited/ship-s-wheel-shield.png",
+      "alt": "Ship's Wheel Shield"
+    },
+    "esoteric-buckler": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/shields/limited/esoteric-buckler.png",
+      "alt": "Esoteric Buckler"
+    },
+    "dragon-slayer": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/shields/limited/dragon-slayer.png",
+      "alt": "Dragon Slayer"
+    },
+    "shield-of-jawgmur": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/shields/limited/shield-of-jawgmur.png",
+      "alt": "Shield of Jawgmur"
+    },
+    "sun-star-buckler": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/shields/limited/sun-star-buckler.png",
+      "alt": "Sun Star Buckler"
+    },
+    "onyx-shield-of-the-mad-god": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/shields/limited/onyx-shield-of-the-mad-god.png",
+      "alt": "Onyx Shield of the Mad God"
+    },
+    "spriteful-shield": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/shields/limited/spriteful-shield.png",
+      "alt": "Spriteful Shield"
+    },
+    "legion-elite-seal": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/seals/limited/legion-elite-seal.png",
+      "alt": "Legion Elite Seal"
+    },
+    "hydroflow-seal": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/seals/limited/hydroflow-seal.png",
+      "alt": "Hydroflow Seal"
+    },
+    "advent-seal": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/seals/limited/advent-seal.png",
+      "alt": "Advent Seal"
+    },
+    "legacy-seal-of-the-enchanted-forest": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/seals/limited/legacy-seal-of-the-enchanted-forest.png",
+      "alt": "Legacy Seal of the Enchanted Forest"
+    },
+    "sacrilege-seal": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/seals/limited/sacrilege-seal.png",
+      "alt": "Sacrilege Seal"
+    },
+    "carrot-cake-crest": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/seals/limited/carrot-cake-crest.png",
+      "alt": "Carrot Cake Crest"
+    },
+    "legion-elite-poison": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/poisons/limited/legion-elite-poison.png",
+      "alt": "Legion Elite Poison"
+    },
+    "hydroflow-poison": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/poisons/limited/hydroflow-poison.png",
+      "alt": "Hydroflow Poison"
+    },
+    "holly-poison": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/poisons/limited/holly-poison.png",
+      "alt": "Holly Poison"
+    },
+    "cursed-canopic-jar": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/poisons/limited/cursed-canopic-jar.png",
+      "alt": "Cursed Canopic Jar"
+    },
+    "bottled-lemonade": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/poisons/limited/bottled-lemonade.png",
+      "alt": "Bottled Lemonade"
+    },
+    "polarity-poison-rehearsal": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/poisons/limited/polarity-poison-rehearsal.png",
+      "alt": "Polarity Poison (Rehearsal)"
+    },
+    "legion-elite-skull": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/skulls/limited/legion-elite-skull.png",
+      "alt": "Legion Elite Skull"
+    },
+    "hydroflow-skull": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/skulls/limited/hydroflow-skull.png",
+      "alt": "Hydroflow Skull"
+    },
+    "skull-of-krampus": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/skulls/limited/skull-of-krampus.png",
+      "alt": "Skull of Krampus"
+    },
+    "crossbones-skull": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/skulls/limited/crossbones-skull.png",
+      "alt": "Crossbones Skull"
+    },
+    "blood-essence": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/skulls/limited/blood-essence.png",
+      "alt": "Blood Essence"
+    },
+    "mask-of-passion": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/skulls/limited/mask-of-passion.png",
+      "alt": "Mask of Passion"
+    },
+    "hooded-skull": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/skulls/limited/hooded-skull.png",
+      "alt": "Hooded Skull"
+    },
+    "ever-green-skull": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/skulls/limited/ever-green-skull.png",
+      "alt": "Ever Green Skull"
+    },
+    "painbow": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/traps/limited/painbow.png",
+      "alt": "Painbow"
+    },
+    "legion-elite-trap": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/traps/limited/legion-elite-trap.png",
+      "alt": "Legion Elite Trap"
+    },
+    "hydroflow-trap": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/traps/limited/hydroflow-trap.png",
+      "alt": "Hydroflow Trap"
+    },
+    "greedsnatcher-trap": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/traps/limited/greedsnatcher-trap.png",
+      "alt": "Greedsnatcher Trap"
+    },
+    "trap-of-the-blood-spirit": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/traps/limited/trap-of-the-blood-spirit.png",
+      "alt": "Trap of the Blood Spirit"
+    },
+    "consecrated-trap": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/traps/limited/consecrated-trap.png",
+      "alt": "Consecrated Trap"
+    },
+    "legion-elite-orb": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/orbs/limited/legion-elite-orb.png",
+      "alt": "Legion Elite Orb"
+    },
+    "hydroflow-orb": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/orbs/limited/hydroflow-orb.png",
+      "alt": "hydroflow-orb"
+    },
+    "snowbound-orb": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/orbs/limited/snowbound-orb.png",
+      "alt": "Snowbound Orb"
+    },
+    "primal-arcana-rehearsal": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/orbs/limited/primal-arcana-rehearsal.png",
+      "alt": "Primal Arcana (Rehearsal)"
+    },
+    "orb-of-terror": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/orbs/limited/orb-of-terror.png",
+      "alt": "Orb of Terror"
+    },
+    "orb-of-the-sabbath": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/orbs/limited/orb-of-the-sabbath.png",
+      "alt": "Orb of the Sabbath"
+    },
+    "heart-of-gold-prism": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/prisms/limited/heart-of-gold-prism.png",
+      "alt": "Heart of Gold Prism"
+    },
+    "legion-elite-prism": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/prisms/limited/legion-elite-prism.png",
+      "alt": "Legion Elite Prism"
+    },
+    "hydroflow-prism": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/prisms/limited/hydroflow-prism.png",
+      "alt": "Hydroflow Prism"
+    },
+    "ornamental-prism": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/prisms/limited/ornamental-prism.png",
+      "alt": "Ornamental Prism"
+    },
+    "the-heart-of-the-dragon": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/prisms/limited/the-heart-of-the-dragon.png",
+      "alt": "The Heart of the Dragon"
+    },
+    "pumpkin-prism": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/prisms/limited/pumpkin-prism.png",
+      "alt": "Pumpkin Prism"
+    },
+    "legion-elite-scepter": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/scepters/limited/legion-elite-scepter.png",
+      "alt": "Legion Elite Scepter"
+    },
+    "hydroflow-scepter": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/scepters/limited/hydroflow-scepter.png",
+      "alt": "Hydroflow Scepter"
+    },
+    "scepter-of-sainthood": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/scepters/limited/scepter-of-sainthood.png",
+      "alt": "Scepter of Sainthood"
+    },
+    "parrot-skeleton-scepter": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/scepters/limited/parrot-skeleton-scepter.png",
+      "alt": "Parrot Skeleton Scepter"
+    },
+    "eggsponential-scepter": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/scepters/limited/eggsponential-scepter.png",
+      "alt": "Eggsponential Scepter"
+    },
+    "scepter-of-the-transgressor": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/scepters/limited/scepter-of-the-transgressor.png",
+      "alt": "Scepter of the Transgressor"
+    },
+    "lovesick-scepter": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/scepters/limited/lovesick-scepter.png",
+      "alt": "Lovesick Scepter"
+    },
+    "clover-star": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/stars/limited/clover-star.png",
+      "alt": "Clover Star"
+    },
+    "legion-elite-star": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/stars/limited/legion-elite-star.png",
+      "alt": "Legion Elite Star"
+    },
+    "hydroflow-star": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/stars/limited/hydroflow-star.png",
+      "alt": "Hydroflow Star"
+    },
+    "ilex-star": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/stars/limited/ilex-star.png",
+      "alt": "Ilex Star"
+    },
+    "kagebooshi": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/stars/limited/kagebooshi.png",
+      "alt": "Kagebooshi"
+    },
+    "enchanted-chisel": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/stars/limited/enchanted-chisel.png",
+      "alt": "Enchanted Chisel"
+    },
+    "eternal-star": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/stars/limited/eternal-star.png",
+      "alt": "Eternal Star"
+    },
+    "legion-elite-wakizashi": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/wakizashi/limited/legion-elite-wakizashi.png",
+      "alt": "Legion Elite Wakizashi"
+    },
+    "hydroflow-wakizashi": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/wakizashi/limited/hydroflow-wakizashi.png",
+      "alt": "Hydroflow Wakizashi"
+    },
+    "sakura-wakizashi": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/wakizashi/limited/sakura-wakizashi.png",
+      "alt": "Sakura Wakizashi"
+    },
+    "peppermint-wakizashi": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/wakizashi/limited/peppermint-wakizashi.png",
+      "alt": "Peppermint Wakizashi"
+    },
+    "sentinel-s-sidearm-rehearsal": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/wakizashi/limited/sentinel-s-sidearm-rehearsal.png",
+      "alt": "Sentinel's Sidearm (Rehearsal)"
+    },
+    "sweetcut-wakizashi": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/wakizashi/limited/sweetcut-wakizashi.png",
+      "alt": "Sweetcut Wakizashi"
+    },
+    "legion-elite-drums": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/lutes/limited/legion-elite-drums.png",
+      "alt": "Legion Elite Drums"
+    },
+    "hydroflow-singing-glass": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/lutes/limited/hydroflow-singing-glass.png",
+      "alt": "Hydroflow Singing Glass"
+    },
+    "oryxmas-carol": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/lutes/limited/oryxmas-carol.png",
+      "alt": "Oryxmas Carol"
+    },
+    "joker-timbrel": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/lutes/limited/joker-timbrel.png",
+      "alt": "Joker Timbrel"
+    },
+    "ghost-ship-s-bell": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/lutes/limited/ghost-ship-s-bell.png",
+      "alt": "Ghost Ship's Bell"
+    },
+    "noble-mandolin-rehearsal": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/lutes/limited/noble-mandolin-rehearsal.png",
+      "alt": "Noble Mandolin (Rehearsal)"
+    },
+    "inferno-pick": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/lutes/limited/inferno-pick.png",
+      "alt": "Inferno Pick"
+    },
+    "legion-elite-mace": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/maces/limited/legion-elite-mace.png",
+      "alt": "Legion Elite Mace"
+    },
+    "hydroflow-mace": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/maces/limited/hydroflow-mace.png",
+      "alt": "Hydroflow Mace"
+    },
+    "mace-of-the-north-pole": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/maces/limited/mace-of-the-north-pole.png",
+      "alt": "Mace of the North Pole"
+    },
+    "dragon-mace": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/maces/limited/dragon-mace.png",
+      "alt": "Dragon Mace"
+    },
+    "peacekeeper-rehearsal": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/maces/limited/peacekeeper-rehearsal.png",
+      "alt": "Peacekeeper (Rehearsal)"
+    },
+    "incubation-mace": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/maces/limited/incubation-mace.png",
+      "alt": "Incubation Mace"
+    },
+    "ghastly-mace": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/maces/limited/ghastly-mace.png",
+      "alt": "Ghastly Mace"
+    },
+    "chocolate-egg-mace": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/maces/limited/chocolate-egg-mace.png",
+      "alt": "Chocolate Egg Mace"
+    },
+    "legion-elite-sheath": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/sheaths/limited/legion-elite-sheath.png",
+      "alt": "Legion Elite Sheath"
+    },
+    "hydroflow-sheath": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/sheaths/limited/hydroflow-sheath.png",
+      "alt": "Hydroflow Sheath"
+    },
+    "snowman-s-sheath": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/sheaths/limited/snowman-s-sheath.png",
+      "alt": "Snowman's Sheath"
+    },
+    "an-ancient-s-embrace": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/sheaths/limited/an-ancient-s-embrace.png",
+      "alt": "An Ancient's Embrace"
+    },
+    "legion-elite-sigil": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/sigils/limited/legion-elite-sigil.png",
+      "alt": "Legion Elite Sigil"
+    },
+    "hydroflow-sigil": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/sigils/limited/hydroflow-sigil.png",
+      "alt": "Hydroflow Sigil"
+    },
+    "sigil-of-the-reindeer": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/abilities/sigils/limited/sigil-of-the-reindeer.png",
+      "alt": "Sigil of the Reindeer"
     }
   },
   "aliases": {
