@@ -1,0 +1,346 @@
+[
+  {
+    "name": "Stellar Ascend Engraving",
+    "category": "Engraving",
+    "type": "engraving",
+    "cost": 50,
+    "labelMode": "max",
+    "multipliers": {
+      "ATTACK": 3,
+      "WISDOM": 3,
+      "SPEED": 3
+    },
+    "unique": {},
+    "awakened": {},
+    "guaranteedMods": [
+      "Stellar Ascend"
+    ],
+    "minTier": null,
+    "notes": "Guarantees the Stellar Ascend Mod if no locked incompatibilities."
+  },
+  {
+    "name": "Path of the Magus Engraving",
+    "category": "Engraving",
+    "type": "engraving",
+    "cost": 50,
+    "labelMode": "max",
+    "multipliers": {
+      "MANA": 6,
+      "WISDOM": 6
+    },
+    "unique": {},
+    "awakened": {},
+    "guaranteedMods": [
+      "Magus"
+    ],
+    "minTier": null,
+    "notes": "Guarantees a Magus mod on aspirant items."
+  },
+  {
+    "name": "Path of the Sniper Engraving",
+    "category": "Engraving",
+    "type": "engraving",
+    "cost": 50,
+    "labelMode": "max",
+    "multipliers": {
+      "ATTACK": 6,
+      "VITALITY": 6
+    },
+    "unique": {},
+    "awakened": {},
+    "guaranteedMods": [
+      "Sniper"
+    ],
+    "minTier": null,
+    "notes": "Guarantees a Sniper mod on aspirant items."
+  },
+  {
+    "name": "Path of the Stalwart Engraving",
+    "category": "Engraving",
+    "type": "engraving",
+    "cost": 50,
+    "labelMode": "max",
+    "multipliers": {
+      "LIFE": 6,
+      "DEFENSE": 6
+    },
+    "unique": {},
+    "awakened": {},
+    "guaranteedMods": [
+      "Stalwart"
+    ],
+    "minTier": null,
+    "notes": "Guarantees a Stalwart mod on aspirant items."
+  },
+  {
+    "name": "Path of the Swiftblade Engraving",
+    "category": "Engraving",
+    "type": "engraving",
+    "cost": 50,
+    "labelMode": "max",
+    "multipliers": {
+      "DEXTERITY": 6,
+      "SPEED": 6
+    },
+    "unique": {},
+    "awakened": {},
+    "guaranteedMods": [
+      "Swiftblade"
+    ],
+    "minTier": null,
+    "notes": "Guarantees a Swiftblade mod on aspirant items."
+  },
+  {
+    "name": "Naughty Engraving",
+    "category": "Engraving",
+    "type": "engraving",
+    "cost": 50,
+    "labelMode": "max",
+    "multipliers": {
+      "LIFE": 6,
+      "MANA": 6
+    },
+    "unique": {},
+    "awakened": {},
+    "guaranteedMods": [
+      "Naughty"
+    ],
+    "minTier": null,
+    "notes": "Guarantees the Naughty mod on Oryxmas UT weapons."
+  },
+  {
+    "name": "Nice Engraving",
+    "category": "Engraving",
+    "type": "engraving",
+    "cost": 50,
+    "labelMode": "max",
+    "multipliers": {
+      "LIFE": 6,
+      "MANA": 6
+    },
+    "unique": {},
+    "awakened": {},
+    "guaranteedMods": [
+      "Nice"
+    ],
+    "minTier": null,
+    "notes": "Guarantees the Nice mod on Oryxmas UT weapons."
+  },
+  {
+    "name": "Warm and Cozy Engraving",
+    "category": "Engraving",
+    "type": "engraving",
+    "cost": 50,
+    "labelMode": "max",
+    "multipliers": {
+      "LIFE": 6,
+      "MANA": 6
+    },
+    "unique": {},
+    "awakened": {},
+    "guaranteedMods": [
+      "Warm and Cozy"
+    ],
+    "minTier": null,
+    "notes": "Guarantees Warm and Cozy mod on Oryxmas T6 reskin Ability."
+  },
+  {
+    "name": "Polar Explorer Engraving",
+    "category": "Engraving",
+    "type": "engraving",
+    "cost": 50,
+    "labelMode": "max",
+    "multipliers": {
+      "LIFE": 6,
+      "MANA": 6
+    },
+    "unique": {},
+    "awakened": {},
+    "guaranteedMods": [
+      "Polar Explorer"
+    ],
+    "minTier": null,
+    "notes": "Guarantees Polar Explorer mod on Oryxmas T6 reskin Ability."
+  },
+  {
+    "name": "Glorious Engraving",
+    "category": "Engraving",
+    "type": "engraving",
+    "cost": 30,
+    "labelMode": "max",
+    "multipliers": {
+      "ATTACK": 6,
+      "DURABILITY": 6
+    },
+    "unique": {},
+    "awakened": {},
+    "guaranteedMods": [
+      "Glorious"
+    ],
+    "minTier": null,
+    "notes": "Guarantees Glorious on MOTMG 2024 items."
+  },
+  {
+    "name": "Insightful Engraving",
+    "category": "Engraving",
+    "type": "engraving",
+    "cost": 30,
+    "labelMode": "max",
+    "multipliers": {
+      "WISDOM": 6,
+      "CASTING": 6
+    },
+    "unique": {},
+    "awakened": {},
+    "guaranteedMods": [
+      "Insightful"
+    ],
+    "minTier": null,
+    "notes": "Guarantees Insightful on MOTMG 2024 items."
+  },
+  {
+    "name": "Soul Collector Engraving",
+    "category": "Engraving",
+    "type": "engraving",
+    "cost": 50,
+    "labelMode": "max",
+    "multipliers": {
+      "WISDOM": 3,
+      "ATTACK": 3,
+      "DEXTERITY": 3
+    },
+    "unique": {},
+    "awakened": {},
+    "guaranteedMods": [
+      "Soul Collector"
+    ],
+    "minTier": null,
+    "notes": "Guarantees Soul Collector on T11 Halloween Weapon."
+  },
+  {
+    "name": "Ice Rush Engraving",
+    "category": "Engraving",
+    "type": "engraving",
+    "cost": 50,
+    "labelMode": "max",
+    "multipliers": {
+      "DEFENSE": 6,
+      "SPEED": 6
+    },
+    "unique": {},
+    "awakened": {},
+    "guaranteedMods": [
+      "Ice Rush"
+    ],
+    "minTier": null,
+    "notes": "Guarantees Ice Rush on T12 Frost Weapon."
+  },
+  {
+    "name": "Frozen Blast Engraving",
+    "category": "Engraving",
+    "type": "engraving",
+    "cost": 50,
+    "labelMode": "max",
+    "multipliers": {
+      "DEFENSE": 6,
+      "SPEED": 6
+    },
+    "unique": {},
+    "awakened": {},
+    "guaranteedMods": [
+      "Frozen Blast"
+    ],
+    "minTier": null,
+    "notes": "Guarantees Frozen Blast on T12 Frost Weapon."
+  },
+  {
+    "name": "Snowstorm Engraving",
+    "category": "Engraving",
+    "type": "engraving",
+    "cost": 50,
+    "labelMode": "max",
+    "multipliers": {
+      "DEFENSE": 6,
+      "SPEED": 6
+    },
+    "unique": {},
+    "awakened": {},
+    "guaranteedMods": [
+      "Snowstorm"
+    ],
+    "minTier": null,
+    "notes": "Guarantees Snowstorm on T12 Frost Armor."
+  },
+  {
+    "name": "Cool Protection Engraving",
+    "category": "Engraving",
+    "type": "engraving",
+    "cost": 50,
+    "labelMode": "max",
+    "multipliers": {
+      "DEFENSE": 6,
+      "SPEED": 6
+    },
+    "unique": {},
+    "awakened": {},
+    "guaranteedMods": [
+      "Cool Protection"
+    ],
+    "minTier": null,
+    "notes": "Guarantees Cool Protection on T12 Frost Armor."
+  },
+  {
+    "name": "Adonis' Shot Engraving",
+    "category": "Engraving",
+    "type": "engraving",
+    "cost": 50,
+    "labelMode": "max",
+    "multipliers": {
+      "LIFE": 6,
+      "MANA": 6
+    },
+    "unique": {},
+    "awakened": {},
+    "guaranteedMods": [
+      "Adonis' Shot"
+    ],
+    "minTier": null,
+    "notes": "Guarantees Adonis' Shot on Valentines T11 reskin weapon."
+  },
+  {
+    "name": "Aphrodite's Shot Engraving",
+    "category": "Engraving",
+    "type": "engraving",
+    "cost": 50,
+    "labelMode": "max",
+    "multipliers": {
+      "LIFE": 6,
+      "MANA": 6
+    },
+    "unique": {},
+    "awakened": {},
+    "guaranteedMods": [
+      "Aphrodite's Shot"
+    ],
+    "minTier": null,
+    "notes": "Guarantees Aphrodite's Shot on Valentines T11 reskin weapon."
+  },
+  {
+    "name": "Rose Thorns Engraving",
+    "category": "Engraving",
+    "type": "engraving",
+    "cost": 50,
+    "labelMode": "max",
+    "multipliers": {
+      "LIFE": 6,
+      "MANA": 6
+    },
+    "unique": {},
+    "awakened": {},
+    "guaranteedMods": [
+      "Rose Thorns"
+    ],
+    "minTier": null,
+    "notes": "Guarantees Rose Thorns on Valentines T11 reskin weapon."
+  }
+]

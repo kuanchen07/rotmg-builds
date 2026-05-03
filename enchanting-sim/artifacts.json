@@ -1,0 +1,289 @@
+[
+  {
+    "name": "The Tower Tarot Card",
+    "category": "tarot",
+    "cost": 25,
+    "multipliers": {
+      "LIFE": 4.5
+    },
+    "unique": {
+      "Vampric Lifeforce": 15
+    },
+    "awakened": {},
+    "minTier": null
+  },
+  {
+    "name": "The Moon Tarot Card",
+    "category": "tarot",
+    "cost": 25,
+    "multipliers": {
+      "MANA": 4.5
+    },
+    "unique": {
+      "Mermaid Magic": 15
+    },
+    "awakened": {},
+    "minTier": null
+  },
+  {
+    "name": "The Devil Tarot Card",
+    "category": "tarot",
+    "cost": 25,
+    "multipliers": {
+      "ATTACK": 4.5
+    },
+    "unique": {
+      "Shaitan's Might": 15
+    },
+    "awakened": {},
+    "minTier": null
+  },
+  {
+    "name": "Death Tarot Card",
+    "category": "tarot",
+    "cost": 25,
+    "multipliers": {
+      "DEFENSE": 4.5
+    },
+    "unique": {
+      "Sandstone Resilience": 15
+    },
+    "awakened": {},
+    "minTier": null
+  },
+  {
+    "name": "The Chariot Tarot Card",
+    "category": "tarot",
+    "cost": 25,
+    "multipliers": {
+      "SPEED": 4.5
+    },
+    "unique": {
+      "Stheno's Swiftness": 15
+    },
+    "awakened": {},
+    "minTier": null
+  },
+  {
+    "name": "The Sun Tarot Card",
+    "category": "tarot",
+    "cost": 25,
+    "multipliers": {
+      "DEXTERITY": 4.5
+    },
+    "unique": {
+      "Pirate's Expertise": 15
+    },
+    "awakened": {},
+    "minTier": null
+  },
+  {
+    "name": "The World Tarot Card",
+    "category": "tarot",
+    "cost": 25,
+    "multipliers": {
+      "VITALITY": 4.5
+    },
+    "unique": {
+      "Crystalline Vigor": 15
+    },
+    "awakened": {},
+    "minTier": null
+  },
+  {
+    "name": "The Magician Tarot Card",
+    "category": "tarot",
+    "cost": 25,
+    "multipliers": {
+      "WISDOM": 4.5
+    },
+    "unique": {
+      "Avalon's Intellect": 15
+    },
+    "awakened": {},
+    "minTier": null
+  },
+  {
+    "name": "The Fool Tarot Card",
+    "category": "tarot",
+    "cost": 25,
+    "multipliers": {
+      "STAT": 0.2
+    },
+    "unique": {
+      "Jester's Trick": 15
+    },
+    "awakened": {},
+    "minTier": null
+  },
+  {
+    "name": "The Wheel of Fortune Tarot Card",
+    "category": "tarot",
+    "cost": 30,
+    "multipliers": {
+      "REWARD": 4.5
+    },
+    "unique": {
+      "Lucky Streak": 15
+    },
+    "awakened": {},
+    "minTier": null
+  },
+  {
+    "name": "Ivory Heart",
+    "category": "artifact",
+    "cost": 30,
+    "multipliers": {
+      "DAMAGE": 7,
+      "DURABILITY": 7,
+      "RECOVERY": 7,
+      "CASTING": 7
+    },
+    "unique": {},
+    "awakened": {
+      "Draconic Gaze": 15,
+      "Drake Warden": 15
+    },
+    "minTier": null
+  },
+  {
+    "name": "Spectral Arrowhead",
+    "category": "artifact",
+    "cost": 30,
+    "multipliers": {
+      "WISDOM": 7,
+      "DEXTERITY": 7
+    },
+    "unique": {},
+    "awakened": {
+      "Soulful Mastery": 15,
+      "Necrotic Knowledge": 15
+    },
+    "minTier": null
+  },
+  {
+    "name": "Adamantine Ingot",
+    "category": "artifact",
+    "cost": 30,
+    "multipliers": {
+      "VITALITY": 7,
+      "ATTACK": 7
+    },
+    "unique": {},
+    "awakened": {
+      "Hellfire Edge": 15,
+      "Infernal Anger": 15
+    },
+    "minTier": null
+  },
+  {
+    "name": "Nightmatter Core",
+    "category": "artifact",
+    "cost": 25,
+    "multipliers": {
+      "ATTACK": 7,
+      "DEXTERITY": 7
+    },
+    "unique": {},
+    "awakened": {
+      "Night's Strength": 60,
+      "Night's Wisdom": 60,
+      "Night's Tenacity": 60,
+      "Night's Soul": 60
+    },
+    "minTier": null
+  },
+  {
+    "name": "Ascension Ankh",
+    "category": "artifact",
+    "cost": 30,
+    "multipliers": {
+      "LIFE": 7,
+      "DEXTERITY": 7,
+      "DEFENSE": 7,
+      "DUALSTAT": 3
+    },
+    "unique": {},
+    "awakened": {
+      "Ancient's Blessing": 15,
+      "Ancient Artifacts": 15
+    },
+    "minTier": null
+  },
+  {
+    "name": "Amber Honeycomb",
+    "category": "artifact",
+    "cost": 35,
+    "multipliers": {
+      "DEXTERITY": 9,
+      "SUMMON": 4.5
+    },
+    "unique": {},
+    "awakened": {
+      "Living Hive": 15,
+      "Buzzing Bullets": 15,
+      "Apitoxin": 15,
+      "Swarm Tree's Wrath": 15
+    },
+    "minTier": 2
+  },
+  {
+    "name": "Precision Cog",
+    "category": "artifact",
+    "cost": 35,
+    "multipliers": {
+      "ATTACK": 9,
+      "TRADEOFF": 4.5
+    },
+    "unique": {},
+    "awakened": {
+      "Kogbold Spirit": 15,
+      "High Voltage": 15,
+      "Molecular Blade": 15,
+      "Artificial Core": 15
+    },
+    "minTier": 2
+  },
+  {
+    "name": "Premium Silver Card",
+    "category": "premium",
+    "cost": 0,
+    "multipliers": {
+      "UNIQUE": 1.8,
+      "AWAKENED": 1.8
+    },
+    "uniqueMultiplier": 1.8,
+    "awakenedMultiplier": 1.8,
+    "unique": {},
+    "awakened": {},
+    "minTier": 2
+  },
+  {
+    "name": "Premium Gold Card",
+    "category": "premium",
+    "cost": 0,
+    "multipliers": {
+      "UNIQUE": 2.6,
+      "AWAKENED": 2.6
+    },
+    "uniqueMultiplier": 2.6,
+    "awakenedMultiplier": 2.6,
+    "unique": {},
+    "awakened": {},
+    "minTier": 3
+  },
+  {
+    "name": "Premium Diamond Card",
+    "category": "premium",
+    "cost": 0,
+    "multipliers": {
+      "UNIQUE": 3.4,
+      "AWAKENED": 3.4
+    },
+    "uniqueMultiplier": 3.4,
+    "awakenedMultiplier": 3.4,
+    "unique": {},
+    "awakened": {},
+    "minTier": 4
+  }
+]

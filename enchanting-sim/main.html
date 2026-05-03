@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>Realm of the Mad God – Enchant Simulator - Made by Ammmar</title>
+<link href="style.css" rel="stylesheet"/>
+</head>
+<body>
+<div class="container">
+<h1>Realm of the Mad God – Enchant Simulator - Made by Ammmar</h1>
+<div class="card cols">
+<div class="col">
+<h3>Choose Item Type</h3>
+<select id="itemType">
+<option value="">-- Select Item --</option>
+<option value="WEAPON">Weapon</option>
+<option value="ABILITY">Ability</option>
+<option value="ARMOR">Armor</option>
+<option value="RING">Ring</option>
+</select>
+<div class="awaken-row">
+<label class="inline"><input id="canAwaken" type="checkbox"/> Can be Awakened</label>
+<input id="awakenItem" list="awakenList" placeholder="Type to search awakenable items..."/>
+<datalist id="awakenList"></datalist>
+</div>
+<h3>Choose Slot Count</h3>
+<div id="slotSelector"></div>
+</div>
+<div class="col aug-wrap">
+<h3>Choose Artifact / Card / Engraving</h3>
+<select id="artifactCard"></select>
+<div id="augmentInfo"></div>
+<div>
+<button id="rollBtn">Roll Enchantments</button>
+<button id="resetDust">Reset Dust</button>
+</div>
+<div>
+<span class="muted" id="dustDisplay">Total Dust Used: 0</span>
+<span id="rollDelta"></span>
+</div>
+</div>
+</div>
+<div class="card" id="eligibility"></div>
+<div class="card slot-container" id="slotsContainer"></div>
+<div class="card">
+<div class="toggle-row">
+<h3 style="margin:0">Weight Breakdown (after multipliers)</h3>
+<button class="small" id="toggleWeightBtn">Show</button>
+</div>
+<div id="weightDetails"></div>
+</div>
+<div class="card" id="probabilityTool">
+<h3>Target Enchantment Probability</h3>
+<div class="prob-row">
+<input id="targetEnchantInput" placeholder="Type enchantment name..." type="text"/>
+<div id="suggestions"></div>
+<button id="calcProbBtn">Calculate Probability</button>
+</div>
+<div class="muted" id="probResult"></div>
+</div>
+<div class="card" id="result"></div>
+</div>
+<script>
+/* ========================== Globals & Utilities ========================== */
+let ENCHANTS=[], AUGMENTS=[], AUGMENTS_BY_NAME={};
+let selectedSlots=0, currentEnchantments=[], totalDustUsed=0;
+const BASE_DUST={1:50,2:65,3:80,4:100};
+
+function normalizeName(s){
+  return String(s||"").replace(/[\u2018\u2019]/g,"'").replace(/\s+/g," ").trim().toLowerCase();
+}
+function nameMultiplierLookup(dict, enchantName){
+  if(!dict) return null;
+  const direct=dict[enchantName]; if(typeof direct==='number') return direct;
+  const nTarget=normalizeName(enchantName);
+  for(const [k,v] of Object.entries(dict)){ if(normalizeName(k)===nTarget) return v; }
+  return null;
+}
+function prettyStat(s){ return s.charAt(0)+s.slice(1).toLowerCase(); }
+
+/* ========================== Awakening Maps ========================== */
+const AWAKENING_MAP = {
+  "Ancient's Blessing": ["Tomb rings"],
+  "Ancient Artifacts": ["Snakeskin Armor"],
+  "Apitoxin": ["Doku No Ken"],
+  "Artificial Core": ["Staff of Extreme Prejudice"],
+  "Bone Claws": ["Bone Dagger"],
+  "Buzzing Bullets": ["Queen's Stinger"],
+  "Crystalline Channel": ["Staff of the Crystal Serpent"],
+  "Crystal Shards": ["Crystal Wand"],
+  "Draconic Gaze": ["Snake Eye Ring"],
+  "Drake Warden": ["LoD Armors"],
+  "El Dorado's Legacy": ["Crystal Bone Ring"],
+  "Eye of the Spider": ["Spider's Eye Ring"],
+  "Fractured Blade": ["Crystal Sword"],
+  "Hellfire Edge": ["Demon Blade"],
+  "High Voltage": ["Conducting Wand"],
+  "Infernal Anger": ["Berserker's Breastplate"],
+  "Kogbold Spirit": ["Overclocking Amulet"],
+  "Living Hive": ["Bee Armors"],
+  "Masked God's Dance": ["Robe of the Tlatoani"],
+  "Molecular Blade": ["Pirate King's Cutlass"],
+  "Necrotic Knowledge": ["Ring of Skeletal Specters"],
+  "Night's Soul": ["Circlet & Oryx Rings"],
+  "Night's Strength": ["Oryx Weapons"],
+  "Night's Tenacity": ["Oryx Armors"],
+  "Night's Wisdom": ["Oryx Abilities"],
+  "Raijin's Dance": ["Tlatoani's Shroud"],
+  "Soulful Mastery": ["Doom Bow"],
+  "Swarm Tree's Wrath": ["Leaf Bow"],
+  "The King's Treasure": ["Corsair Ring"],
+  "Thornswarm": ["Bramble Bow"],
+  "Venom Coating": ["Poison Fang Dagger"]
+};
+const AWAKEN_ITEM_TYPE = {
+  "Tomb rings":"RING","Snakeskin Armor":"ARMOR","Doku No Ken":"WEAPON",
+  "Staff of Extreme Prejudice":"WEAPON","Bone Dagger":"WEAPON",
+  "Queen's Stinger":"WEAPON","Staff of the Crystal Serpent":"WEAPON",
+  "Crystal Wand":"WEAPON","Snake Eye Ring":"RING","LoD Armors":"ARMOR",
+  "Crystal Bone Ring":"RING","Spider's Eye Ring":"RING","Crystal Sword":"WEAPON",
+  "Demon Blade":"WEAPON","Conducting Wand":"WEAPON","Berserker's Breastplate":"ARMOR",
+  "Overclocking Amulet":"RING","Bee Armors":"ARMOR","Robe of the Tlatoani":"ARMOR",
+  "Pirate King's Cutlass":"WEAPON","Ring of Skeletal Specters":"RING",
+  "Circlet & Oryx Rings":"RING","Oryx Weapons":"WEAPON","Oryx Armors":"ARMOR",
+  "Oryx Abilities":"ABILITY","Tlatoani's Shroud":"ARMOR","Doom Bow":"WEAPON",
+  "Leaf Bow":"WEAPON","Corsair Ring":"RING","Bramble Bow":"WEAPON","Poison Fang Dagger":"WEAPON"
+};
+let AWAKENABLE_ITEMS=[], chosenAwakenItem="";
+
+/* ========================== Init ========================== */
+window.addEventListener('DOMContentLoaded',()=>{
+  renderSlotButtons();
+  bindEvents();
+  buildAwakenList();
+  (async()=>{
+    await Promise.all([loadEnchantments(), loadAugments()]);
+    normalizeAllData();
+    populateAugmentDropdown();
+    refreshEligibility();
+    updateWeightDebug();
+  })();
+});
+
+/* ========================== Loaders & Normalizers ========================== */
+async function loadEnchantments(){
+  try{
+    const r=await fetch('enchants.json'); if(!r.ok) throw new Error('enchants.json load failed');
+    ENCHANTS=await r.json();
+  }catch(e){ console.error(e); document.getElementById('eligibility').textContent='⚠ Could not load enchants.json.'; }
+}
+async function loadAugments(){
+  try{
+    const [aRes, eRes]=await Promise.all([fetch('artifacts.json'), fetch('engravings.json')]);
+    const artifacts=await aRes.json();
+    const engravings=await eRes.json();
+    AUGMENTS=[...artifacts, ...engravings];
+    AUGMENTS_BY_NAME={}; AUGMENTS.forEach(x=>AUGMENTS_BY_NAME[x.name]=x);
+    window.__RAW_ARTS=artifacts; window.__RAW_ENVS=engravings;
+  }catch(e){ console.error(e); AUGMENTS=[]; AUGMENTS_BY_NAME={}; }
+}
+function normalizeAllData(){
+  const up=a=>(a||[]).map(x=>String(x).toUpperCase());
+  ENCHANTS=ENCHANTS.map(e=>({...e,
+    name:String(e.name||'').trim(),
+    description:String(e.description||''),
+    weight:Number(e.weight)||0,
+    itemLabels:up(e.itemLabels),
+    incompatItemLabels:up(e.incompatItemLabels),
+    labels:up(e.labels),
+    incompatLabels:up(e.incompatLabels),
+    rollable:!!e.rollable,
+    requiresEngraving:!!e.requiresEngraving
+  }));
+  const normMult=obj=>{ if(!obj) return {}; const o={}; for(const[k,v] of Object.entries(obj)){ o[String(k).toUpperCase()]=v; } return o; };
+  AUGMENTS=AUGMENTS.map(a=>({...a,
+    category:String(a.category||'').toLowerCase(),
+    cost:Number(a.cost||0),
+    multipliers:normMult(a.multipliers),
+    unique:a.unique||{},
+    awakened:a.awakened||{},
+    uniqueMultiplier:a.uniqueMultiplier||null,
+    awakenedMultiplier:a.awakenedMultiplier||null,
+    minTier:(a.minTier==null?null:Number(a.minTier)),
+    guaranteedMods:a.guaranteedMods||[]
+  }));
+  AUGMENTS_BY_NAME={}; AUGMENTS.forEach(x=>AUGMENTS_BY_NAME[x.name]=x);
+}
+
+/* ========================== UI: Awakenable items ========================== */
+function buildAwakenList(){
+  const set=new Set();
+  for(const arr of Object.values(AWAKENING_MAP)){ (arr||[]).forEach(n=>set.add(n)); }
+  AWAKENABLE_ITEMS = Array.from(set).sort();
+  const dl=document.getElementById('awakenList'); dl.innerHTML='';
+  AWAKENABLE_ITEMS.forEach(n=>{ const opt=document.createElement('option'); opt.value=n; dl.appendChild(opt); });
+  const chk=document.getElementById('canAwaken');
+  const box=document.getElementById('awakenItem');
+  chk.onchange=()=>{
+    if(chk.checked){ box.style.display='inline-block'; }
+    else { box.style.display='none'; box.value=''; chosenAwakenItem=''; }
+    refreshEligibility(); enforceLockValidity(); updateWeightDebug();
+  };
+  box.addEventListener('input',()=>{
+    chosenAwakenItem = box.value.trim();
+    const type=AWAKEN_ITEM_TYPE[chosenAwakenItem];
+    if(type){
+      const sel=document.getElementById('itemType');
+      if(sel.value!==type){ sel.value=type; sel.dispatchEvent(new Event('change')); return; }
+    }
+    refreshEligibility(); enforceLockValidity(); updateWeightDebug();
+  });
+}
+
+/* ========================== UI: Slots ========================== */
+function renderSlotButtons(){
+  const div=document.getElementById('slotSelector'); div.innerHTML='';
+  for(let i=0;i<=4;i++){
+    const b=document.createElement('div'); b.className='slot-btn'; b.textContent=i;
+    if(i===0) b.classList.add('active');
+    b.onclick=()=>{document.querySelectorAll('.slot-btn').forEach(x=>x.classList.remove('active'));b.classList.add('active');selectedSlots=i;renderSlots();};
+    div.appendChild(b);
+  }
+}
+function renderSlots(){
+  const c=document.getElementById('slotsContainer'); c.innerHTML='';
+  currentEnchantments=[];
+  for(let i=0;i<selectedSlots;i++){
+    const d=document.createElement('div'); d.className='slot';
+    const info=document.createElement('div'); info.textContent='Empty Slot';
+    const lock=document.createElement('button'); lock.className='lock-toggle'; lock.textContent='Lock';
+    lock.onclick=()=>{lock.classList.toggle('locked');lock.textContent=lock.classList.contains('locked')?'Locked':'Lock';};
+    d.appendChild(lock); d.appendChild(info);
+    c.appendChild(d);
+    currentEnchantments.push({enchant:null,element:info,lockBtn:lock});
+  }
+}
+
+/* ========================== UI: Augment dropdown + info ========================== */
+function populateAugmentDropdown(){
+  const sel=document.getElementById('artifactCard'); sel.innerHTML='';
+  const none=document.createElement('option');
+  none.value='None'; none.textContent='None (0 Dust)'; none.dataset.cost=0; sel.appendChild(none);
+
+  const artifacts=window.__RAW_ARTS||[];
+  const engravings=window.__RAW_ENVS||[];
+  const isTarot=x=>/tarot/i.test(x.category||'') || /^the .*tarot card$/i.test(x.name||'');
+  const isPremium=x=>/premium/i.test(x.category||'') || /^premium /i.test(x.name||'');
+  const isArtifact=x=>(!isTarot(x)&&!isPremium(x));
+
+  const addGroup=(label,list)=>{
+    if(!list.length) return;
+    const g=document.createElement('optgroup'); g.label=`— ${label} —`;
+    list.forEach(a=>{
+      const o=document.createElement('option');
+      o.value=a.name;
+      const cost=Number(a.cost||0);
+      o.dataset.cost=cost;
+      o.textContent=`${a.name} (${cost} Dust)`;
+      g.appendChild(o);
+    });
+    sel.appendChild(g);
+  };
+  addGroup('Tarot Cards', artifacts.filter(isTarot));
+  addGroup('Artifacts',   artifacts.filter(isArtifact));
+  addGroup('Premium Cards', artifacts.filter(isPremium));
+  addGroup('Engravings',  engravings);
+
+  sel.onchange=()=>{ updateAugmentInfo(); refreshEligibility(); enforceLockValidity(); updateWeightDebug(); };
+  updateAugmentInfo();
+}
+function updateAugmentInfo(){
+  const selName=document.getElementById('artifactCard').value;
+  const box=document.getElementById('augmentInfo');
+  if(!selName || selName==='None'){ box.style.display='none'; box.textContent=''; return; }
+  const a=AUGMENTS_BY_NAME[selName]; if(!a){ box.style.display='none'; return; }
+  const lines=[];
+  const cost=Number(a.cost||0);
+  lines.push(`${a.name}  •  ${cost} Dust`);
+  if(a.multipliers && Object.keys(a.multipliers).length){
+    const pretty = Object.entries(a.multipliers).map(([k,v])=>`${prettyStat(k)} ×${v}`).join(', ');
+    lines.push(`Multipliers: ${pretty}`);
+  }
+  if(a.unique && Object.keys(a.unique).length){
+    for(const [n,m] of Object.entries(a.unique)){ lines.push(`${n} ×${m}`); }
+  }
+  if(a.awakened && Object.keys(a.awakened).length){
+    for(const [n,m] of Object.entries(a.awakened)){ lines.push(`${n} ×${m}`); }
+  }
+  if(a.uniqueMultiplier)   lines.push(`Unique ×${a.uniqueMultiplier}`);
+  if(a.awakenedMultiplier) lines.push(`Awakened ×${a.awakenedMultiplier}`);
+  if(a.minTier!=null)      lines.push(`Min Tier: ${a.minTier}`);
+  if(a.guaranteedMods && a.guaranteedMods.length) lines.push(`Guarantees: ${a.guaranteedMods.join(', ')} (when eligible)`);
+  lines.push(`Affected Enchants: ${countAffectedEnchants(a)}`);
+  box.textContent=lines.join('\n');
+  box.style.display='block';
+  updateWeightDebug(); // ensure panel is always current
+}
+function countAffectedEnchants(aug){
+  const type=document.getElementById('itemType').value;
+  if(!type) return 0;
+  const base=eligiblePool(type,{skipAugment:true});
+  const lm=new Set(Object.keys(aug.multipliers||{}).map(x=>String(x).toUpperCase()));
+  let count=0;
+  for(const e of base){
+    const hasLabel=(e.labels||[]).some(L=>lm.has(String(L).toUpperCase()));
+    const byName = !!(nameMultiplierLookup(aug.unique,e.name) || nameMultiplierLookup(aug.awakened,e.name));
+    const blanket = (aug.uniqueMultiplier && (e.labels||[]).includes('UNIQUE')) ||
+                    (aug.awakenedMultiplier && (e.labels||[]).includes('AWAKENED'));
+    if(hasLabel||byName||blanket) count++;
+  }
+  return count;
+}
+
+/* ========================== Eligibility & Multipliers ========================== */
+function eligiblePool(itemType){
+  if(!itemType) return [];
+  const IT = itemType.toUpperCase();
+
+  return ENCHANTS.filter(e=>{
+    if(!e.rollable){
+      const sel = document.getElementById('artifactCard').value;
+      const aug = AUGMENTS_BY_NAME[sel];
+      const guaranteed = !!(aug && aug.guaranteedMods && aug.guaranteedMods.includes(e.name));
+      if(!guaranteed) return false;
+    }
+
+    if(e.incompatItemLabels && e.incompatItemLabels.includes(IT)) return false;
+    const hasItem = (e.itemLabels||[]).includes('EQUIPMENT') || (e.itemLabels||[]).includes(IT);
+    if(!hasItem) return false;
+
+    if((e.labels||[]).includes('AWAKENED')){
+      const chosen = (document.getElementById('awakenItem')?.value || '').trim();
+      if(!chosen) return false;
+      const awakenTargets = AWAKENING_MAP[e.name] || [];
+      const norm = s => s.toLowerCase().replace(/[’']/g,"'").trim();
+      if(!awakenTargets.some(x => norm(x) === norm(chosen))) return false;
+    }
+
+    return true;
+  });
+}
+
+function getCurrentPool(itemType, withAugment = true){
+  const base = eligiblePool(itemType);
+  return withAugment ? applyAugmentMultipliers(base) : base;
+}
+function getTierFromLabels(labs){
+  // expects labels like TIER1, TIER2...
+  for(const L of labs||[]){
+    const m=/TIER(\d+)/i.exec(L);
+    if(m) return parseInt(m[1],10);
+  }
+  return null;
+}
+function applyAugmentMultipliers(pool){
+  const sel = document.getElementById('artifactCard')?.value || 'None';
+  const aug = AUGMENTS_BY_NAME?.[sel];
+  if (!aug) {
+    return pool.map(e => ({ ...e, weight: e.weight }));
+  }
+
+  // Families: stat labels get "max one", everything else stacks
+  const STAT_KEYS = new Set(["ATTACK","DEXTERITY","WISDOM","SPEED","VITALITY","DEFENSE","LIFE","MANA"]);
+  // These labels stack multiplicatively with the chosen stat-family multiplier
+  const STACK_KEYS = new Set(["STAT","TRADEOFF","DUALSTAT","REWARD","SUMMON","DAMAGE","DURABILITY","RECOVERY","CASTING","UNIQUE","AWAKENED"]);
+
+  return pool.map(e => {
+    const labels = e.labels || [];
+    let base = e.weight;
+
+    // Min tier filter (if present)
+    if (aug.minTier && aug.minTier > 1) {
+      // Find a TIERN label (e.g., TIER1, TIER2)
+      const tierTag = labels.find(l => /^TIER(\d+)$/.test(l));
+      if (tierTag) {
+        const t = parseInt(tierTag.match(/^TIER(\d+)$/)[1], 10);
+        if (t < aug.minTier) {
+          // Exclude by tier
+          return { ...e, weight: 0, _excludedByTier: true };
+        }
+      }
+    }
+
+    // Multipliers from label keys
+    let bestStatMult = 1;     // take the max among stat-family keys
+    let stackedMult = 1;      // multiply all from STACK_KEYS and other non-stat keys
+
+    if (aug.multipliers) {
+      for (const [key, val] of Object.entries(aug.multipliers)) {
+        if (!val || typeof val !== 'number') continue;
+
+        if (labels.includes(key)) {
+          if (STAT_KEYS.has(key)) {
+            // Only keep the strongest stat multiplier
+            if (val > bestStatMult) bestStatMult = val;
+          } else if (STACK_KEYS.has(key)) {
+            // These stack with stat-family
+            stackedMult *= val;
+          } else {
+            // Any other keys: treat as stackable too
+            stackedMult *= val;
+          }
+        }
+
+        // Blanket category boosts (premium cards): UNIQUE / AWAKENED
+        if (key === "UNIQUE" && labels.includes("UNIQUE")) stackedMult *= val;
+        if (key === "AWAKENED" && labels.includes("AWAKENED")) stackedMult *= val;
+      }
+    }
+
+    // Name-specific boosts (unique / awakened by exact enchant name)
+    // NOTE: If you also run normalization helpers elsewhere, they will still play nice with this:
+    if (aug.unique && aug.unique[e.name]) {
+      stackedMult *= aug.unique[e.name];
+    }
+    if (aug.awakened && aug.awakened[e.name]) {
+      stackedMult *= aug.awakened[e.name];
+    }
+
+    const finalWeight = Math.max(0, Math.floor(base * bestStatMult * stackedMult));
+    return { ...e, weight: finalWeight };
+  });
+}
+
+
+/* ========================== Rolling & Probabilities ========================== */
+function isCompatible(candidate, chosenArray){
+  const cLabels=new Set(candidate.labels||[]);
+  const cIncompat=new Set(candidate.incompatLabels||[]);
+  for(const ch of chosenArray){
+    if(!ch) continue;
+    const chLabels=new Set(ch.labels||[]);
+    const chIncompat=new Set(ch.incompatLabels||[]);
+    for(const x of cLabels) if(chIncompat.has(x)) return false;
+    for(const x of chLabels) if(cIncompat.has(x)) return false;
+    if(cLabels.has('SINGLESTAT') && chLabels.has('SINGLESTAT')) return false;
+    if(cLabels.has('MANAREGEN')  && chLabels.has('MANAREGEN'))  return false;
+  }
+  return true;
+}
+function weightedPick(list){
+  const total=list.reduce((a,b)=>a+b.weight,0);
+  let r=Math.random()*total;
+  for(const e of list){ r-=e.weight; if(r<=0) return e; }
+  return list[list.length-1];
+}
+function rollEnchantments(){
+  const it=document.getElementById('itemType').value;
+  if(!it){alert('Select an item type first');return;}
+  if(selectedSlots===0){alert('Select slot count');return;}
+  let pool=getCurrentPool(it,true);
+  
+
+  // Dust
+  const lockedCount=currentEnchantments.filter(s=>s.lockBtn.classList.contains('locked')).length;
+  const baseDust=BASE_DUST[selectedSlots]||0;
+  const augName=document.getElementById('artifactCard').value;
+  const augCost=AUGMENTS_BY_NAME[augName]?.cost||0;
+  const dust=(baseDust+augCost)*Math.pow(2,lockedCount);
+  totalDustUsed+=dust;
+  updateDustDisplay(`+${dust} dust this roll`);
+
+  // Roll unlocked slots respecting incompatibilities
+  const taken=currentEnchantments.filter(s=>s.lockBtn.classList.contains('locked')&&s.enchant).map(s=>s.enchant);
+  for(const slot of currentEnchantments){
+    if(slot.lockBtn.classList.contains('locked')&&slot.enchant) continue;
+    const valid=pool.filter(e=>isCompatible(e,taken));
+    if(!valid.length){slot.enchant=null;slot.element.textContent='Empty Slot';continue;}
+    const pick=weightedPick(valid);
+    slot.enchant=pick;
+    slot.element.innerHTML=`${pick.name}<br><span class='muted'>${pick.description||''}</span>`;
+    taken.push(pick);
+  }
+  enforceLockValidity();
+  updateWeightDebug();
+}
+function calculateProbability(){
+  const it=document.getElementById('itemType').value;
+  const q=document.getElementById('targetEnchantInput').value.trim();
+  const out=document.getElementById('probResult');
+  if(!it){out.textContent='Select item type first.';return;}
+  if(!q){out.textContent='Type enchant name first.';return;}
+  let pool=getCurrentPool(it,true);
+  
+
+  const locked=currentEnchantments.filter(s=>s.lockBtn.classList.contains('locked')&&s.enchant).map(s=>s.enchant);
+  pool=pool.filter(e=>isCompatible(e,locked));
+
+  const target=pool.find(e=>normalizeName(e.name)===normalizeName(q));
+  if(!target){ out.innerHTML=`<b>${q}</b><br>Chance: 0% (Incompatible or not in pool)`; return; }
+
+  const total=pool.reduce((a,b)=>a+b.weight,0);
+  const p = target.weight/total;
+  const effSlots = Math.max(1, selectedSlots - locked.length);
+  const chance = 1 - Math.pow(1-p, effSlots);
+  const expected = 1 / chance;
+
+  const augName=document.getElementById('artifactCard').value;
+  const augCost=AUGMENTS_BY_NAME[augName]?.cost||0;
+  const baseDust=BASE_DUST[selectedSlots]||0;
+  const perRollDust=(baseDust+augCost)*Math.pow(2,locked.length);
+  const expectedDust=perRollDust*expected;
+
+  out.innerHTML = `<b>${target.name}</b><br>Weight: ${Math.round(target.weight)}<br>Chance this roll (${effSlots} slot(s)): ${(chance*100).toFixed(4)}%<br>Expected rolls: ${expected.toFixed(2)}<br>Expected Dust Cost: ${expectedDust.toFixed(2)}`;
+}
+
+/* ========================== Validity, Dust & Breakdown ========================== */
+function enforceLockValidity(){
+  const it=document.getElementById('itemType').value;
+  const pool=getCurrentPool(it,true);
+  const validNames=new Set(pool.map(e=>e.name));
+  for(const s of currentEnchantments){
+    if(s.enchant && !validNames.has(s.enchant.name)){
+      s.enchant=null; s.element.textContent='Empty Slot';
+      s.lockBtn.classList.remove('locked'); s.lockBtn.textContent='Lock';
+    }
+  }
+}
+function updateDustDisplay(msg){
+  document.getElementById('dustDisplay').textContent=`Total Dust Used: ${totalDustUsed}`;
+  const d=document.getElementById('rollDelta');
+  if(msg){ d.textContent=msg; d.classList.add('show'); setTimeout(()=>d.classList.remove('show'),1500); }
+}
+function updateWeightDebug(){
+  const det=document.getElementById('weightDetails');
+  const it=document.getElementById('itemType').value;
+  if(!it){ det.textContent='Select an item type.'; return; }
+
+  // Always compute (even when hidden) so it’s up-to-date when shown
+  const base=getCurrentPool(it,false);
+  const aug=getSelectedAugment();
+  const finalPool = applyAugmentMultipliers(base);
+
+  const hasMul = aug && aug.name!=='None' && (
+    (aug.multipliers && Object.keys(aug.multipliers).length) ||
+    (aug.unique && Object.keys(aug.unique).length) ||
+    (aug.awakened && Object.keys(aug.awakened).length) ||
+    aug.uniqueMultiplier || aug.awakenedMultiplier || (aug.minTier!=null)
+  );
+
+  const overall = finalPool.reduce((a,b)=>a+b.weight,0);
+  if(!hasMul){
+    det.innerHTML = `No multipliers currently affecting this item.\nTotal weights (after filters): ${Math.round(overall).toLocaleString()}`;
+    return;
+  }
+
+  const lm=new Set(Object.keys((aug&&aug.multipliers)||{}).map(s=>String(s).toUpperCase()));
+  const affected = finalPool.filter(e=>{
+    let a=false;
+    if((e.labels||[]).some(L=>lm.has(String(L).toUpperCase()))) a=true;
+    if(!a && nameMultiplierLookup(aug.unique, e.name)) a=true;
+    if(!a && nameMultiplierLookup(aug.awakened, e.name)) a=true;
+    if(!a && aug.uniqueMultiplier   && (e.labels||[]).includes('UNIQUE'))   a=true;
+    if(!a && aug.awakenedMultiplier && (e.labels||[]).includes('AWAKENED')) a=true;
+    return a;
+  });
+
+  const sumAff = affected.reduce((a,b)=>a+b.weight,0);
+  if(!affected.length){
+    det.innerHTML = `No affected enchantments.\nTotal weights (after filters): ${Math.round(overall).toLocaleString()}`;
+    return;
+  }
+
+  affected.sort((a,b)=>b.weight-a.weight);
+  const top=affected.slice(0,25);
+  const lines = top.map(e=>`${e.name} — ${Math.round(e.weight).toLocaleString()}`);
+  if(affected.length>top.length) lines.push(`… and ${affected.length-top.length} more`);
+  lines.push('-----------------------------');
+  lines.push(`Affected Total: ${Math.round(sumAff).toLocaleString()}`);
+  lines.push(`Overall Total: ${Math.round(overall).toLocaleString()}`);
+  det.innerHTML = `<pre class="small">${lines.join('\n')}</pre>`;
+}
+
+/* ========================== Helpers & Events ========================== */
+function getSelectedAugment(){
+  const name=document.getElementById('artifactCard').value;
+  return AUGMENTS_BY_NAME[name]||null;
+}
+function bindEvents(){
+  document.getElementById('rollBtn').onclick=rollEnchantments;
+  document.getElementById('resetDust').onclick=()=>{totalDustUsed=0;updateDustDisplay();};
+  document.getElementById('itemType').onchange=()=>{refreshEligibility();enforceLockValidity();updateWeightDebug();};
+  document.getElementById('calcProbBtn').onclick=calculateProbability;
+  // Initialize Weight Breakdown collapsed by default
+const det = document.getElementById('weightDetails');
+det.style.display = 'none';
+document.getElementById('toggleWeightBtn').textContent = 'Show';
+
+// Fix first-click behavior
+document.getElementById('toggleWeightBtn').onclick = () => {
+  const btn = document.getElementById('toggleWeightBtn');
+  const currentlyHidden = det.style.display === 'none' || det.style.display === '';
+  det.style.display = currentlyHidden ? 'block' : 'none';
+  btn.textContent = currentlyHidden ? 'Hide' : 'Show';
+  updateWeightDebug();
+};
+
+}
+function refreshEligibility(){
+  const it=document.getElementById('itemType').value;
+  if(!it){ document.getElementById('eligibility').textContent=''; return; }
+  const p=getCurrentPool(it,false);
+  document.getElementById('eligibility').textContent=`Eligible Enchantments for ${it}: ${p.length}`;
+}
+
+/* ---------- IMPROVED AUTOCOMPLETE FOR TARGET ENCHANT INPUT ---------- */
+(function enableEnchantAutocomplete() {
+  const input = document.getElementById('targetEnchantInput');
+
+  // Create suggestions container (properly positioned below the input)
+  const wrapper = document.createElement('div');
+  wrapper.style.position = 'relative';
+  input.parentNode.insertBefore(wrapper, input);
+  wrapper.appendChild(input);
+
+  const suggestionsBox = document.createElement('div');
+  suggestionsBox.className = 'suggest-box';
+  suggestionsBox.style.position = 'absolute';
+  suggestionsBox.style.top = '100%';
+  suggestionsBox.style.left = '0';
+  suggestionsBox.style.right = '0';
+  suggestionsBox.style.zIndex = '999';
+  wrapper.appendChild(suggestionsBox);
+
+  let activeIndex = -1;
+
+  input.addEventListener('input', () => {
+    const query = input.value.trim().toLowerCase();
+    suggestionsBox.innerHTML = '';
+    activeIndex = -1;
+    if (!query || !ENCHANTS.length) return;
+
+    const itemType = document.getElementById('itemType').value;
+    const eligible = eligiblePool(itemType);
+
+    // Split search terms into words, match if all appear in enchant name (order-insensitive)
+    const terms = query.split(/\s+/).filter(Boolean);
+    const matches = eligible.filter(e => {
+      const name = e.name.toLowerCase();
+      return terms.every(t => name.includes(t));
+    }).slice(0, 15);
+
+    if (!matches.length) return;
+
+    matches.forEach(e => {
+      const div = document.createElement('div');
+      div.className = 'suggest-item';
+      div.innerHTML = highlightMatch(e.name, terms);
+      div.onclick = () => {
+        input.value = e.name;
+        suggestionsBox.innerHTML = '';
+      };
+      suggestionsBox.appendChild(div);
+    });
+  });
+
+  input.addEventListener('keydown', e => {
+    const items = Array.from(suggestionsBox.children);
+    if (!items.length) return;
+
+    if (e.key === 'ArrowDown') {
+      activeIndex = (activeIndex + 1) % items.length;
+      updateActive(items);
+      e.preventDefault();
+    } else if (e.key === 'ArrowUp') {
+      activeIndex = (activeIndex - 1 + items.length) % items.length;
+      updateActive(items);
+      e.preventDefault();
+    } else if (e.key === 'Enter' && activeIndex >= 0) {
+      e.preventDefault();
+      input.value = items[activeIndex].textContent;
+      suggestionsBox.innerHTML = '';
+    }
+  });
+
+  document.addEventListener('click', e => {
+    if (!wrapper.contains(e.target)) suggestionsBox.innerHTML = '';
+  });
+
+  function updateActive(items) {
+    items.forEach((el, i) => {
+      el.style.background = i === activeIndex ? '#333' : '';
+    });
+  }
+
+  function highlightMatch(name, terms) {
+    let result = name;
+    terms.forEach(t => {
+      const regex = new RegExp(`(${t})`, 'ig');
+      result = result.replace(regex, '<b>$1</b>');
+    });
+    return result;
+  }
+})();
+
+
+// === Enhanced Awaken Normalization & Pool Handling (v9) ===
+function normalizeName(name) {
+  return name
+    ? name.toLowerCase()
+      .replace(/&#39;/g, "'")
+      .replace(/[’‘]/g, "'")
+      .replace(/\s+/g, ' ')
+      .trim()
+    : "";
+}
+
+// Normalize AWAKENING_MAP keys globally
+if (typeof AWAKENING_MAP !== 'undefined') {
+  const fixed = {};
+  for (const [k, v] of Object.entries(AWAKENING_MAP)) {
+    fixed[normalizeName(k)] = v.map(x => normalizeName(x));
+  }
+  AWAKENING_MAP = fixed;
+}
+
+// Rebuild awaken enchant pool when user picks item
+function rebuildAwakenPoolIfNeeded() {
+  if (!window.currentAwakenItem) return;
+  const chosen = normalizeName(window.currentAwakenItem);
+  const allAwakened = Object.entries(AWAKENING_MAP)
+    .filter(([enchant, items]) => items.includes(chosen))
+    .map(([enchant]) => enchant);
+
+  if (Array.isArray(window.enchants)) {
+    window.enchants.forEach(e => {
+      const n = normalizeName(e.name);
+      e._isAwakenedEligible = allAwakened.includes(n);
+    });
+  }
+}
+
+// Hook item selection
+if (typeof setupAwakenDropdown === 'function') {
+  const oldSetup = setupAwakenDropdown;
+  setupAwakenDropdown = function(...args) {
+    oldSetup.apply(this, args);
+    const dropdown = document.getElementById('awakenItemDropdown');
+    if (dropdown) {
+      dropdown.addEventListener('change', ev => {
+        window.currentAwakenItem = ev.target.value;
+        rebuildAwakenPoolIfNeeded();
+      });
+    }
+  };
+}
+
+</script>
+<script>
+(function enableAwakenAutocompleteV12() {
+  const checkbox = document.getElementById('canAwaken');
+  const input = document.getElementById('awakenItem');
+  if (!checkbox || !input) return;
+
+  // Ensure visibility toggles are controlled here (no inline styles)
+  const toggle = () => {
+    input.style.display = checkbox.checked ? 'inline-block' : 'none';
+    if (!checkbox.checked) {
+      input.value = '';
+      if (suggestionsBox) suggestionsBox.innerHTML = '';
+    }
+  };
+  toggle();
+  checkbox.addEventListener('change', toggle);
+
+  // Build wrapper + suggestions (match "Target Enchantment Probability" behaviour)
+  const wrapper = document.createElement('div');
+  wrapper.style.position = 'relative';
+  input.parentNode.insertBefore(wrapper, input);
+  wrapper.appendChild(input);
+
+  const suggestionsBox = document.createElement('div');
+  suggestionsBox.className = 'suggest-box'; // reuse same styling
+  suggestionsBox.style.position = 'absolute';
+  suggestionsBox.style.top = '100%';
+  suggestionsBox.style.left = '0';
+  suggestionsBox.style.right = '0';
+  suggestionsBox.style.zIndex = '999';
+  wrapper.appendChild(suggestionsBox);
+
+  let activeIndex = -1;
+
+  input.addEventListener('input', () => {
+    const q = (input.value || '').trim().toLowerCase();
+    suggestionsBox.innerHTML = '';
+    activeIndex = -1;
+
+    if (!q) return;
+
+    const list = (window.AWAKENABLE_ITEMS || []);
+    const matches = list.filter(name => name.toLowerCase().includes(q)).slice(0, 15);
+    if (!matches.length) return;
+
+    matches.forEach(name => {
+      const div = document.createElement('div');
+      div.className = 'suggest-item';
+      // simple highlight like probability box
+      const safe = name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      const re = new RegExp('(' + q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'ig');
+      div.innerHTML = name.replace(re, '<b>$1</b>');
+      div.onclick = () => {
+        input.value = name;
+        suggestionsBox.innerHTML = '';
+        // Trigger existing listeners in buildAwakenList()
+        input.dispatchEvent(new Event('input'));
+      };
+      suggestionsBox.appendChild(div);
+    });
+  });
+
+  input.addEventListener('keydown', e => {
+    const items = Array.from(suggestionsBox.children);
+    if (!items.length) return;
+
+    if (e.key === 'ArrowDown') {
+      activeIndex = (activeIndex + 1) % items.length;
+      updateActive(items);
+      e.preventDefault();
+    } else if (e.key === 'ArrowUp') {
+      activeIndex = (activeIndex - 1 + items.length) % items.length;
+      updateActive(items);
+      e.preventDefault();
+    } else if (e.key === 'Enter' && activeIndex >= 0) {
+      e.preventDefault();
+      items[activeIndex].click();
+    }
+  });
+
+  document.addEventListener('click', (ev) => {
+    if (!wrapper.contains(ev.target)) {
+      suggestionsBox.innerHTML = '';
+    }
+  });
+
+  function updateActive(items) {
+    items.forEach((el, i) => {
+      el.style.background = (i === activeIndex) ? '#333' : '';
+    });
+  }
+})();
+</script></body>
+</html>

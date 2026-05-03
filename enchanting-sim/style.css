@@ -1,0 +1,235 @@
+
+    :root{
+      --bg:#121212; --card:#1e1e1e; --ink:#eee; --muted:#9fb0d9;
+      --accent:#00bcd4; --accent-d:#0097a7; --chip:#444; --slot:#2a2a2a;
+      --border:#333; --panel:#0f0f0f;
+    }
+    html, body{ background:var(--bg); color:var(--ink); font-family:system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }
+    h1{ color:var(--accent); text-align:center; margin:20px 0; }
+    .container{ max-width:1100px; margin:0 auto; padding:12px 16px 40px; }
+    select, button, input{ padding:10px; margin:10px; border-radius:8px; border:none; color:var(--ink); background:#222; }
+    button{ background:var(--accent); color:#fff; cursor:pointer; }
+    button:hover{ background:var(--accent-d); }
+    .card{ background:var(--card); border-radius:12px; padding:16px; margin-top:12px; }
+    .cols{ display:flex; gap:16px; flex-wrap:wrap; }
+    .col{ flex:1 1 360px; min-width:320px; }
+    .muted{ color:var(--muted); font-size:12px; }
+    .small{ font-size:12px; color:#fff; }
+
+    .slot-btn{ display:inline-flex; align-items:center; justify-content:center; width:48px; height:48px; margin:5px; border-radius:50%; background:var(--chip); color:#fff; cursor:pointer; user-select:none; }
+    .slot-btn.active{ background:var(--accent); }
+    .slot{ background:var(--slot); border-radius:10px; padding:10px; width:240px; position:relative; min-height:60px; }
+    .slot-container{ display:flex; gap:10px; flex-wrap:wrap; margin-top:10px; }
+    .lock-toggle{ position:absolute; top:8px; right:8px; background:#333; color:#ccc; border:none; border-radius:6px; cursor:pointer; padding:2px 6px; font-size:12px; }
+    .locked{ background:#00796b !important; color:#fff !important; }
+
+    .aug-wrap{ position:relative; }
+    #augmentInfo{ font-size:13px; color:#ddd; background:#181818; border:1px solid var(--border); border-radius:8px; padding:10px 12px; margin:6px 10px 0; white-space:pre-line; display:none; max-width:560px; }
+
+    .prob-row{ display:flex; align-items:center; flex-wrap:wrap; gap:10px; }
+    #targetEnchantInput{ flex:1; min-width:260px; max-width:480px; font-size:14px; padding:8px; border-radius:8px; border:none; }
+    #suggestions{ position:relative; flex:1; max-width:480px; }
+    .suggest-box{ position:absolute; background:var(--card); border:1px solid var(--border); border-radius:6px; max-height:220px; overflow-y:auto; z-index:10; width:100%; box-shadow:0 0 8px rgba(0,0,0,0.45); }
+    .suggest-item{ padding:6px 8px; cursor:pointer; font-size:13px; }
+    .suggest-item:hover{ background:#333; }
+
+    .toggle-row{ display:flex; align-items:center; justify-content:space-between; gap:8px; }
+    #weightDetails{ display:none; margin-top:8px; background:var(--panel); border-radius:10px; padding:10px; }
+
+    .awaken-row{ display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+    .inline{ display:inline-flex; align-items:center; gap:8px; }
+    datalist option{ color:#000; }
+    #awakenItem{ min-width:260px; max-width:480px; }
+    #rollDelta{ color:#ffd54f; font-size:12px; margin-left:8px; opacity:0; transition:opacity .4s ease; }
+    #rollDelta.show{ opacity:1; }
+
+    pre{ white-space:pre-wrap; word-break:break-word; }
+  
+/* === v10 Smoothness & Styling Enhancements === */
+
+/* General transitions */
+button, select, input, .slot {
+  transition: all 0.25s ease;
+}
+
+/* Hover animations */
+button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+select:hover, input:hover {
+  background: #2a2a2a;
+  box-shadow: 0 0 6px rgba(0,188,212,0.3);
+}
+.slot:hover {
+  transform: scale(1.02);
+  box-shadow: 0 0 12px rgba(0,188,212,0.2);
+}
+
+/* Probability row alignment */
+.prob-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.prob-row input {
+  flex: 1;
+  min-width: 260px;
+  max-width: 480px;
+}
+.prob-row #calcProbBtn {
+  margin-left: auto;
+}
+
+/* Awaken search styling (same as probability search) */
+.awaken-wrapper {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+  max-width: 480px;
+}
+#awakenItem {
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
+  background: var(--slot);
+  color: var(--ink);
+}
+#awakenSuggestBox {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.45);
+  max-height: 220px;
+  overflow-y: auto;
+  display: none;
+}
+#awakenSuggestBox .suggest-item {
+  padding: 8px 10px;
+  cursor: pointer;
+  font-size: 13px;
+}
+#awakenSuggestBox .suggest-item:hover,
+#awakenSuggestBox .suggest-item.active {
+  background: #333;
+}
+
+
+/* === v11 Layout & UI Enhancements === */
+
+/* Slot grid fix */
+#slotsContainer {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)) !important;
+  gap: 14px !important;
+  justify-content: center !important;
+}
+
+/* Lock button and slot content balance */
+.slot {
+  position: relative;
+  background: var(--slot);
+  border-radius: 10px;
+  padding: 30px 12px 12px;
+  min-width: 220px;
+  max-width: 240px;
+  min-height: 100px;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+.lock-toggle {
+  position: absolute !important;
+  top: 6px !important;
+  right: 6px !important;
+  z-index: 5;
+  background: #333;
+  color: #eee;
+  border: 1px solid #444;
+  border-radius: 8px;
+  padding: 2px 6px;
+  font-size: 11px;
+}
+.lock-toggle.locked {
+  background: var(--accent, #00bcd4);
+  color: #001116;
+}
+
+/* Awaken search box styling */
+.awaken-wrapper {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+  max-width: 380px;
+}
+#awakenItem {
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
+  background: var(--slot);
+  color: var(--ink);
+  transition: all 0.25s ease;
+}
+#awakenItem:focus {
+  outline: none;
+  box-shadow: 0 0 8px rgba(0,188,212,0.4);
+}
+
+/* Awaken dropdown styled like Target Probability */
+#awakenSuggestBox {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.45);
+  max-height: 220px;
+  overflow-y: auto;
+  display: none;
+  animation: fadeIn 0.15s ease-in-out;
+}
+#awakenSuggestBox .suggest-item {
+  padding: 8px 10px;
+  cursor: pointer;
+  font-size: 13px;
+  transition: background 0.2s ease;
+}
+#awakenSuggestBox .suggest-item:hover,
+#awakenSuggestBox .suggest-item.active {
+  background: #333;
+  color: var(--accent);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-3px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* === v12 Awaken input visual parity with Probability input === */
+#awakenItem {
+  flex: 1;
+  min-width: 260px;
+  max-width: 480px; /* visually match targetEnchantInput */
+  font-size: 14px;
+  padding: 8px;
+  border-radius: 8px;
+  border: none;
+}
+/* Maintain smooth hover/focus like inputs */
+#awakenItem:hover { background: #2a2a2a; box-shadow: 0 0 6px rgba(0,188,212,0.3); }
+#awakenItem:focus { outline: none; box-shadow: 0 0 8px rgba(0,188,212,0.4); }
