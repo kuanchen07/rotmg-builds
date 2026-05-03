@@ -1,8 +1,8 @@
 /**
  * Set checker — compares BiS enchant lines in the page to live RealmEye player JSON only.
  * Set window.REALMEYE_LIVE_API_BASE (Vercel origin, no trailing slash). There is no local snapshot fallback.
- * Username: user enters in the panel; the last successful load is remembered for this page only (tab
- * session, no localStorage). Optional prefill when no session user: REALMEYE_SET_CHECKER_PLAYER (page default).
+ * Username: user enters in the panel; the last successful load is remembered in `sessionStorage` when available
+ * (tab session only). Optional prefill fallback: REALMEYE_SET_CHECKER_PLAYER (page default).
  * Class filter: `window.REALMEYE_SET_CHECKER_CLASS` — lowercase RealmEye class slug(s), e.g. `rogue`, `necromancer` (see page inline script).
  *
  * Triggers: buttons with class `set-checker-trigger` and `data-bis-root` pointing to the build article id.
@@ -13,6 +13,7 @@
   "use strict";
 
   const BACKPACK_SLUG = "backpack-extender";
+  const SET_CHECKER_SESSION_USERNAME_KEY = "vitSetCheckerRealmeyeUsername";
 
   /**
    * Public equipment sprite base URL (S3-compatible B2). Keys in `data/wiki-slug-icon-paths.json` are
@@ -95,6 +96,34 @@
     return `<p class="set-checker-source set-checker-source--live">Live data from RealmEye (<code>${escapeHtml(
       name
     )}</code>).</p>`;
+  }
+
+  function readSessionUsername() {
+    try {
+      if (typeof window === "undefined" || !window.sessionStorage) {
+        return "";
+      }
+      const raw = window.sessionStorage.getItem(SET_CHECKER_SESSION_USERNAME_KEY);
+      return typeof raw === "string" ? raw.trim() : "";
+    } catch (_) {
+      return "";
+    }
+  }
+
+  function writeSessionUsername(/** @type {string} */ username) {
+    const name = String(username || "").trim();
+    try {
+      if (typeof window === "undefined" || !window.sessionStorage) {
+        return;
+      }
+      if (name) {
+        window.sessionStorage.setItem(SET_CHECKER_SESSION_USERNAME_KEY, name);
+      } else {
+        window.sessionStorage.removeItem(SET_CHECKER_SESSION_USERNAME_KEY);
+      }
+    } catch (_) {
+      /* ignore storage errors */
+    }
   }
 
   function norm(s) {
@@ -1088,7 +1117,7 @@
     let loadGeneration = 0;
     /** @type {string} */
     let currentLiveUsername = "";
-    /** Last successfully loaded RealmEye username for this tab session only (not persisted). */
+    /** Last successfully loaded RealmEye username for this page runtime. */
     let sessionRealmeyeUsername = "";
 
     function pageDefaultUsername() {
@@ -1097,8 +1126,12 @@
       return v;
     }
 
+    function preferredUsername() {
+      return readSessionUsername() || sessionRealmeyeUsername.trim() || pageDefaultUsername();
+    }
+
     function usernameFormPrefill() {
-      return sessionRealmeyeUsername.trim() || pageDefaultUsername();
+      return preferredUsername();
     }
 
     function prefersReducedMotion() {
@@ -1259,6 +1292,7 @@
           return;
         }
         sessionRealmeyeUsername = name;
+        writeSessionUsername(name);
         currentLiveUsername = name;
         const characters = charactersForClassFromPayload(meta.data, getSetCheckerClassSlug());
         await renderCharacterPicker(sidebarMainPane, characters, bisRootId, name);
@@ -1296,7 +1330,7 @@
         ensureSidebarPanes();
         hideWeaponDpsReturnMain();
         openShell();
-        const sessionName = sessionRealmeyeUsername.trim();
+        const sessionName = preferredUsername();
         if (sessionName) {
           void runLoad(sessionName);
         } else {
