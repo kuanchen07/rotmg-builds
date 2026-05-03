@@ -7,7 +7,8 @@
   var introHref = inClasses ? "../index.html" : "index.html";
   var buildsHref = inClasses ? "builds.html" : "classes/builds.html";
   var creditsHref = inClasses ? "credits.html" : "classes/credits.html";
-  var iconSrc = inClasses ? "../icons/!menu.png" : "icons/!menu.png";
+  /* Local UI asset only; item sprites use scripts/lib/icon-cdn-base.cjs (B2). */
+  var iconSrc = inClasses ? "../icons/menu.png" : "icons/menu.png";
 
   var fileName = path.split("/").pop() || "";
   var isIntro =

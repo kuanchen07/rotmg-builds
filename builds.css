@@ -961,8 +961,109 @@ body.set-checker-sidebar-open.has-build-variant-nav .build-variant-nav {
   margin: 0 0 0.65rem;
 }
 .set-checker-mount {
-  min-height: 2rem;
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
   margin-bottom: 0.75rem;
+}
+.set-checker-main-pane {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+}
+.set-checker-dps-pane {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+}
+.set-checker-dps-inner {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  padding-right: 0.15rem;
+}
+.set-checker-dps-toolbar {
+  display: flex;
+  justify-content: flex-start;
+}
+.set-checker-dps-heading {
+  margin: 0;
+  font-size: 1.05rem;
+  color: #f0f0f0;
+}
+.set-checker-dps-slug {
+  margin: 0;
+  font-size: 0.82rem;
+  color: #9a9a9a;
+}
+.set-checker-dps-slug code {
+  font-size: inherit;
+}
+.set-checker-dps-placeholder-msg {
+  margin: 0;
+}
+.set-checker-dps-wiki-lines {
+  margin: 0;
+  font-size: 0.78rem;
+  line-height: 1.35;
+  color: #b8b8b8;
+  word-break: break-word;
+}
+.set-checker-dps-shots {
+  margin: 0;
+  padding: 0.6rem 0.65rem;
+  font-size: 0.75rem;
+  line-height: 1.35;
+  background: #0f0f12;
+  border: 1px solid #353540;
+  border-radius: 0.35rem;
+  overflow-x: auto;
+  color: #c8dcf0;
+}
+.set-checker-row-title--weapon {
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  gap: 0.5rem;
+}
+.set-checker-row-title-start {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem 0.45rem;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.set-checker-row-title--weapon .set-checker-row-title-text {
+  flex: 0 1 auto;
+}
+.set-checker-row-dps-actions {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 0.18rem;
+  margin-left: 0.35rem;
+}
+.set-checker-dps-pause {
+  box-sizing: border-box;
+  min-width: 2rem;
+  height: 1.95rem;
+  padding: 0 0.4rem;
+  font: inherit;
+  font-size: 0.88rem;
+  line-height: 1;
+  color: #e8f4ff;
+  background: linear-gradient(#2a3540, #1e252e);
+  border: 1px solid #455a66;
+  border-radius: 0.35rem;
+  cursor: pointer;
+}
+.set-checker-dps-pause:hover,
+.set-checker-dps-pause:focus-visible {
+  outline: none;
+  border-color: #6abfff;
+  color: #fff;
 }
 .set-checker-loading {
   margin: 0;
