@@ -257,6 +257,54 @@
     return `<span class="set-checker-row-icons">${inner}</span>`;
   }
 
+  /** Tiered ring stat name -> file suffix in `rings/tiered/tX-*.png`. */
+  const TIERED_RING_STAT_TO_SUFFIX = {
+    health: "hp",
+    magic: "mp",
+    attack: "att",
+    defense: "def",
+    speed: "spd",
+    dexterity: "dex",
+    vitality: "vit",
+    wisdom: "wis",
+  };
+
+  /** Prefix word in ring slug -> tier number (ring-of-<prefix>-<stat>). */
+  const TIERED_RING_PREFIX_TO_TIER = {
+    greater: 2,
+    superior: 3,
+    paramount: 4,
+    exalted: 5,
+    unbound: 6,
+    transcendent: 7,
+  };
+
+  /**
+   * Returns canonical tiered ring icon object key from a ring wiki slug.
+   * Example: ring-of-exalted-dexterity -> rings/tiered/t5-dex.png
+   * @param {string} wikiSlug
+   * @returns {string}
+   */
+  function tieredRingPathFromSlug(wikiSlug) {
+    const slug = norm(wikiSlug);
+    if (slug === "ring-of-minor-defense") {
+      return "rings/tiered/t0-def.png";
+    }
+    const m =
+      /^ring-of-(?:(greater|superior|paramount|exalted|unbound|transcendent)-)?(health|magic|attack|defense|speed|dexterity|vitality|wisdom)$/.exec(
+        slug
+      );
+    if (!m) {
+      return "";
+    }
+    const tier = m[1] ? TIERED_RING_PREFIX_TO_TIER[m[1]] : 1;
+    const statSuffix = TIERED_RING_STAT_TO_SUFFIX[m[2]];
+    if (!tier || !statSuffix) {
+      return "";
+    }
+    return `rings/tiered/t${tier}-${statSuffix}.png`;
+  }
+
   /**
    * @param {Record<string, { src: string; alt: string }>} registry
    * @param {Record<string, string>} slugToRelPath from ensureWikiSlugIconPaths()
@@ -275,6 +323,14 @@
     const rel = slug && slugToRelPath && slugToRelPath[slug];
     if (rel) {
       const src = EQUIP_ICON_CDN_BASE + String(rel).replace(/^\/+/, "");
+      const alt = fallbackTitle || slug;
+      return `<img class="set-checker-row-icon set-checker-equipped-icon" src="${escapeHtml(src)}" alt="${escapeHtml(
+        alt
+      )}" loading="lazy" decoding="async" width="22" height="22">`;
+    }
+    const tieredRingRel = tieredRingPathFromSlug(slug);
+    if (tieredRingRel) {
+      const src = EQUIP_ICON_CDN_BASE + tieredRingRel;
       const alt = fallbackTitle || slug;
       return `<img class="set-checker-row-icon set-checker-equipped-icon" src="${escapeHtml(src)}" alt="${escapeHtml(
         alt

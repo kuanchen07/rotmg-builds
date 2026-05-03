@@ -779,6 +779,214 @@
     "blood-axe": {
       "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/swords/limited-edition/blood-axe.png",
       "alt": "Blood Axe"
+    },
+    "ring-of-minor-defense": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/rings/tiered/t0-def.png",
+      "alt": "Ring of Minor Defense"
+    },
+    "ring-of-health": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/rings/tiered/t1-hp.png",
+      "alt": "Ring of Health"
+    },
+    "ring-of-greater-health": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/rings/tiered/t2-hp.png",
+      "alt": "Ring of Greater Health"
+    },
+    "ring-of-superior-health": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/rings/tiered/t3-hp.png",
+      "alt": "Ring of Superior Health"
+    },
+    "ring-of-paramount-health": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/rings/tiered/t4-hp.png",
+      "alt": "Ring of Paramount Health"
+    },
+    "ring-of-exalted-health": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/rings/tiered/t5-hp.png",
+      "alt": "Ring of Exalted Health"
+    },
+    "ring-of-unbound-health": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/rings/tiered/t6-hp.png",
+      "alt": "Ring of Unbound Health"
+    },
+    "ring-of-transcendent-health": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/rings/tiered/t7-hp.png",
+      "alt": "Ring of Transcendent Health"
+    },
+    "ring-of-magic": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/rings/tiered/t1-mp.png",
+      "alt": "Ring of Magic"
+    },
+    "ring-of-greater-magic": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/rings/tiered/t2-mp.png",
+      "alt": "Ring of Greater Magic"
+    },
+    "ring-of-superior-magic": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/rings/tiered/t3-mp.png",
+      "alt": "Ring of Superior Magic"
+    },
+    "ring-of-paramount-magic": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/rings/tiered/t4-mp.png",
+      "alt": "Ring of Paramount Magic"
+    },
+    "ring-of-exalted-magic": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/rings/tiered/t5-mp.png",
+      "alt": "Ring of Exalted Magic"
+    },
+    "ring-of-unbound-magic": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/rings/tiered/t6-mp.png",
+      "alt": "Ring of Unbound Magic"
+    },
+    "ring-of-attack": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/rings/tiered/t1-att.png",
+      "alt": "Ring of Attack"
+    },
+    "ring-of-greater-attack": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/rings/tiered/t2-att.png",
+      "alt": "Ring of Greater Attack"
+    },
+    "ring-of-superior-attack": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/rings/tiered/t3-att.png",
+      "alt": "Ring of Superior Attack"
+    },
+    "ring-of-paramount-attack": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/rings/tiered/t4-att.png",
+      "alt": "Ring of Paramount Attack"
+    },
+    "ring-of-exalted-attack": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/rings/tiered/t5-att.png",
+      "alt": "Ring of Exalted Attack"
+    },
+    "ring-of-unbound-attack": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/rings/tiered/t6-att.png",
+      "alt": "Ring of Unbound Attack"
+    },
+    "ring-of-transcendent-attack": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/rings/tiered/t7-att.png",
+      "alt": "Ring of Transcendent Attack"
+    },
+    "ring-of-defense": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/rings/tiered/t1-def.png",
+      "alt": "Ring of Defense"
+    },
+    "ring-of-greater-defense": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/rings/tiered/t2-def.png",
+      "alt": "Ring of Greater Defense"
+    },
+    "ring-of-superior-defense": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/rings/tiered/t3-def.png",
+      "alt": "Ring of Superior Defense"
+    },
+    "ring-of-paramount-defense": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/rings/tiered/t4-def.png",
+      "alt": "Ring of Paramount Defense"
+    },
+    "ring-of-exalted-defense": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/rings/tiered/t5-def.png",
+      "alt": "Ring of Exalted Defense"
+    },
+    "ring-of-unbound-defense": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/rings/tiered/t6-def.png",
+      "alt": "Ring of Unbound Defense"
+    },
+    "ring-of-speed": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/rings/tiered/t1-spd.png",
+      "alt": "Ring of Speed"
+    },
+    "ring-of-greater-speed": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/rings/tiered/t2-spd.png",
+      "alt": "Ring of Greater Speed"
+    },
+    "ring-of-superior-speed": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/rings/tiered/t3-spd.png",
+      "alt": "Ring of Superior Speed"
+    },
+    "ring-of-paramount-speed": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/rings/tiered/t4-spd.png",
+      "alt": "Ring of Paramount Speed"
+    },
+    "ring-of-exalted-speed": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/rings/tiered/t5-spd.png",
+      "alt": "Ring of Exalted Speed"
+    },
+    "ring-of-unbound-speed": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/rings/tiered/t6-spd.png",
+      "alt": "Ring of Unbound Speed"
+    },
+    "ring-of-transcendent-speed": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/rings/tiered/t7-spd.png",
+      "alt": "Ring of Transcendent Speed"
+    },
+    "ring-of-dexterity": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/rings/tiered/t1-dex.png",
+      "alt": "Ring of Dexterity"
+    },
+    "ring-of-greater-dexterity": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/rings/tiered/t2-dex.png",
+      "alt": "Ring of Greater Dexterity"
+    },
+    "ring-of-superior-dexterity": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/rings/tiered/t3-dex.png",
+      "alt": "Ring of Superior Dexterity"
+    },
+    "ring-of-paramount-dexterity": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/rings/tiered/t4-dex.png",
+      "alt": "Ring of Paramount Dexterity"
+    },
+    "ring-of-exalted-dexterity": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/rings/tiered/t5-dex.png",
+      "alt": "Ring of Exalted Dexterity"
+    },
+    "ring-of-unbound-dexterity": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/rings/tiered/t6-dex.png",
+      "alt": "Ring of Unbound Dexterity"
+    },
+    "ring-of-vitality": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/rings/tiered/t1-vit.png",
+      "alt": "Ring of Vitality"
+    },
+    "ring-of-greater-vitality": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/rings/tiered/t2-vit.png",
+      "alt": "Ring of Greater Vitality"
+    },
+    "ring-of-superior-vitality": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/rings/tiered/t3-vit.png",
+      "alt": "Ring of Superior Vitality"
+    },
+    "ring-of-paramount-vitality": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/rings/tiered/t4-vit.png",
+      "alt": "Ring of Paramount Vitality"
+    },
+    "ring-of-exalted-vitality": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/rings/tiered/t5-vit.png",
+      "alt": "Ring of Exalted Vitality"
+    },
+    "ring-of-unbound-vitality": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/rings/tiered/t6-vit.png",
+      "alt": "Ring of Unbound Vitality"
+    },
+    "ring-of-wisdom": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/rings/tiered/t1-wis.png",
+      "alt": "Ring of Wisdom"
+    },
+    "ring-of-greater-wisdom": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/rings/tiered/t2-wis.png",
+      "alt": "Ring of Greater Wisdom"
+    },
+    "ring-of-superior-wisdom": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/rings/tiered/t3-wis.png",
+      "alt": "Ring of Superior Wisdom"
+    },
+    "ring-of-paramount-wisdom": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/rings/tiered/t4-wis.png",
+      "alt": "Ring of Paramount Wisdom"
+    },
+    "ring-of-exalted-wisdom": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/rings/tiered/t5-wis.png",
+      "alt": "Ring of Exalted Wisdom"
+    },
+    "ring-of-unbound-wisdom": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/rings/tiered/t6-wis.png",
+      "alt": "Ring of Unbound Wisdom"
     }
   },
   "aliases": {
