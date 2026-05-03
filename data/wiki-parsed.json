@@ -1,0 +1,450 @@
+﻿{
+  "archangel-s-judgement": {
+    "url": "https://www.realmeye.com/wiki/archangel-s-judgement",
+    "ok": true,
+    "parsed": {
+      "shotsRaw": "4&nbsp;(arc gap: 5┬░)",
+      "shotN": 4,
+      "damageRaw": "60ΓÇô75 (average: 67.5)",
+      "avg": 67.5,
+      "total": null,
+      "rofRaw": "85%",
+      "rofPct": 85
+    },
+    "hasShotsCell": true
+  },
+  "atavistic-soul-sabre": {
+    "url": "https://www.realmeye.com/wiki/atavistic-soul-sabre",
+    "ok": true,
+    "parsed": {
+      "shotsRaw": "1",
+      "shotN": 1,
+      "damageRaw": "420ΓÇô475 (average: 447.5)",
+      "avg": 447.5,
+      "total": null,
+      "rofRaw": "60%",
+      "rofPct": 60
+    },
+    "hasShotsCell": true
+  },
+  "blood-siphoning-katana": {
+    "url": "https://www.realmeye.com/wiki/blood-siphoning-katana",
+    "ok": true,
+    "parsed": {
+      "shotsRaw": "1",
+      "shotN": 1,
+      "damageRaw": "440ΓÇô520 (average: 480)",
+      "avg": 480,
+      "total": null,
+      "rofRaw": "40%",
+      "rofPct": 40
+    },
+    "hasShotsCell": true
+  },
+  "bolt-thrower": {
+    "url": "https://www.realmeye.com/wiki/bolt-thrower",
+    "ok": true,
+    "parsed": {
+      "shotsRaw": "1",
+      "shotN": 1,
+      "damageRaw": "110ΓÇô125 (average: 117.5)",
+      "avg": 117.5,
+      "total": null,
+      "rofRaw": "80%",
+      "rofPct": 80
+    },
+    "hasShotsCell": true
+  },
+  "bow-of-deep-enchantment": {
+    "url": "https://www.realmeye.com/wiki/bow-of-deep-enchantment",
+    "ok": true,
+    "parsed": {
+      "shotsRaw": "1",
+      "shotN": 1,
+      "damageRaw": "145ΓÇô155 (average: 150)",
+      "avg": 150,
+      "total": null,
+      "rofRaw": null,
+      "rofPct": null
+    },
+    "hasShotsCell": true
+  },
+  "clockwork-repeater": {
+    "url": "https://www.realmeye.com/wiki/clockwork-repeater",
+    "ok": true,
+    "parsed": {
+      "shotsRaw": "1",
+      "shotN": 1,
+      "damageRaw": "625ΓÇô700 (average: 662.5)",
+      "avg": 662.5,
+      "total": null,
+      "rofRaw": "33%",
+      "rofPct": 33
+    },
+    "hasShotsCell": true
+  },
+  "damnation": {
+    "url": "https://www.realmeye.com/wiki/damnation",
+    "ok": true,
+    "parsed": {
+      "shotsRaw": "1",
+      "shotN": 1,
+      "damageRaw": "1,000ΓÇô1,200 (average: 1,100)",
+      "avg": 1,
+      "total": null,
+      "rofRaw": "20%",
+      "rofPct": 20
+    },
+    "hasShotsCell": true
+  },
+  "deliverance": {
+    "url": "https://www.realmeye.com/wiki/deliverance",
+    "ok": true,
+    "parsed": {
+      "shotsRaw": "1",
+      "shotN": 1,
+      "damageRaw": "115ΓÇô165 (average: 140)",
+      "avg": 140,
+      "total": null,
+      "rofRaw": null,
+      "rofPct": null
+    },
+    "hasShotsCell": true
+  },
+  "demon-blade": {
+    "url": "https://www.realmeye.com/wiki/demon-blade",
+    "ok": true,
+    "parsed": {
+      "shotsRaw": "2&nbsp;(arc gap: 25┬░)",
+      "shotN": 2,
+      "damageRaw": "150ΓÇô175 (average: 162.5&nbsp;/ total: 325)",
+      "avg": 162.5,
+      "total": 325,
+      "rofRaw": null,
+      "rofPct": null
+    },
+    "hasShotsCell": true
+  },
+  "dirk-of-cronus": {
+    "url": "https://www.realmeye.com/wiki/dirk-of-cronus",
+    "ok": true,
+    "parsed": {
+      "shotsRaw": "1",
+      "shotN": 1,
+      "damageRaw": "150ΓÇô290 (average: 220)",
+      "avg": 220,
+      "total": null,
+      "rofRaw": "95%",
+      "rofPct": 95
+    },
+    "hasShotsCell": true
+  },
+  "dusky-catalyst": {
+    "url": "https://www.realmeye.com/wiki/dusky-catalyst",
+    "ok": true,
+    "parsed": {
+      "shotsRaw": "1",
+      "shotN": 1,
+      "damageRaw": "100ΓÇô186 (average: 143)",
+      "avg": 143,
+      "total": null,
+      "rofRaw": "150%",
+      "rofPct": 150
+    },
+    "hasShotsCell": true
+  },
+  "earthen-ward": {
+    "url": "https://www.realmeye.com/wiki/earthen-ward",
+    "ok": true,
+    "parsed": {
+      "shotsRaw": "3&nbsp;(arc gap: 120┬░)",
+      "shotN": 3,
+      "damageRaw": "125ΓÇô145 (average: 135&nbsp;/ total: 405)",
+      "avg": 135,
+      "total": 405,
+      "rofRaw": null,
+      "rofPct": null
+    },
+    "hasShotsCell": true
+  },
+  "elder-heartwood-staff": {
+    "url": "https://www.realmeye.com/wiki/elder-heartwood-staff",
+    "ok": true,
+    "parsed": {
+      "shotsRaw": "2&nbsp;(arc gap: 11.25┬░)",
+      "shotN": 2,
+      "damageRaw": "60ΓÇô115 (average: 87.5)",
+      "avg": 87.5,
+      "total": null,
+      "rofRaw": "160%",
+      "rofPct": 160
+    },
+    "hasShotsCell": true
+  },
+  "enforcer": {
+    "url": "https://www.realmeye.com/wiki/enforcer",
+    "ok": true,
+    "parsed": {
+      "shotsRaw": "2&nbsp;(arc gap: 12┬░)",
+      "shotN": 2,
+      "damageRaw": "105ΓÇô145 (average: 125&nbsp;/ total: 250)",
+      "avg": 125,
+      "total": 250,
+      "rofRaw": null,
+      "rofPct": null
+    },
+    "hasShotsCell": true
+  },
+  "fortitude": {
+    "url": "https://www.realmeye.com/wiki/fortitude",
+    "ok": true,
+    "parsed": {
+      "shotsRaw": "1",
+      "shotN": 1,
+      "damageRaw": "600ΓÇô700 (average: 650)",
+      "avg": 650,
+      "total": null,
+      "rofRaw": "33%",
+      "rofPct": 33
+    },
+    "hasShotsCell": true
+  },
+  "fractal-blades": {
+    "url": "https://www.realmeye.com/wiki/fractal-blades",
+    "ok": true,
+    "parsed": {
+      "shotsRaw": "2",
+      "shotN": 2,
+      "damageRaw": "75ΓÇô105 (average: 90)",
+      "avg": 90,
+      "total": null,
+      "rofRaw": "90%",
+      "rofPct": 90
+    },
+    "hasShotsCell": true
+  },
+  "frostfall-rod": {
+    "url": "https://www.realmeye.com/wiki/frostfall-rod",
+    "ok": true,
+    "parsed": {
+      "shotsRaw": "5",
+      "shotN": 5,
+      "damageRaw": "200ΓÇô240 (average: 220&nbsp;/ total: 1100)",
+      "avg": 220,
+      "total": 1100,
+      "rofRaw": "110%",
+      "rofPct": 110
+    },
+    "hasShotsCell": true
+  },
+  "laser-pointer": {
+    "url": "https://www.realmeye.com/wiki/laser-pointer",
+    "ok": true,
+    "parsed": {
+      "shotsRaw": "1",
+      "shotN": 1,
+      "damageRaw": "95ΓÇô130 (average: 112.5)",
+      "avg": 112.5,
+      "total": null,
+      "rofRaw": "150%",
+      "rofPct": 150
+    },
+    "hasShotsCell": true
+  },
+  "lumiaire": {
+    "url": "https://www.realmeye.com/wiki/lumiaire",
+    "ok": true,
+    "parsed": {
+      "shotsRaw": "2&nbsp;(arc gap: 6┬░)",
+      "shotN": 2,
+      "damageRaw": "80ΓÇô100 (average: 90&nbsp;/ total: 180)",
+      "avg": 90,
+      "total": 180,
+      "rofRaw": "150%",
+      "rofPct": 150
+    },
+    "hasShotsCell": true
+  },
+  "makakoyumi": {
+    "url": "https://www.realmeye.com/wiki/makakoyumi",
+    "ok": true,
+    "parsed": {
+      "shotsRaw": "1",
+      "shotN": 1,
+      "damageRaw": "800",
+      "avg": 800,
+      "total": null,
+      "rofRaw": "33%",
+      "rofPct": 33
+    },
+    "hasShotsCell": true
+  },
+  "oryx-s-greatsword": {
+    "url": "https://www.realmeye.com/wiki/oryx-s-greatsword",
+    "ok": true,
+    "parsed": {
+      "shotsRaw": "1",
+      "shotN": 1,
+      "damageRaw": "185ΓÇô215 (average: 200)",
+      "avg": 200,
+      "total": null,
+      "rofRaw": "120%",
+      "rofPct": 120
+    },
+    "hasShotsCell": true
+  },
+  "socket-blade": {
+    "url": "https://www.realmeye.com/wiki/socket-blade",
+    "ok": true,
+    "parsed": {
+      "shotsRaw": "1",
+      "shotN": 1,
+      "damageRaw": "720ΓÇô870 (average: 795)",
+      "avg": 795,
+      "total": null,
+      "rofRaw": "30%",
+      "rofPct": 30
+    },
+    "hasShotsCell": true
+  },
+  "st-abraham-s-wand": {
+    "url": "https://www.realmeye.com/wiki/st-abraham-s-wand",
+    "ok": true,
+    "parsed": {
+      "shotsRaw": "1",
+      "shotN": 1,
+      "damageRaw": "155ΓÇô180 (average: 167.5)",
+      "avg": 167.5,
+      "total": null,
+      "rofRaw": "90%",
+      "rofPct": 90
+    },
+    "hasShotsCell": true
+  },
+  "staff-of-extreme-prejudice": {
+    "url": "https://www.realmeye.com/wiki/staff-of-extreme-prejudice",
+    "ok": true,
+    "parsed": {
+      "shotsRaw": "10&nbsp;(arc gap: 36┬░)",
+      "shotN": 10,
+      "damageRaw": "95ΓÇô110 (average: 102.5&nbsp;/ total: 1025)",
+      "avg": 102.5,
+      "total": 1025,
+      "rofRaw": "40%",
+      "rofPct": 40
+    },
+    "hasShotsCell": true
+  },
+  "staff-of-unholy-sacrifice": {
+    "url": "https://www.realmeye.com/wiki/staff-of-unholy-sacrifice",
+    "ok": true,
+    "parsed": {
+      "shotsRaw": "4&nbsp;(arc gap: 13┬░)",
+      "shotN": 4,
+      "damageRaw": "155ΓÇô185 (average: 170&nbsp;/ total: 680)",
+      "avg": 170,
+      "total": 680,
+      "rofRaw": "55%",
+      "rofPct": 55
+    },
+    "hasShotsCell": true
+  },
+  "tideturner-trident": {
+    "url": "https://www.realmeye.com/wiki/tideturner-trident",
+    "ok": true,
+    "parsed": {
+      "shotsRaw": "3&nbsp;(arc gap: 6┬░)",
+      "shotN": 3,
+      "damageRaw": "85ΓÇô125 (average: 105&nbsp;/ total: 315)",
+      "avg": 105,
+      "total": 315,
+      "rofRaw": "70%",
+      "rofPct": 70
+    },
+    "hasShotsCell": true
+  },
+  "tools-of-the-tarnished": {
+    "url": "https://www.realmeye.com/wiki/tools-of-the-tarnished",
+    "ok": true,
+    "parsed": {
+      "shotsRaw": "1",
+      "shotN": 1,
+      "damageRaw": "65ΓÇô75 (average: 70)",
+      "avg": 70,
+      "total": null,
+      "rofRaw": "150%",
+      "rofPct": 150
+    },
+    "hasShotsCell": true
+  },
+  "valor": {
+    "url": "https://www.realmeye.com/wiki/valor",
+    "ok": true,
+    "parsed": {
+      "shotsRaw": "1",
+      "shotN": 1,
+      "damageRaw": "480ΓÇô555 (average: 517.5)",
+      "avg": 517.5,
+      "total": null,
+      "rofRaw": "45%",
+      "rofPct": 45
+    },
+    "hasShotsCell": true
+  },
+  "vigor": {
+    "url": "https://www.realmeye.com/wiki/vigor",
+    "ok": true,
+    "parsed": {
+      "shotsRaw": "1",
+      "shotN": 1,
+      "damageRaw": "80ΓÇô100 (average: 90)",
+      "avg": 90,
+      "total": null,
+      "rofRaw": "105%",
+      "rofPct": 105
+    },
+    "hasShotsCell": true
+  },
+  "void-blade": {
+    "url": "https://www.realmeye.com/wiki/void-blade",
+    "ok": true,
+    "parsed": {
+      "shotsRaw": "1",
+      "shotN": 1,
+      "damageRaw": "605ΓÇô755 (average: 680)",
+      "avg": 680,
+      "total": null,
+      "rofRaw": "30%",
+      "rofPct": 30
+    },
+    "hasShotsCell": true
+  },
+  "wand-of-the-bulwark": {
+    "url": "https://www.realmeye.com/wiki/wand-of-the-bulwark",
+    "ok": true,
+    "parsed": {
+      "shotsRaw": "1",
+      "shotN": 1,
+      "damageRaw": "500ΓÇô600 (average: 550)",
+      "avg": 550,
+      "total": null,
+      "rofRaw": "33%",
+      "rofPct": 33
+    },
+    "hasShotsCell": true
+  },
+  "warmonger": {
+    "url": "https://www.realmeye.com/wiki/warmonger",
+    "ok": true,
+    "parsed": {
+      "shotsRaw": "2&nbsp;(arc gap: 7┬░)",
+      "shotN": 2,
+      "damageRaw": "95ΓÇô110 (average: 102.5&nbsp;/ total: 205)",
+      "avg": 102.5,
+      "total": 205,
+      "rofRaw": "120%",
+      "rofPct": 120
+    },
+    "hasShotsCell": true
+  }
+}

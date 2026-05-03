@@ -1,0 +1,293 @@
+{
+  "_readme": "RealmEye sword inventory icons; merged into classes/item-icon-registry.json by scripts/build-item-icon-registry.mjs. Regenerate via: node scripts/fetch-realmeye-sword-icons.mjs",
+  "items": {
+    "short-sword": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/swords/tiered/t0.png",
+      "alt": "Short Sword"
+    },
+    "broad-sword": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/swords/tiered/t1.png",
+      "alt": "Broad Sword"
+    },
+    "saber": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/swords/tiered/t2.png",
+      "alt": "Saber"
+    },
+    "long-sword": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/swords/tiered/t3.png",
+      "alt": "Long Sword"
+    },
+    "falchion": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/swords/tiered/t4.png",
+      "alt": "Falchion"
+    },
+    "fire-sword": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/swords/tiered/t5.png",
+      "alt": "Fire Sword"
+    },
+    "glass-sword": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/swords/tiered/t6.png",
+      "alt": "Glass Sword"
+    },
+    "golden-sword": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/swords/tiered/t7.png",
+      "alt": "Golden Sword"
+    },
+    "ravenheart-sword": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/swords/tiered/t8.png",
+      "alt": "Ravenheart Sword"
+    },
+    "dragonsoul-sword": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/swords/tiered/t9.png",
+      "alt": "Dragonsoul Sword"
+    },
+    "archon-sword": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/swords/tiered/t10.png",
+      "alt": "Archon Sword"
+    },
+    "skysplitter-sword": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/swords/tiered/t11.png",
+      "alt": "Skysplitter Sword"
+    },
+    "sword-of-acclaim": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/swords/tiered/t12.png",
+      "alt": "Sword of Acclaim"
+    },
+    "sword-of-splendor": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/swords/tiered/t13.png",
+      "alt": "Sword of Splendor"
+    },
+    "sword-of-majesty": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/swords/tiered/t14.png",
+      "alt": "Sword of Majesty"
+    },
+    "mmace-mmurderer": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/swords/untiered/mmace-mmurderer.png",
+      "alt": "MMace MMurderer"
+    },
+    "ffabulous-fflail": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/swords/untiered/ffabulous-fflail.png",
+      "alt": "FFabulous FFlail"
+    },
+    "vinesword": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/swords/untiered/vinesword.png",
+      "alt": "Vinesword"
+    },
+    "crystal-sword": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/swords/untiered/crystal-sword.png",
+      "alt": "Crystal Sword"
+    },
+    "arcane-rapier": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/swords/untiered/arcane-rapier.png",
+      "alt": "Arcane Rapier"
+    },
+    "henchman-s-claymore": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/swords/untiered/henchman-s-claymore.png",
+      "alt": "Henchman's Claymore"
+    },
+    "demon-blade": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/swords/untiered/demon-blade.png",
+      "alt": "Demon Blade"
+    },
+    "sword-of-illumination": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/swords/untiered/sword-of-illumination.png",
+      "alt": "Sword of Illumination"
+    },
+    "spectral-sword": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/swords/untiered/spectral-sword.png",
+      "alt": "Spectral Sword"
+    },
+    "ancient-stone-sword": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/swords/untiered/ancient-stone-sword.png",
+      "alt": "Ancient Stone Sword"
+    },
+    "pirate-king-s-cutlass": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/swords/untiered/pirate-king-s-cutlass.png",
+      "alt": "Pirate King's Cutlass"
+    },
+    "acidic-slasher": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/swords/untiered/acidic-slasher.png",
+      "alt": "Acidic Slasher"
+    },
+    "gaseous-glaive": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/swords/untiered/gaseous-glaive.png",
+      "alt": "Gaseous Glaive"
+    },
+    "pirate-s-artillery": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/swords/untiered/pirate-s-artillery.png",
+      "alt": "Pirate's Artillery"
+    },
+    "sword-of-the-colossus": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/swords/untiered/sword-of-the-colossus.png",
+      "alt": "Sword of the Colossus"
+    },
+    "divinity": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/swords/untiered/divinity.png",
+      "alt": "Divinity"
+    },
+    "atavistic-soul-sabre": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/swords/untiered/atavistic-soul-sabre.png",
+      "alt": "Atavistic Soul Sabre"
+    },
+    "pixie-enchanted-sword": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/swords/set-tiered/pixie-enchanted-sword.png",
+      "alt": "Pixie-Enchanted Sword"
+    },
+    "heartsteel-claymore": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/swords/set-tiered/heartsteel-claymore.png",
+      "alt": "Heartsteel Claymore"
+    },
+    "fallen-one-s-blade": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/swords/set-tiered/fallen-one-s-blade.png",
+      "alt": "Fallen One's Blade"
+    },
+    "oryx-s-greatsword": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/swords/set-tiered/oryx-s-greatsword.png",
+      "alt": "Oryx's Greatsword"
+    },
+    "indomptable": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/swords/set-tiered/indomptable.png",
+      "alt": "Indomptable"
+    },
+    "swashbuckler-s-sickle": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/swords/set-tiered/swashbuckler-s-sickle.png",
+      "alt": "Swashbuckler's Sickle"
+    },
+    "jagged-hatchet": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/swords/set-tiered/jagged-hatchet.png",
+      "alt": "Jagged Hatchet"
+    },
+    "dalvar-s-battle-axe": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/swords/set-tiered/dalvar-s-battle-axe.png",
+      "alt": "Dalvar's Battle Axe"
+    },
+    "doctor-swordsworth": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/swords/limited-edition/doctor-swordsworth.png",
+      "alt": "Doctor Swordsworth"
+    },
+    "unstable-anomaly": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/swords/limited-edition/unstable-anomaly.png",
+      "alt": "Unstable Anomaly"
+    },
+    "skull-splitter-sword": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/swords/limited-edition/skull-splitter-sword.png",
+      "alt": "Skull-splitter Sword"
+    },
+    "frostbite": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/swords/limited-edition/frostbite.png",
+      "alt": "Frostbite"
+    },
+    "sword-of-the-rainbow-s-end": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/swords/limited-edition/sword-of-the-rainbow-s-end.png",
+      "alt": "Sword of the Rainbow's End"
+    },
+    "enchanted-ice-blade": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/swords/limited-edition/enchanted-ice-blade.png",
+      "alt": "Enchanted Ice Blade"
+    },
+    "saint-nicolas-blade": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/swords/limited-edition/saint-nicolas-blade.png",
+      "alt": "Saint Nicolas' Blade"
+    },
+    "silex-s-hammer": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/swords/limited-edition/silex-s-hammer.png",
+      "alt": "Silex's Hammer"
+    },
+    "aspirant-s-sword": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/swords/limited-edition/aspirant-s-sword.png",
+      "alt": "Aspirant's Sword"
+    },
+    "hammer-sword": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/swords/limited-edition/hammer-sword.png",
+      "alt": "Hammer Sword"
+    },
+    "sword-of-the-unending-chaos": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/swords/limited-edition/sword-of-the-unending-chaos.png",
+      "alt": "Sword of the Unending Chaos"
+    },
+    "the-crimson-blade": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/swords/limited-edition/the-crimson-blade.png",
+      "alt": "The Crimson Blade"
+    },
+    "cheerful-chipper": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/swords/limited-edition/cheerful-chipper.png",
+      "alt": "Cheerful Chipper"
+    },
+    "chocsicle": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/swords/limited-edition/chocsicle.png",
+      "alt": "Chocsicle"
+    },
+    "icebreaker-maul": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/swords/limited-edition/icebreaker-maul.png",
+      "alt": "Icebreaker Maul"
+    },
+    "apocalypse-feather": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/swords/limited-edition/apocalypse-feather.png",
+      "alt": "Apocalypse Feather"
+    },
+    "faithful-spatha": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/swords/limited-edition/faithful-spatha.png",
+      "alt": "Faithful Spatha"
+    },
+    "petal-strike-sword": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/swords/limited-edition/petal-strike-sword.png",
+      "alt": "Petal Strike Sword"
+    },
+    "blacksmith-hammer": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/swords/limited-edition/blacksmith-hammer.png",
+      "alt": "Blacksmith Hammer"
+    },
+    "legion-elite-sword": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/swords/limited-edition/legion-elite-sword.png",
+      "alt": "Legion Elite Sword"
+    },
+    "blade-of-eternal-rebirth": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/swords/limited-edition/blade-of-eternal-rebirth.png",
+      "alt": "Blade of Eternal Rebirth"
+    },
+    "hero-s-sword": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/swords/limited-edition/hero-s-sword.png",
+      "alt": "Hero's Sword"
+    },
+    "khopesh": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/swords/limited-edition/khopesh.png",
+      "alt": "Khopesh"
+    },
+    "keychain-cutlass": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/swords/limited-edition/keychain-cutlass.png",
+      "alt": "Keychain Cutlass"
+    },
+    "eternal-echo": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/swords/limited-edition/eternal-echo.png",
+      "alt": "Eternal Echo"
+    },
+    "sword-of-the-mad-god": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/swords/limited-edition/sword-of-the-mad-god.png",
+      "alt": "Sword of the Mad God"
+    },
+    "legacy-pixie-enchanted-sword": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/swords/limited-edition/legacy-pixie-enchanted-sword.png",
+      "alt": "Legacy Pixie-Enchanted Sword"
+    },
+    "hellfire-broadsword": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/swords/limited-edition/hellfire-broadsword.png",
+      "alt": "Hellfire Broadsword"
+    },
+    "nutrient-rich-carrot-blade": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/swords/limited-edition/nutrient-rich-carrot-blade.png",
+      "alt": "Nutrient Rich Carrot Blade"
+    },
+    "savage-claws": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/swords/limited-edition/savage-claws.png",
+      "alt": "Savage Claws"
+    },
+    "eternal-graved-great-sword": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/swords/limited-edition/eternal-graved-great-sword.png",
+      "alt": "Eternal Graved Great Sword"
+    },
+    "blood-axe": {
+      "src": "https://rotmg-icons.s3.us-east-005.backblazeb2.com/swords/limited-edition/blood-axe.png",
+      "alt": "Blood Axe"
+    }
+  }
+}

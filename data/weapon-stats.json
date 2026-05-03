@@ -1,0 +1,397 @@
+{
+  "generatedFrom": "data/wiki-parsed.json (RealmEye wiki tables, UA scrape)",
+  "note": "RoF decimals match wiki percent ÷100, or 1.0 when wiki omits Rate of Fire.",
+  "weapons": {
+    "archangel-s-judgement": {
+      "slug": "archangel-s-judgement",
+      "sourceUrl": "https://www.realmeye.com/wiki/archangel-s-judgement",
+      "wikiSummary": "Shots: 4&nbsp;(arc gap: 5┬░) • Damage: 60ΓÇô75 (average: 67.5) • Rate of Fire: 85%",
+      "shots": [
+        {
+          "damage": 270,
+          "rof": 0.85
+        }
+      ],
+      "assumptions": "Combined volley damage (wiki average×shots or wiki total when given) × one RoF stream; Ammmar optimizer caveats apply for multi-hit and defense."
+    },
+    "atavistic-soul-sabre": {
+      "slug": "atavistic-soul-sabre",
+      "sourceUrl": "https://www.realmeye.com/wiki/atavistic-soul-sabre",
+      "wikiSummary": "Shots: 1 • Damage: 420ΓÇô475 (average: 447.5) • Rate of Fire: 60%",
+      "shots": [
+        {
+          "damage": 447.5,
+          "rof": 0.6
+        }
+      ],
+      "assumptions": "Combined volley damage (wiki average×shots or wiki total when given) × one RoF stream; Ammmar optimizer caveats apply for multi-hit and defense."
+    },
+    "blood-siphoning-katana": {
+      "slug": "blood-siphoning-katana",
+      "sourceUrl": "https://www.realmeye.com/wiki/blood-siphoning-katana",
+      "wikiSummary": "Shots: 1 • Damage: 440ΓÇô520 (average: 480) • Rate of Fire: 40%",
+      "shots": [
+        {
+          "damage": 480,
+          "rof": 0.4
+        }
+      ],
+      "assumptions": "Combined volley damage (wiki average×shots or wiki total when given) × one RoF stream; Ammmar optimizer caveats apply for multi-hit and defense."
+    },
+    "bolt-thrower": {
+      "slug": "bolt-thrower",
+      "sourceUrl": "https://www.realmeye.com/wiki/bolt-thrower",
+      "wikiSummary": "Shots: 1 • Damage: 110ΓÇô125 (average: 117.5) • Rate of Fire: 80%",
+      "shots": [
+        {
+          "damage": 117.5,
+          "rof": 0.8
+        }
+      ],
+      "assumptions": "Combined volley damage (wiki average×shots or wiki total when given) × one RoF stream; Ammmar optimizer caveats apply for multi-hit and defense."
+    },
+    "bow-of-deep-enchantment": {
+      "slug": "bow-of-deep-enchantment",
+      "sourceUrl": "https://www.realmeye.com/wiki/bow-of-deep-enchantment",
+      "wikiSummary": "Shots: 1 • Damage: 145ΓÇô155 (average: 150) • Rate of Fire: (not listed — assumed 100%)",
+      "shots": [
+        {
+          "damage": 150,
+          "rof": 1
+        }
+      ],
+      "assumptions": "Combined volley damage (wiki average×shots or wiki total when given) × one RoF stream; Ammmar optimizer caveats apply for multi-hit and defense."
+    },
+    "clockwork-repeater": {
+      "slug": "clockwork-repeater",
+      "sourceUrl": "https://www.realmeye.com/wiki/clockwork-repeater",
+      "wikiSummary": "Shots: 1 • Damage: 625ΓÇô700 (average: 662.5) • Rate of Fire: 33%",
+      "shots": [
+        {
+          "damage": 662.5,
+          "rof": 0.33
+        }
+      ],
+      "assumptions": "Combined volley damage (wiki average×shots or wiki total when given) × one RoF stream; Ammmar optimizer caveats apply for multi-hit and defense."
+    },
+    "damnation": {
+      "slug": "damnation",
+      "sourceUrl": "https://www.realmeye.com/wiki/damnation",
+      "wikiSummary": "Shots: 1 • Damage: 1,000ΓÇô1,200 (average: 1,100) • Rate of Fire: 20%",
+      "shots": [
+        {
+          "damage": 1100,
+          "rof": 0.2
+        }
+      ],
+      "assumptions": "Combined volley damage (wiki average×shots or wiki total when given) × one RoF stream; Ammmar optimizer caveats apply for multi-hit and defense."
+    },
+    "deliverance": {
+      "slug": "deliverance",
+      "sourceUrl": "https://www.realmeye.com/wiki/deliverance",
+      "wikiSummary": "Shots: 1 • Damage: 115ΓÇô165 (average: 140) • Rate of Fire: (not listed — assumed 100%)",
+      "shots": [
+        {
+          "damage": 140,
+          "rof": 1
+        }
+      ],
+      "assumptions": "Combined volley damage (wiki average×shots or wiki total when given) × one RoF stream; Ammmar optimizer caveats apply for multi-hit and defense."
+    },
+    "demon-blade": {
+      "slug": "demon-blade",
+      "sourceUrl": "https://www.realmeye.com/wiki/demon-blade",
+      "wikiSummary": "Shots: 2&nbsp;(arc gap: 25┬░) • Damage: 150ΓÇô175 (average: 162.5&nbsp;/ total: 325) • Rate of Fire: (not listed — assumed 100%)",
+      "shots": [
+        {
+          "damage": 325,
+          "rof": 1
+        }
+      ],
+      "assumptions": "Combined volley damage (wiki average×shots or wiki total when given) × one RoF stream; Ammmar optimizer caveats apply for multi-hit and defense."
+    },
+    "dirk-of-cronus": {
+      "slug": "dirk-of-cronus",
+      "sourceUrl": "https://www.realmeye.com/wiki/dirk-of-cronus",
+      "wikiSummary": "Shots: 1 • Damage: 150ΓÇô290 (average: 220) • Rate of Fire: 95%",
+      "shots": [
+        {
+          "damage": 220,
+          "rof": 0.95
+        }
+      ],
+      "assumptions": "Combined volley damage (wiki average×shots or wiki total when given) × one RoF stream; Ammmar optimizer caveats apply for multi-hit and defense.",
+      "displayName": "Dirk of Cronus"
+    },
+    "dusky-catalyst": {
+      "slug": "dusky-catalyst",
+      "sourceUrl": "https://www.realmeye.com/wiki/dusky-catalyst",
+      "wikiSummary": "Shots: 1 • Damage: 100ΓÇô186 (average: 143) • Rate of Fire: 150%",
+      "shots": [
+        {
+          "damage": 143,
+          "rof": 1.5
+        }
+      ],
+      "assumptions": "Combined volley damage (wiki average×shots or wiki total when given) × one RoF stream; Ammmar optimizer caveats apply for multi-hit and defense."
+    },
+    "earthen-ward": {
+      "slug": "earthen-ward",
+      "sourceUrl": "https://www.realmeye.com/wiki/earthen-ward",
+      "wikiSummary": "Shots: 3&nbsp;(arc gap: 120┬░) • Damage: 125ΓÇô145 (average: 135&nbsp;/ total: 405) • Rate of Fire: (not listed — assumed 100%)",
+      "shots": [
+        {
+          "damage": 405,
+          "rof": 1
+        }
+      ],
+      "assumptions": "Combined volley damage (wiki average×shots or wiki total when given) × one RoF stream; Ammmar optimizer caveats apply for multi-hit and defense."
+    },
+    "elder-heartwood-staff": {
+      "slug": "elder-heartwood-staff",
+      "sourceUrl": "https://www.realmeye.com/wiki/elder-heartwood-staff",
+      "wikiSummary": "Shots: 2&nbsp;(arc gap: 11.25┬░) • Damage: 60ΓÇô115 (average: 87.5) • Rate of Fire: 160%",
+      "shots": [
+        {
+          "damage": 175,
+          "rof": 1.6
+        }
+      ],
+      "assumptions": "Combined volley damage (wiki average×shots or wiki total when given) × one RoF stream; Ammmar optimizer caveats apply for multi-hit and defense."
+    },
+    "enforcer": {
+      "slug": "enforcer",
+      "sourceUrl": "https://www.realmeye.com/wiki/enforcer",
+      "wikiSummary": "Shots: 2&nbsp;(arc gap: 12┬░) • Damage: 105ΓÇô145 (average: 125&nbsp;/ total: 250) • Rate of Fire: (not listed — assumed 100%)",
+      "shots": [
+        {
+          "damage": 250,
+          "rof": 1
+        }
+      ],
+      "assumptions": "Combined volley damage (wiki average×shots or wiki total when given) × one RoF stream; Ammmar optimizer caveats apply for multi-hit and defense."
+    },
+    "fortitude": {
+      "slug": "fortitude",
+      "sourceUrl": "https://www.realmeye.com/wiki/fortitude",
+      "wikiSummary": "Shots: 1 • Damage: 600ΓÇô700 (average: 650) • Rate of Fire: 33%",
+      "shots": [
+        {
+          "damage": 650,
+          "rof": 0.33
+        }
+      ],
+      "assumptions": "Combined volley damage (wiki average×shots or wiki total when given) × one RoF stream; Ammmar optimizer caveats apply for multi-hit and defense."
+    },
+    "fractal-blades": {
+      "slug": "fractal-blades",
+      "sourceUrl": "https://www.realmeye.com/wiki/fractal-blades",
+      "wikiSummary": "Left: Shots 2, Damage 75–105 (average: 90), RoF 90%. Right: Shots 4, Damage 55–75 (average: 65), RoF 90%.",
+      "shots": [
+        {
+          "damage": 180,
+          "rof": 0.9
+        },
+        {
+          "damage": 260,
+          "rof": 0.9
+        }
+      ],
+      "assumptions": "Two projectile bands from RealmEye wiki: left blades total 2×90, right blades total 4×65. Cannot land all bolts on one target — summing both streams overstates realistic single-target sustained DPS; use Back and compare wiki Notes."
+    },
+    "frostfall-rod": {
+      "slug": "frostfall-rod",
+      "sourceUrl": "https://www.realmeye.com/wiki/frostfall-rod",
+      "wikiSummary": "Shots: 5 • Damage: 200ΓÇô240 (average: 220&nbsp;/ total: 1100) • Rate of Fire: 110%",
+      "shots": [
+        {
+          "damage": 1100,
+          "rof": 1.1
+        }
+      ],
+      "assumptions": "Combined volley damage (wiki average×shots or wiki total when given) × one RoF stream; Ammmar optimizer caveats apply for multi-hit and defense."
+    },
+    "laser-pointer": {
+      "slug": "laser-pointer",
+      "sourceUrl": "https://www.realmeye.com/wiki/laser-pointer",
+      "wikiSummary": "Shots: 1 • Damage: 95ΓÇô130 (average: 112.5) • Rate of Fire: 150%",
+      "shots": [
+        {
+          "damage": 112.5,
+          "rof": 1.5
+        }
+      ],
+      "assumptions": "Combined volley damage (wiki average×shots or wiki total when given) × one RoF stream; Ammmar optimizer caveats apply for multi-hit and defense."
+    },
+    "lumiaire": {
+      "slug": "lumiaire",
+      "sourceUrl": "https://www.realmeye.com/wiki/lumiaire",
+      "wikiSummary": "Shots: 2&nbsp;(arc gap: 6┬░) • Damage: 80ΓÇô100 (average: 90&nbsp;/ total: 180) • Rate of Fire: 150%",
+      "shots": [
+        {
+          "damage": 180,
+          "rof": 1.5
+        }
+      ],
+      "assumptions": "Combined volley damage (wiki average×shots or wiki total when given) × one RoF stream; Ammmar optimizer caveats apply for multi-hit and defense."
+    },
+    "makakoyumi": {
+      "slug": "makakoyumi",
+      "sourceUrl": "https://www.realmeye.com/wiki/makakoyumi",
+      "wikiSummary": "Shots: 1 • Damage: 800 • Rate of Fire: 33%",
+      "shots": [
+        {
+          "damage": 0,
+          "rof": 0.33
+        }
+      ],
+      "assumptions": "Combined volley damage (wiki average×shots or wiki total when given) × one RoF stream; Ammmar optimizer caveats apply for multi-hit and defense."
+    },
+    "oryx-s-greatsword": {
+      "slug": "oryx-s-greatsword",
+      "sourceUrl": "https://www.realmeye.com/wiki/oryx-s-greatsword",
+      "wikiSummary": "Shots: 1 • Damage: 185ΓÇô215 (average: 200) • Rate of Fire: 120%",
+      "shots": [
+        {
+          "damage": 200,
+          "rof": 1.2
+        }
+      ],
+      "assumptions": "Combined volley damage (wiki average×shots or wiki total when given) × one RoF stream; Ammmar optimizer caveats apply for multi-hit and defense."
+    },
+    "socket-blade": {
+      "slug": "socket-blade",
+      "sourceUrl": "https://www.realmeye.com/wiki/socket-blade",
+      "wikiSummary": "Shots: 1 • Damage: 720ΓÇô870 (average: 795) • Rate of Fire: 30%",
+      "shots": [
+        {
+          "damage": 795,
+          "rof": 0.3
+        }
+      ],
+      "assumptions": "Combined volley damage (wiki average×shots or wiki total when given) × one RoF stream; Ammmar optimizer caveats apply for multi-hit and defense."
+    },
+    "st-abraham-s-wand": {
+      "slug": "st-abraham-s-wand",
+      "sourceUrl": "https://www.realmeye.com/wiki/st-abraham-s-wand",
+      "wikiSummary": "Shots: 1 • Damage: 155ΓÇô180 (average: 167.5) • Rate of Fire: 90%",
+      "shots": [
+        {
+          "damage": 167.5,
+          "rof": 0.9
+        }
+      ],
+      "assumptions": "Combined volley damage (wiki average×shots or wiki total when given) × one RoF stream; Ammmar optimizer caveats apply for multi-hit and defense.",
+      "displayName": "St. Abraham's Wand"
+    },
+    "staff-of-extreme-prejudice": {
+      "slug": "staff-of-extreme-prejudice",
+      "sourceUrl": "https://www.realmeye.com/wiki/staff-of-extreme-prejudice",
+      "wikiSummary": "Shots: 10&nbsp;(arc gap: 36┬░) • Damage: 95ΓÇô110 (average: 102.5&nbsp;/ total: 1025) • Rate of Fire: 40%",
+      "shots": [
+        {
+          "damage": 1025,
+          "rof": 0.4
+        }
+      ],
+      "assumptions": "Combined volley damage (wiki average×shots or wiki total when given) × one RoF stream; Ammmar optimizer caveats apply for multi-hit and defense."
+    },
+    "staff-of-unholy-sacrifice": {
+      "slug": "staff-of-unholy-sacrifice",
+      "sourceUrl": "https://www.realmeye.com/wiki/staff-of-unholy-sacrifice",
+      "wikiSummary": "Shots: 4&nbsp;(arc gap: 13┬░) • Damage: 155ΓÇô185 (average: 170&nbsp;/ total: 680) • Rate of Fire: 55%",
+      "shots": [
+        {
+          "damage": 680,
+          "rof": 0.55
+        }
+      ],
+      "assumptions": "Combined volley damage (wiki average×shots or wiki total when given) × one RoF stream; Ammmar optimizer caveats apply for multi-hit and defense."
+    },
+    "tideturner-trident": {
+      "slug": "tideturner-trident",
+      "sourceUrl": "https://www.realmeye.com/wiki/tideturner-trident",
+      "wikiSummary": "Shots: 3&nbsp;(arc gap: 6┬░) • Damage: 85ΓÇô125 (average: 105&nbsp;/ total: 315) • Rate of Fire: 70%",
+      "shots": [
+        {
+          "damage": 315,
+          "rof": 0.7
+        }
+      ],
+      "assumptions": "Combined volley damage (wiki average×shots or wiki total when given) × one RoF stream; Ammmar optimizer caveats apply for multi-hit and defense."
+    },
+    "tools-of-the-tarnished": {
+      "slug": "tools-of-the-tarnished",
+      "sourceUrl": "https://www.realmeye.com/wiki/tools-of-the-tarnished",
+      "wikiSummary": "Shots: 1 • Damage: 65ΓÇô75 (average: 70) • Rate of Fire: 150%",
+      "shots": [
+        {
+          "damage": 70,
+          "rof": 1.5
+        }
+      ],
+      "assumptions": "Combined volley damage (wiki average×shots or wiki total when given) × one RoF stream; Ammmar optimizer caveats apply for multi-hit and defense."
+    },
+    "valor": {
+      "slug": "valor",
+      "sourceUrl": "https://www.realmeye.com/wiki/valor",
+      "wikiSummary": "Shots: 1 • Damage: 480ΓÇô555 (average: 517.5) • Rate of Fire: 45%",
+      "shots": [
+        {
+          "damage": 517.5,
+          "rof": 0.45
+        }
+      ],
+      "assumptions": "Combined volley damage (wiki average×shots or wiki total when given) × one RoF stream; Ammmar optimizer caveats apply for multi-hit and defense."
+    },
+    "vigor": {
+      "slug": "vigor",
+      "sourceUrl": "https://www.realmeye.com/wiki/vigor",
+      "wikiSummary": "Shots: 1 • Damage: 80ΓÇô100 (average: 90) • Rate of Fire: 105%",
+      "shots": [
+        {
+          "damage": 90,
+          "rof": 1.05
+        }
+      ],
+      "assumptions": "Combined volley damage (wiki average×shots or wiki total when given) × one RoF stream; Ammmar optimizer caveats apply for multi-hit and defense.",
+      "displayName": "Staff of Vigor"
+    },
+    "void-blade": {
+      "slug": "void-blade",
+      "sourceUrl": "https://www.realmeye.com/wiki/void-blade",
+      "wikiSummary": "Shots: 1 • Damage: 605ΓÇô755 (average: 680) • Rate of Fire: 30%",
+      "shots": [
+        {
+          "damage": 680,
+          "rof": 0.3
+        }
+      ],
+      "assumptions": "Combined volley damage (wiki average×shots or wiki total when given) × one RoF stream; Ammmar optimizer caveats apply for multi-hit and defense."
+    },
+    "wand-of-the-bulwark": {
+      "slug": "wand-of-the-bulwark",
+      "sourceUrl": "https://www.realmeye.com/wiki/wand-of-the-bulwark",
+      "wikiSummary": "Shots: 1 • Damage: 500ΓÇô600 (average: 550) • Rate of Fire: 33%",
+      "shots": [
+        {
+          "damage": 550,
+          "rof": 0.33
+        }
+      ],
+      "assumptions": "Combined volley damage (wiki average×shots or wiki total when given) × one RoF stream; Ammmar optimizer caveats apply for multi-hit and defense."
+    },
+    "warmonger": {
+      "slug": "warmonger",
+      "sourceUrl": "https://www.realmeye.com/wiki/warmonger",
+      "wikiSummary": "Shots: 2&nbsp;(arc gap: 7┬░) • Damage: 95ΓÇô110 (average: 102.5&nbsp;/ total: 205) • Rate of Fire: 120%",
+      "shots": [
+        {
+          "damage": 205,
+          "rof": 1.2
+        }
+      ],
+      "assumptions": "Combined volley damage (wiki average×shots or wiki total when given) × one RoF stream; Ammmar optimizer caveats apply for multi-hit and defense."
+    }
+  }
+}

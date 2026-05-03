@@ -10430,7 +10430,7 @@
     "requiresEngraving": false
   },
   {
-    "name": "Dexterity -Mana Tradeoff II",
+    "name": "Dexterity -Mana Tradeoff III",
     "description": "Increases Dexterity by 4 decreases Mana by 40",
     "weight": 2500.0,
     "itemLabels": [
@@ -10614,7 +10614,7 @@
     "requiresEngraving": false
   },
   {
-    "name": "Dexterity -Speed Tradeoff II",
+    "name": "Dexterity -Speed Tradeoff III",
     "description": "Increases Dexterity by 4 decreases Speed by 4.6",
     "weight": 2500.0,
     "itemLabels": [
@@ -10798,7 +10798,7 @@
     "requiresEngraving": false
   },
   {
-    "name": "Dexterity -Wisdom Tradeoff II",
+    "name": "Dexterity -Wisdom Tradeoff III",
     "description": "Increases Dexterity by 4 decreases Wisdom by 3.8",
     "weight": 2500.0,
     "itemLabels": [
@@ -11166,7 +11166,7 @@
     "requiresEngraving": false
   },
   {
-    "name": "Mana -Life Tradeoff II",
+    "name": "Mana -Life Tradeoff III",
     "description": "Increases Mana by 55 decreases Life by 25",
     "weight": 2500.0,
     "itemLabels": [
@@ -13282,7 +13282,7 @@
     "requiresEngraving": false
   },
   {
-    "name": "Vitality -Defense Tradeoff II",
+    "name": "Vitality -Defense Tradeoff III",
     "description": "Increases Vitality by 5.6 decreases Defense by 3",
     "weight": 2500.0,
     "itemLabels": [
@@ -13558,7 +13558,7 @@
     "requiresEngraving": false
   },
   {
-    "name": "Wisdom -Dexterity Tradeoff II",
+    "name": "Wisdom -Dexterity Tradeoff III",
     "description": "Increases Wisdom by 5.6 decreases Dexterity by 3",
     "weight": 2500.0,
     "itemLabels": [
