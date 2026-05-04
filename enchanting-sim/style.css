@@ -525,11 +525,6 @@
   flex: 0 0 auto;
 }
 
-.enchant-sim-shell #suggestions {
-  position: relative;
-  flex: 1 1 260px;
-}
-
 .enchant-sim-shell .suggest-box {
   position: absolute;
   left: 0;
