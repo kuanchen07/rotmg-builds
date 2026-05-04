@@ -7,7 +7,6 @@
  *
  * Triggers: buttons with class `set-checker-trigger` and `data-bis-root` pointing to the build article id.
  * Each BiS enchant `<li>` may set `data-bis-equipment-slot` (weapon|ability|armor|ring) and `data-bis-omit-if-no-match`.
- * Weapon rows show pause (⏸) beside each wiki slug opening `data/weapon-stats.json` in the sidebar; Back returns here.
  */
 (function () {
   "use strict";
@@ -167,53 +166,6 @@
   /** Wiki slug → object key under EQUIP_ICON_CDN_BASE (from `data/wiki-slug-icon-paths.json`). */
   /** @type {Promise<Record<string, string>> | null} */
   let wikiSlugIconPathsPromise = null;
-
-  /** Cached `data/weapon-stats.json`. */
-  /** @type {object | null} */
-  let weaponStatsBundle = null;
-  /** @type {Promise<object> | null} */
-  let weaponStatsLoadPromise = null;
-
-  /**
-   * Loads hardcoded Bis weapon stats (DPS helper). Same-origin `../data/` from this script.
-   * @returns {Promise<object>}
-   */
-  function ensureWeaponStatsBundle() {
-    if (weaponStatsBundle) {
-      return Promise.resolve(weaponStatsBundle);
-    }
-    if (!weaponStatsLoadPromise) {
-      const url = SET_CHECKER_SCRIPT_SRC
-        ? new URL("../data/weapon-stats.json", SET_CHECKER_SCRIPT_SRC).href
-        : new URL("data/weapon-stats.json", window.location.href).href;
-      weaponStatsLoadPromise = fetch(url, { cache: "force-cache", mode: "cors" })
-        .then((r) => (r.ok ? r.json() : {}))
-        .then((json) => {
-          weaponStatsBundle = json && typeof json === "object" ? json : {};
-          return weaponStatsBundle;
-        })
-        .catch(() => {
-          weaponStatsBundle = {};
-          return weaponStatsBundle;
-        });
-    }
-    return weaponStatsLoadPromise;
-  }
-
-  /** @returns {{ damage: number; rof: number }[] | null} */
-  function getWeaponShots(/** @type {string} */ slug) {
-    if (!weaponStatsBundle || !slug || !weaponStatsBundle.weapons) {
-      return null;
-    }
-    const w = weaponStatsBundle.weapons[slug];
-    if (!w || !Array.isArray(w.shots) || !w.shots.length) {
-      return null;
-    }
-    return w.shots.map((/** @type {{ damage: number; rof: number }} */ s) => ({
-      damage: s.damage,
-      rof: s.rof,
-    }));
-  }
 
   /**
    * Wiki slug → `{ src, alt }` from `item-icon-registry.json` (beside this script).
@@ -571,11 +523,6 @@
     }
   }
 
-  /** @param {string | null | undefined} url */
-  function slugFromWikiUrl(url) {
-    return extractWikiSlugFromHref(url);
-  }
-
   function parseOmitIfNoMatch(li) {
     if (!li.hasAttribute("data-bis-omit-if-no-match")) {
       return false;
@@ -790,20 +737,6 @@
     return out;
   }
 
-  function weaponDpsPauseButtonsHtml(/** @type {string[]} */ slugs) {
-    if (!slugs || !slugs.length) {
-      return "";
-    }
-    return slugs
-      .map(
-        (s) =>
-          `<button type="button" class="set-checker-dps-pause" data-set-checker-dps-slug="${escapeHtml(
-            s
-          )}" title="Weapon DPS (placeholder)" aria-label="Open weapon DPS view for ${escapeHtml(s)}"><span class="set-checker-dps-pause-icon" aria-hidden="true">⏸</span></button>`
-      )
-      .join("");
-  }
-
   /**
    * @param {HTMLElement} mount
    * @param {object} character
@@ -827,7 +760,6 @@
       const { row, equipped, tokenResults, itemMismatch } = block;
       const bisHeadingLabel =
         (row.bisItemTitle && String(row.bisItemTitle).trim()) || row.slugs.join(" / ");
-      const isWeaponRow = row.equipmentSlotIndex === EQUIPMENT_SLOT_TO_INDEX.weapon;
       const isAbilitySlot = row.equipmentSlotIndex === EQUIPMENT_SLOT_TO_INDEX.ability;
       const iconOpts = { registryOnly: isAbilitySlot };
       const rowSectionClass = itemMismatch
@@ -835,23 +767,11 @@
         : "set-checker-row";
       if (itemMismatch) {
         parts.push(`<section class="${rowSectionClass}">`);
-        const pauseHtml = isWeaponRow ? weaponDpsPauseButtonsHtml(row.slugs) : "";
-        const titleClass = isWeaponRow
-          ? "set-checker-row-title set-checker-row-title--weapon"
-          : "set-checker-row-title";
-        if (isWeaponRow) {
-          parts.push(
-            `<h3 class="${titleClass}"><span class="set-checker-row-title-start">${bisIconsRowHtml(
-              row.bisIconImgs
-            )}<span class="set-checker-row-title-text">BiS: ${escapeHtml(bisHeadingLabel)}</span></span><span class="set-checker-row-dps-actions" role="group" aria-label="Weapon DPS shortcuts">${pauseHtml}</span></h3>`
-          );
-        } else {
-          parts.push(
-            `<h3 class="${titleClass}">${bisIconsRowHtml(row.bisIconImgs)}<span class="set-checker-row-title-text">BiS: ${escapeHtml(
-              bisHeadingLabel
-            )}</span></h3>`
-          );
-        }
+        parts.push(
+          `<h3 class="set-checker-row-title">${bisIconsRowHtml(row.bisIconImgs)}<span class="set-checker-row-title-text">BiS: ${escapeHtml(
+            bisHeadingLabel
+          )}</span></h3>`
+        );
         parts.push(
           `<p class="set-checker-equipped-wrong"><span class="set-checker-mark" aria-hidden="true">✗</span> <strong>Equipped (RealmEye):</strong> ${equippedIconHtml(
             registry,
@@ -862,31 +782,15 @@
           )}<span class="set-checker-equipped-name">${escapeHtml(equipped.title || equipped.wiki_slug || "—")}</span></p>`
         );
       } else {
-        const titleClass = isWeaponRow
-          ? "set-checker-row-title set-checker-row-title--weapon"
-          : "set-checker-row-title";
-        const pauseHtml = isWeaponRow ? weaponDpsPauseButtonsHtml(row.slugs) : "";
-        if (isWeaponRow) {
-          parts.push(
-            `<section class="${rowSectionClass}"><h3 class="${titleClass}"><span class="set-checker-row-title-start"><span class="set-checker-row-icons">${equippedIconHtml(
-              registry,
-              slugPaths,
-              equipped.wiki_slug,
-              equipped.title || bisHeadingLabel,
-              iconOpts
-            )}</span><span class="set-checker-row-title-text">BiS: ${escapeHtml(equipped.title || bisHeadingLabel)}</span></span><span class="set-checker-row-dps-actions" role="group" aria-label="Weapon DPS shortcuts">${pauseHtml}</span></h3>`
-          );
-        } else {
-          parts.push(
-            `<section class="${rowSectionClass}"><h3 class="${titleClass}"><span class="set-checker-row-icons">${equippedIconHtml(
-              registry,
-              slugPaths,
-              equipped.wiki_slug,
-              equipped.title || bisHeadingLabel,
-              iconOpts
-            )}</span><span class="set-checker-row-title-text">${escapeHtml(equipped.title || bisHeadingLabel)}</span></h3>`
-          );
-        }
+        parts.push(
+          `<section class="${rowSectionClass}"><h3 class="set-checker-row-title"><span class="set-checker-row-icons">${equippedIconHtml(
+            registry,
+            slugPaths,
+            equipped.wiki_slug,
+            equipped.title || bisHeadingLabel,
+            iconOpts
+          )}</span><span class="set-checker-row-title-text">${escapeHtml(equipped.title || bisHeadingLabel)}</span></h3>`
+        );
       }
       parts.push(
         "<table class=\"set-checker-enchant-table\" aria-label=\"BiS enchants compared to RealmEye lines\">"
@@ -1020,92 +924,16 @@
 
     /** @type {HTMLDivElement | null} */
     let sidebarMainPane = null;
-    /** @type {HTMLDivElement | null} */
-    let sidebarDpsPane = null;
-
     function ensureSidebarPanes() {
-      if (!mount || (sidebarMainPane && sidebarDpsPane)) {
+      if (!mount || sidebarMainPane) {
         return;
       }
       mount.replaceChildren();
       sidebarMainPane = document.createElement("div");
       sidebarMainPane.className = "set-checker-main-pane";
       sidebarMainPane.id = "set-checker-main-pane";
-      sidebarDpsPane = document.createElement("div");
-      sidebarDpsPane.className = "set-checker-dps-pane";
-      sidebarDpsPane.id = "set-checker-dps-pane";
-      sidebarDpsPane.hidden = true;
       mount.appendChild(sidebarMainPane);
-      mount.appendChild(sidebarDpsPane);
     }
-
-    function hideWeaponDpsReturnMain() {
-      if (!sidebarDpsPane || !sidebarMainPane) {
-        return;
-      }
-      sidebarDpsPane.hidden = true;
-      sidebarMainPane.hidden = false;
-      sidebarDpsPane.replaceChildren();
-    }
-
-    async function openWeaponDpsSidebar(/** @type {string} */ rawSlug) {
-      const slug = String(rawSlug || "").trim();
-      if (!slug) {
-        return;
-      }
-      ensureSidebarPanes();
-      if (!sidebarMainPane || !sidebarDpsPane) {
-        return;
-      }
-      await ensureWeaponStatsBundle();
-      sidebarMainPane.hidden = true;
-      sidebarDpsPane.hidden = false;
-      const entry =
-        weaponStatsBundle && weaponStatsBundle.weapons ? weaponStatsBundle.weapons[slug] : null;
-      const friendly = /** @type {string} */ ((entry && entry.displayName) || slug.replace(/-/g, " "));
-      const shotsJson = escapeHtml(JSON.stringify(getWeaponShots(slug) || [], null, 2));
-      const summary = entry && entry.wikiSummary ? escapeHtml(entry.wikiSummary) : "";
-      const assum = entry && entry.assumptions ? escapeHtml(entry.assumptions) : "";
-      sidebarDpsPane.innerHTML =
-        `<div class="set-checker-dps-inner">` +
-        `<div class="set-checker-dps-toolbar">` +
-        `<button type="button" class="set-checker-secondary set-checker-dps-back">← Back to set checker</button>` +
-        `</div>` +
-        `<h3 class="set-checker-dps-heading">DPS: ${escapeHtml(friendly)}</h3>` +
-        `<p class="set-checker-dps-slug"><code>${escapeHtml(slug)}</code></p>` +
-        `<p class="set-checker-muted set-checker-dps-placeholder-msg">DPS optimizer controls for this weapon — full UI coming soon. Shot rows below are from <code>data/weapon-stats.json</code> (wiki-derived, Ammmar-style <code>dmg</code> / <code>rof</code>).</p>` +
-        (summary ? `<p class="set-checker-dps-wiki-lines">${summary}</p>` : "") +
-        `<pre class="set-checker-dps-shots" tabindex="0">${shotsJson}</pre>` +
-        (assum ? `<p class="set-checker-hint">${assum}</p>` : "") +
-        `</div>`;
-
-      const back = sidebarDpsPane.querySelector(".set-checker-dps-back");
-      if (back && typeof back.focus === "function") {
-        back.focus();
-      }
-    }
-
-    panel.addEventListener("click", (/** @type {MouseEvent} */ e) => {
-      const target = /** @type {HTMLElement | null} */ (e.target);
-      if (!target) {
-        return;
-      }
-      if (target.closest(".set-checker-dps-back")) {
-        e.preventDefault();
-        hideWeaponDpsReturnMain();
-        return;
-      }
-      const opener = target.closest("[data-set-checker-dps-slug]");
-      if (!opener) {
-        return;
-      }
-      const slug = opener.getAttribute("data-set-checker-dps-slug");
-      if (!slug || !slug.trim()) {
-        return;
-      }
-      e.preventDefault();
-      void openWeaponDpsSidebar(slug);
-    });
 
     /** @type {{ bisRootId: string } | null} */
     let activeConfig = null;
@@ -1150,7 +978,6 @@
     }
 
     function closeShell() {
-      hideWeaponDpsReturnMain();
       if (!shell.classList.contains("is-open")) {
         return;
       }
@@ -1223,7 +1050,6 @@
         return;
       }
       ensureSidebarPanes();
-      hideWeaponDpsReturnMain();
       if (!sidebarMainPane) {
         return;
       }
@@ -1281,7 +1107,6 @@
       }
       const gen = ++loadGeneration;
       ensureSidebarPanes();
-      hideWeaponDpsReturnMain();
       if (!sidebarMainPane) {
         return;
       }
@@ -1313,7 +1138,6 @@
     if (usernameBtn) {
       usernameBtn.addEventListener("click", () => {
         ensureSidebarPanes();
-        hideWeaponDpsReturnMain();
         renderUsernameStep();
       });
     }
@@ -1328,7 +1152,6 @@
           titleEl.textContent = dialogTitle;
         }
         ensureSidebarPanes();
-        hideWeaponDpsReturnMain();
         openShell();
         const sessionName = preferredUsername();
         if (sessionName) {
@@ -1339,10 +1162,6 @@
       });
     }
 
-    void ensureWeaponStatsBundle().then(() => {
-      window.getWeaponShots = getWeaponShots;
-      window.slugFromWikiUrl = slugFromWikiUrl;
-    });
   }
 
   if (document.readyState === "loading") {

@@ -4,12 +4,15 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1" name="viewport"/>
-<title>Realm of the Mad God – Enchant Simulator - Made by Ammmar</title>
+<title>Enchant Simulator</title>
+<link href="../builds.css" rel="stylesheet"/>
 <link href="style.css" rel="stylesheet"/>
 </head>
-<body>
+<body class="has-site-nav">
+<script src="../site-nav.js"></script>
+<div class="enchant-sim-shell">
 <div class="container">
-<h1>Realm of the Mad God – Enchant Simulator - Made by Ammmar</h1>
+<h1>Enchant Simulator</h1>
 <div class="card cols">
 <div class="col">
 <h3>Choose Item Type</h3>
@@ -25,8 +28,6 @@
 <input id="awakenItem" list="awakenList" placeholder="Type to search awakenable items..."/>
 <datalist id="awakenList"></datalist>
 </div>
-<h3>Choose Slot Count</h3>
-<div id="slotSelector"></div>
 </div>
 <div class="col aug-wrap">
 <h3>Choose Artifact / Card / Engraving</h3>
@@ -42,7 +43,15 @@
 </div>
 </div>
 </div>
-<div class="card" id="eligibility"></div>
+<div class="card eligibility-bar" id="eligibility">
+<div class="eligibility-bar__inner">
+<div class="eligibility-slot-row">
+<span class="eligibility-slot-row__label">Slot count</span>
+<div id="slotSelector"></div>
+</div>
+<span id="eligibilityText"></span>
+</div>
+</div>
 <div class="card slot-container" id="slotsContainer"></div>
 <div class="card">
 <div class="toggle-row">
@@ -57,16 +66,23 @@
 <input id="targetEnchantInput" placeholder="Type enchantment name..." type="text"/>
 <div id="suggestions"></div>
 <button id="calcProbBtn">Calculate Probability</button>
+<label class="inline"><input id="compareCardsMode" type="checkbox"/> Compare Cards</label>
 </div>
 <div class="muted" id="probResult"></div>
 </div>
 <div class="card" id="result"></div>
 </div>
+</div>
 <script>
 /* ========================== Globals & Utilities ========================== */
 let ENCHANTS=[], AUGMENTS=[], AUGMENTS_BY_NAME={};
-let selectedSlots=0, currentEnchantments=[], totalDustUsed=0;
+let selectedSlots=1, currentEnchantments=[], totalDustUsed=0;
 const BASE_DUST={1:50,2:65,3:80,4:100};
+const MONTE_CARLO_TRIALS = 10000;
+const MONTE_CARLO_CHUNK_SIZE = 1000;
+let probabilityRunToken = 0;
+let simulatorInitPromise = null;
+let simulatorDidInit = false;
 
 function normalizeName(s){
   return String(s||"").replace(/[\u2018\u2019]/g,"'").replace(/\s+/g," ").trim().toLowerCase();
@@ -81,7 +97,7 @@ function nameMultiplierLookup(dict, enchantName){
 function prettyStat(s){ return s.charAt(0)+s.slice(1).toLowerCase(); }
 
 /* ========================== Awakening Maps ========================== */
-const AWAKENING_MAP = {
+let AWAKENING_MAP = {
   "Ancient's Blessing": ["Tomb rings"],
   "Ancient Artifacts": ["Snakeskin Armor"],
   "Apitoxin": ["Doku No Ken"],
@@ -130,29 +146,58 @@ const AWAKEN_ITEM_TYPE = {
 let AWAKENABLE_ITEMS=[], chosenAwakenItem="";
 
 /* ========================== Init ========================== */
-window.addEventListener('DOMContentLoaded',()=>{
-  renderSlotButtons();
-  bindEvents();
-  buildAwakenList();
-  (async()=>{
+function resolveDataUrl(fileName){
+  const base = String(window.__ENCHANT_SIM_DATA_BASE__ || "").replace(/\/+$/, "");
+  return base ? `${base}/${fileName}` : fileName;
+}
+
+function initEnchantSimulator(){
+  if (simulatorDidInit) return Promise.resolve();
+  if (simulatorInitPromise) return simulatorInitPromise;
+
+  simulatorInitPromise = (async()=>{
+    renderSlotButtons();
+    bindEvents();
+    buildAwakenList();
     await Promise.all([loadEnchantments(), loadAugments()]);
     normalizeAllData();
     populateAugmentDropdown();
     refreshEligibility();
     updateWeightDebug();
-  })();
-});
+    simulatorDidInit = true;
+  })()
+    .catch((err)=>{
+      simulatorInitPromise = null;
+      throw err;
+    });
+
+  return simulatorInitPromise;
+}
+
+window.EnchantSim = window.EnchantSim || {};
+window.EnchantSim.init = initEnchantSimulator;
+window.EnchantSim.resolveDataUrl = resolveDataUrl;
+window.initEnchantSimulator = initEnchantSimulator;
+
+if (document.readyState === "loading") {
+  window.addEventListener("DOMContentLoaded", ()=>{ initEnchantSimulator(); }, { once: true });
+} else {
+  initEnchantSimulator();
+}
 
 /* ========================== Loaders & Normalizers ========================== */
 async function loadEnchantments(){
   try{
-    const r=await fetch('enchants.json'); if(!r.ok) throw new Error('enchants.json load failed');
+    const r=await fetch(resolveDataUrl('enchants.json')); if(!r.ok) throw new Error('enchants.json load failed');
     ENCHANTS=await r.json();
-  }catch(e){ console.error(e); document.getElementById('eligibility').textContent='⚠ Could not load enchants.json.'; }
+  }catch(e){ console.error(e); document.getElementById('eligibilityText').textContent='⚠ Could not load enchants.json.'; }
 }
 async function loadAugments(){
   try{
-    const [aRes, eRes]=await Promise.all([fetch('artifacts.json'), fetch('engravings.json')]);
+    const [aRes, eRes]=await Promise.all([
+      fetch(resolveDataUrl('artifacts.json')),
+      fetch(resolveDataUrl('engravings.json'))
+    ]);
     const artifacts=await aRes.json();
     const engravings=await eRes.json();
     AUGMENTS=[...artifacts, ...engravings];
@@ -216,12 +261,43 @@ function buildAwakenList(){
 /* ========================== UI: Slots ========================== */
 function renderSlotButtons(){
   const div=document.getElementById('slotSelector'); div.innerHTML='';
-  for(let i=0;i<=4;i++){
-    const b=document.createElement('div'); b.className='slot-btn'; b.textContent=i;
-    if(i===0) b.classList.add('active');
-    b.onclick=()=>{document.querySelectorAll('.slot-btn').forEach(x=>x.classList.remove('active'));b.classList.add('active');selectedSlots=i;renderSlots();};
+  const setActive=(btn, slots)=>{
+    document.querySelectorAll('.slot-btn').forEach(x=>{
+      x.classList.remove('active');
+      x.setAttribute('aria-pressed','false');
+    });
+    btn.classList.add('active');
+    btn.setAttribute('aria-pressed','true');
+    selectedSlots=slots;
+    renderSlots();
+  };
+  for(let i=1;i<=4;i++){
+    const b=document.createElement('div');
+    b.className=`slot-btn slot-btn--slots-${i}`;
+    b.setAttribute('role','button');
+    b.tabIndex=0;
+    b.dataset.slots=String(i);
+    b.setAttribute('aria-label',`${i} slot${i===1?'':'s'}`);
+    b.setAttribute('aria-pressed','false');
+    const crystal=document.createElement('span');
+    crystal.className='slot-btn__face';
+    crystal.setAttribute('aria-hidden','true');
+    const count=document.createElement('span');
+    count.className='slot-btn__count';
+    count.textContent=String(i);
+    b.appendChild(crystal);
+    b.appendChild(count);
+    b.onclick=()=>setActive(b,i);
+    b.onkeydown=(ev)=>{
+      if(ev.key==='Enter' || ev.key===' '){
+        ev.preventDefault();
+        setActive(b,i);
+      }
+    };
     div.appendChild(b);
   }
+  const first=div.querySelector('[data-slots="1"]');
+  if(first) setActive(first,1);
 }
 function renderSlots(){
   const c=document.getElementById('slotsContainer'); c.innerHTML='';
@@ -333,9 +409,9 @@ function eligiblePool(itemType){
     if((e.labels||[]).includes('AWAKENED')){
       const chosen = (document.getElementById('awakenItem')?.value || '').trim();
       if(!chosen) return false;
-      const awakenTargets = AWAKENING_MAP[e.name] || [];
-      const norm = s => s.toLowerCase().replace(/[’']/g,"'").trim();
-      if(!awakenTargets.some(x => norm(x) === norm(chosen))) return false;
+      const awakenTargets = AWAKENING_MAP[normalizeName(e.name)] || [];
+      const chosenNorm = normalizeName(chosen);
+      if(!awakenTargets.some(x => x === chosenNorm)) return false;
     }
 
     return true;
@@ -446,10 +522,239 @@ function weightedPick(list){
   for(const e of list){ r-=e.weight; if(r<=0) return e; }
   return list[list.length-1];
 }
+function getSimulationSlotSnapshot(){
+  return currentEnchantments.map(slot=>({
+    locked: slot.lockBtn.classList.contains('locked'),
+    enchant: slot.enchant || null
+  }));
+}
+function withArtifactCardSelection(tempName, fn){
+  const sel=document.getElementById('artifactCard');
+  const original=sel.value;
+  sel.value=tempName || 'None';
+  try{
+    return fn();
+  } finally {
+    sel.value=original;
+  }
+}
+function getPoolForArtifact(itemType, artifactName){
+  return withArtifactCardSelection(artifactName, ()=>getCurrentPool(itemType,true));
+}
+function getPerRollDustForArtifact(artifactName){
+  const lockedCount=currentEnchantments.filter(s=>s.lockBtn.classList.contains('locked')).length;
+  const baseDust=BASE_DUST[selectedSlots]||0;
+  const augCost=AUGMENTS_BY_NAME[artifactName]?.cost||0;
+  return (baseDust+augCost)*Math.pow(2,lockedCount);
+}
+function buildMonteCarloContext({itemType, targetName, artifactName}){
+  const targetNorm=normalizeName(targetName);
+  const slotSnapshot=getSimulationSlotSnapshot();
+  const pool=getPoolForArtifact(itemType, artifactName);
+  const perRollDust=getPerRollDustForArtifact(artifactName);
+
+  const entries=pool.map((e, idx)=>({
+    idx,
+    enchant:e,
+    weight:e.weight,
+    normName:normalizeName(e.name)
+  }));
+  const size=entries.length;
+
+  const compatibility=Array.from({length:size}, ()=>new Array(size).fill(true));
+  for(let i=0;i<size;i++){
+    for(let j=0;j<size;j++){
+      compatibility[i][j]=isCompatible(entries[i].enchant, [entries[j].enchant]);
+    }
+  }
+
+  const lockedEnchants=slotSnapshot.filter(s=>s.locked && s.enchant).map(s=>s.enchant);
+  const lockedPoolIndices=[];
+  const lockedExternal=[];
+  for(const locked of lockedEnchants){
+    const n=normalizeName(locked.name);
+    const poolIdx=entries.findIndex(e=>e.normName===n);
+    if(poolIdx>=0) lockedPoolIndices.push(poolIdx);
+    else lockedExternal.push(locked);
+  }
+
+  const externalCompatibility=entries.map(e=>isCompatible(e.enchant, lockedExternal));
+  const isTargetIndex=entries.map(e=>e.normName===targetNorm);
+  const hasLockedTarget=lockedEnchants.some(e=>normalizeName(e.name)===targetNorm);
+  const hasRollableSlot=slotSnapshot.some(s=>!(s.locked && s.enchant));
+
+  const initialCandidateIndices=[];
+  for(let idx=0;idx<size;idx++){
+    if(!externalCompatibility[idx]) continue;
+    let ok=true;
+    for(const lockedIdx of lockedPoolIndices){
+      if(!compatibility[idx][lockedIdx]){ ok=false; break; }
+    }
+    if(ok) initialCandidateIndices.push(idx);
+  }
+  const hasCompatibleTarget=initialCandidateIndices.some(idx=>isTargetIndex[idx]);
+
+  return {
+    slotSnapshot,
+    entries,
+    compatibility,
+    lockedPoolIndices,
+    externalCompatibility,
+    isTargetIndex,
+    hasLockedTarget,
+    hasRollableSlot,
+    hasCompatibleTarget,
+    perRollDust,
+    validSetCache:new Map(),
+    samplerCache:new Map(),
+    targetNorm
+  };
+}
+function getTakenKey(indices){
+  const uniq=Array.from(new Set(indices));
+  uniq.sort((a,b)=>a-b);
+  return uniq.join(',');
+}
+function getValidCandidateIndices(ctx, takenIndices){
+  const takenKey=getTakenKey(takenIndices);
+  const cached=ctx.validSetCache.get(takenKey);
+  if(cached) return cached;
+
+  const valid=[];
+  for(let idx=0;idx<ctx.entries.length;idx++){
+    if(!ctx.externalCompatibility[idx]) continue;
+    let ok=true;
+    for(const t of takenIndices){
+      if(!ctx.compatibility[idx][t]){ ok=false; break; }
+    }
+    if(ok) valid.push(idx);
+  }
+  ctx.validSetCache.set(takenKey, valid);
+  return valid;
+}
+function getOrBuildSampler(ctx, validIndices){
+  const key=validIndices.join(',');
+  const cached=ctx.samplerCache.get(key);
+  if(cached) return cached;
+
+  const cumulative=[];
+  let total=0;
+  for(const idx of validIndices){
+    total += ctx.entries[idx].weight;
+    cumulative.push(total);
+  }
+  const sampler={indices:validIndices, cumulative, total};
+  ctx.samplerCache.set(key, sampler);
+  return sampler;
+}
+function pickIndexFromSampler(sampler){
+  if(!sampler.indices.length || sampler.total<=0) return null;
+  let r=Math.random()*sampler.total;
+  let lo=0, hi=sampler.cumulative.length-1;
+  while(lo<hi){
+    const mid=(lo+hi)>>1;
+    if(r<=sampler.cumulative[mid]) hi=mid;
+    else lo=mid+1;
+  }
+  return sampler.indices[lo];
+}
+function simulateOneRollHitFast(ctx){
+  const taken=ctx.lockedPoolIndices.slice();
+  if(ctx.hasLockedTarget) return true;
+  for(const slot of ctx.slotSnapshot){
+    if(slot.locked && slot.enchant) continue;
+    const validIndices=getValidCandidateIndices(ctx, taken);
+    if(!validIndices.length) continue;
+    const sampler=getOrBuildSampler(ctx, validIndices);
+    const pickedIdx=pickIndexFromSampler(sampler);
+    if(pickedIdx==null) continue;
+    if(ctx.isTargetIndex[pickedIdx]) return true;
+    taken.push(pickedIdx);
+  }
+  return false;
+}
+function runMonteCarloForArtifact({itemType, targetName, artifactName, trials=MONTE_CARLO_TRIALS, chunkSize=MONTE_CARLO_CHUNK_SIZE, token, onProgress}){
+  return new Promise(resolve=>{
+    const ctx=buildMonteCarloContext({itemType, targetName, artifactName});
+    const t0=performance.now();
+
+    if(ctx.hasLockedTarget){
+      return resolve({
+        hits: trials,
+        trials,
+        expectedRolls: 0,
+        expectedDust: 0,
+        perRollDust:ctx.perRollDust
+      });
+    }
+
+    if(!ctx.hasRollableSlot || !ctx.hasCompatibleTarget){
+      return resolve({
+        hits: 0,
+        trials,
+        expectedRolls: Infinity,
+        expectedDust: Infinity,
+        perRollDust:ctx.perRollDust,
+        impossible: true
+      });
+    }
+
+    let done=0;
+    let hits=0;
+    const frameBudgetMs=12;
+
+    const step=()=>{
+      if(token!==probabilityRunToken){
+        resolve({cancelled:true});
+        return;
+      }
+      const stepStart=performance.now();
+      let processed=0;
+      while(done<trials && processed<chunkSize){
+        if(simulateOneRollHitFast(ctx)) hits++;
+        done++;
+        processed++;
+        if(processed%50===0 && (performance.now()-stepStart)>frameBudgetMs) break;
+      }
+      if(typeof onProgress==='function') onProgress(done, trials);
+      if(done<trials){
+        setTimeout(step,0);
+        return;
+      }
+      const p = hits / trials;
+      const expectedRolls = p>0 ? (1/p) : Infinity;
+      const expectedDust = Number.isFinite(expectedRolls) ? expectedRolls*ctx.perRollDust : Infinity;
+      resolve({
+        hits,
+        trials,
+        expectedRolls,
+        expectedDust,
+        perRollDust:ctx.perRollDust,
+        profile:{
+          elapsedMs:performance.now()-t0,
+          samplerCacheSize:ctx.samplerCache.size,
+          validSetCacheSize:ctx.validSetCache.size
+        }
+      });
+    };
+    step();
+  });
+}
+function setProbabilityBusy(isBusy, label){
+  const ids=['calcProbBtn','compareCardsMode','targetEnchantInput','itemType','artifactCard'];
+  ids.forEach(id=>{
+    const el=document.getElementById(id);
+    if(el) el.disabled=isBusy;
+  });
+  if(label) document.getElementById('calcProbBtn').textContent=label;
+}
+function setProbabilityButtonLabel(){
+  const compare=document.getElementById('compareCardsMode')?.checked;
+  document.getElementById('calcProbBtn').textContent=compare?'Compare Cards':'Calculate Probability';
+}
 function rollEnchantments(){
   const it=document.getElementById('itemType').value;
   if(!it){alert('Select an item type first');return;}
-  if(selectedSlots===0){alert('Select slot count');return;}
   let pool=getCurrentPool(it,true);
   
 
@@ -476,34 +781,100 @@ function rollEnchantments(){
   enforceLockValidity();
   updateWeightDebug();
 }
-function calculateProbability(){
+async function calculateProbability(){
   const it=document.getElementById('itemType').value;
   const q=document.getElementById('targetEnchantInput').value.trim();
   const out=document.getElementById('probResult');
   if(!it){out.textContent='Select item type first.';return;}
   if(!q){out.textContent='Type enchant name first.';return;}
-  let pool=getCurrentPool(it,true);
-  
 
-  const locked=currentEnchantments.filter(s=>s.lockBtn.classList.contains('locked')&&s.enchant).map(s=>s.enchant);
-  pool=pool.filter(e=>isCompatible(e,locked));
+  const compareMode=document.getElementById('compareCardsMode').checked;
+  const token=++probabilityRunToken;
+  setProbabilityBusy(true, compareMode ? 'Comparing...' : 'Simulating...');
+  out.textContent=compareMode ? 'Running card comparison...' : 'Running Monte Carlo simulation...';
 
-  const target=pool.find(e=>normalizeName(e.name)===normalizeName(q));
-  if(!target){ out.innerHTML=`<b>${q}</b><br>Chance: 0% (Incompatible or not in pool)`; return; }
-
-  const total=pool.reduce((a,b)=>a+b.weight,0);
-  const p = target.weight/total;
-  const effSlots = Math.max(1, selectedSlots - locked.length);
-  const chance = 1 - Math.pow(1-p, effSlots);
-  const expected = 1 / chance;
+  if(compareMode){
+    const cardNames=AUGMENTS.map(a=>a.name);
+    if(!cardNames.length){
+      setProbabilityBusy(false);
+      setProbabilityButtonLabel();
+      out.textContent='No cards available to compare.';
+      return;
+    }
+    const results=[];
+    try{
+      for(let i=0;i<cardNames.length;i++){
+        const card=cardNames[i];
+        out.textContent=`Comparing cards... ${i+1}/${cardNames.length} (${card})`;
+        const res=await runMonteCarloForArtifact({
+          itemType: it,
+          targetName: q,
+          artifactName: card,
+          token,
+          onProgress:(done,total)=>{
+            if(token!==probabilityRunToken) return;
+            if(done===total) return;
+            out.textContent=`Comparing cards... ${i+1}/${cardNames.length} (${card}) ${done}/${total}`;
+          }
+        });
+        if(token!==probabilityRunToken || res.cancelled) return;
+        results.push({
+          card,
+          hits: res.hits,
+          trials: res.trials,
+          probability: res.hits/res.trials,
+          expectedDust: res.expectedDust,
+          expectedRolls: res.expectedRolls,
+          impossible: !!res.impossible
+        });
+      }
+      results.sort((a,b)=>{
+        if(b.probability!==a.probability) return b.probability-a.probability;
+        if(a.expectedDust!==b.expectedDust) return a.expectedDust-b.expectedDust;
+        return a.card.localeCompare(b.card);
+      });
+      const lines=results.map((r,idx)=>{
+        if(r.impossible){
+          return `${idx+1}. ${r.card} — 0.0000% (${r.hits}/${r.trials}), Expected Dust: Unreachable`;
+        }
+        return `${idx+1}. ${r.card} — ${(r.probability*100).toFixed(4)}% (${r.hits}/${r.trials}), Expected Dust: ${r.expectedDust.toFixed(2)}, Expected Rolls: ${r.expectedRolls.toFixed(2)}`;
+      });
+      out.innerHTML=`<b>Compare Cards for "${q}" (${MONTE_CARLO_TRIALS.toLocaleString()} trials each)</b><pre class="small">${lines.join('\n')}</pre>`;
+    } finally {
+      if(token===probabilityRunToken){
+        setProbabilityBusy(false);
+        setProbabilityButtonLabel();
+      }
+    }
+    return;
+  }
 
   const augName=document.getElementById('artifactCard').value;
-  const augCost=AUGMENTS_BY_NAME[augName]?.cost||0;
-  const baseDust=BASE_DUST[selectedSlots]||0;
-  const perRollDust=(baseDust+augCost)*Math.pow(2,locked.length);
-  const expectedDust=perRollDust*expected;
-
-  out.innerHTML = `<b>${target.name}</b><br>Weight: ${Math.round(target.weight)}<br>Chance this roll (${effSlots} slot(s)): ${(chance*100).toFixed(4)}%<br>Expected rolls: ${expected.toFixed(2)}<br>Expected Dust Cost: ${expectedDust.toFixed(2)}`;
+  try{
+    const res=await runMonteCarloForArtifact({
+      itemType: it,
+      targetName: q,
+      artifactName: augName,
+      token,
+      onProgress:(done,total)=>{
+        if(token!==probabilityRunToken) return;
+        if(done===total) return;
+        out.textContent=`Running Monte Carlo simulation... ${done}/${total}`;
+      }
+    });
+    if(token!==probabilityRunToken || res.cancelled) return;
+    if(res.impossible){
+      out.innerHTML=`<b>${q}</b><br>Chance this roll: 0.0000% (0/${res.trials})<br>Expected rolls: Unreachable<br>Expected Dust Cost: Unreachable`;
+      return;
+    }
+    const chancePct=(res.hits/res.trials)*100;
+    out.innerHTML=`<b>${q}</b><br>Chance this roll (${res.trials.toLocaleString()} sims): ${chancePct.toFixed(4)}% (${res.hits}/${res.trials})<br>Expected rolls to hit: ${res.expectedRolls.toFixed(2)}<br>Expected Dust Cost to hit: ${res.expectedDust.toFixed(2)}`;
+  } finally {
+    if(token===probabilityRunToken){
+      setProbabilityBusy(false);
+      setProbabilityButtonLabel();
+    }
+  }
 }
 
 /* ========================== Validity, Dust & Breakdown ========================== */
@@ -583,10 +954,12 @@ function bindEvents(){
   document.getElementById('resetDust').onclick=()=>{totalDustUsed=0;updateDustDisplay();};
   document.getElementById('itemType').onchange=()=>{refreshEligibility();enforceLockValidity();updateWeightDebug();};
   document.getElementById('calcProbBtn').onclick=calculateProbability;
+  document.getElementById('compareCardsMode').onchange=setProbabilityButtonLabel;
   // Initialize Weight Breakdown collapsed by default
 const det = document.getElementById('weightDetails');
 det.style.display = 'none';
 document.getElementById('toggleWeightBtn').textContent = 'Show';
+setProbabilityButtonLabel();
 
 // Fix first-click behavior
 document.getElementById('toggleWeightBtn').onclick = () => {
@@ -597,12 +970,26 @@ document.getElementById('toggleWeightBtn').onclick = () => {
   updateWeightDebug();
 };
 
+syncRollButtonState();
 }
+function syncRollButtonState(){
+  const roll=document.getElementById('rollBtn');
+  if(!roll) return;
+  roll.disabled=!document.getElementById('itemType').value;
+}
+
 function refreshEligibility(){
-  const it=document.getElementById('itemType').value;
-  if(!it){ document.getElementById('eligibility').textContent=''; return; }
-  const p=getCurrentPool(it,false);
-  document.getElementById('eligibility').textContent=`Eligible Enchantments for ${it}: ${p.length}`;
+  const sel=document.getElementById('itemType');
+  const labelEl=document.getElementById('eligibilityText');
+  const it=sel.value;
+  if(!it){
+    labelEl.textContent='';
+  } else {
+    const label=sel.options[sel.selectedIndex]?.text?.trim()||it;
+    const p=getCurrentPool(it,false);
+    labelEl.textContent=`Eligible Enchantments for ${label}: ${p.length}`;
+  }
+  syncRollButtonState();
 }
 
 /* ---------- IMPROVED AUTOCOMPLETE FOR TARGET ENCHANT INPUT ---------- */
@@ -681,7 +1068,7 @@ function refreshEligibility(){
 
   function updateActive(items) {
     items.forEach((el, i) => {
-      el.style.background = i === activeIndex ? '#333' : '';
+      el.classList.toggle('is-active', i === activeIndex);
     });
   }
 
@@ -694,19 +1081,6 @@ function refreshEligibility(){
     return result;
   }
 })();
-
-
-// === Enhanced Awaken Normalization & Pool Handling (v9) ===
-function normalizeName(name) {
-  return name
-    ? name.toLowerCase()
-      .replace(/&#39;/g, "'")
-      .replace(/[’‘]/g, "'")
-      .replace(/\s+/g, ' ')
-      .trim()
-    : "";
-}
-
 // Normalize AWAKENING_MAP keys globally
 if (typeof AWAKENING_MAP !== 'undefined') {
   const fixed = {};
@@ -716,43 +1090,13 @@ if (typeof AWAKENING_MAP !== 'undefined') {
   AWAKENING_MAP = fixed;
 }
 
-// Rebuild awaken enchant pool when user picks item
-function rebuildAwakenPoolIfNeeded() {
-  if (!window.currentAwakenItem) return;
-  const chosen = normalizeName(window.currentAwakenItem);
-  const allAwakened = Object.entries(AWAKENING_MAP)
-    .filter(([enchant, items]) => items.includes(chosen))
-    .map(([enchant]) => enchant);
-
-  if (Array.isArray(window.enchants)) {
-    window.enchants.forEach(e => {
-      const n = normalizeName(e.name);
-      e._isAwakenedEligible = allAwakened.includes(n);
-    });
-  }
-}
-
-// Hook item selection
-if (typeof setupAwakenDropdown === 'function') {
-  const oldSetup = setupAwakenDropdown;
-  setupAwakenDropdown = function(...args) {
-    oldSetup.apply(this, args);
-    const dropdown = document.getElementById('awakenItemDropdown');
-    if (dropdown) {
-      dropdown.addEventListener('change', ev => {
-        window.currentAwakenItem = ev.target.value;
-        rebuildAwakenPoolIfNeeded();
-      });
-    }
-  };
-}
-
 </script>
 <script>
 (function enableAwakenAutocompleteV12() {
   const checkbox = document.getElementById('canAwaken');
   const input = document.getElementById('awakenItem');
   if (!checkbox || !input) return;
+  let suggestionsBox = null;
 
   // Ensure visibility toggles are controlled here (no inline styles)
   const toggle = () => {
@@ -771,7 +1115,7 @@ if (typeof setupAwakenDropdown === 'function') {
   input.parentNode.insertBefore(wrapper, input);
   wrapper.appendChild(input);
 
-  const suggestionsBox = document.createElement('div');
+  suggestionsBox = document.createElement('div');
   suggestionsBox.className = 'suggest-box'; // reuse same styling
   suggestionsBox.style.position = 'absolute';
   suggestionsBox.style.top = '100%';
@@ -789,7 +1133,7 @@ if (typeof setupAwakenDropdown === 'function') {
 
     if (!q) return;
 
-    const list = (window.AWAKENABLE_ITEMS || []);
+    const list = AWAKENABLE_ITEMS;
     const matches = list.filter(name => name.toLowerCase().includes(q)).slice(0, 15);
     if (!matches.length) return;
 
@@ -797,7 +1141,6 @@ if (typeof setupAwakenDropdown === 'function') {
       const div = document.createElement('div');
       div.className = 'suggest-item';
       // simple highlight like probability box
-      const safe = name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
       const re = new RegExp('(' + q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'ig');
       div.innerHTML = name.replace(re, '<b>$1</b>');
       div.onclick = () => {
@@ -836,7 +1179,7 @@ if (typeof setupAwakenDropdown === 'function') {
 
   function updateActive(items) {
     items.forEach((el, i) => {
-      el.style.background = (i === activeIndex) ? '#333' : '';
+      el.classList.toggle('is-active', i === activeIndex);
     });
   }
 })();

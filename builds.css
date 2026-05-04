@@ -4,6 +4,8 @@
   box-sizing: border-box;
 }
 :root {
+  --site-canvas-bg: #0a0a0a;
+  --site-title-gold: #f6c167;
   --set-checker-panel-width: min(38rem, 100vw);
   /* Set in px by build-variant-nav.js from chip width (fallback avoids overlap before measure) */
   --build-variant-nav-chip-width: 10.5rem;
@@ -25,7 +27,7 @@ body {
   font-size: 16px;
   line-height: 1.55;
   color: #f5f5f5;
-  background: #161616;
+  background: var(--site-canvas-bg);
 }
 body.has-site-nav {
   padding-left: calc(
@@ -119,8 +121,10 @@ body.has-site-nav:has(#site-nav .site-nav__panel[open]) .site-nav {
   margin: 0;
   padding: 0.5rem 0.65rem;
   font: inherit;
-  font-size: 0.95rem;
+  font-family: ChronoType, system-ui, sans-serif;
+  font-size: calc(0.95rem * 1.3);
   font-weight: 600;
+  letter-spacing: 0.02em;
   color: #e8e8e8;
   text-decoration: none;
   border-radius: 0.25rem;
@@ -198,7 +202,10 @@ body.home-intro {
 body.home-intro.has-site-nav .home-intro__main .home-intro__prose {
   max-width: var(--home-intro-prose-max);
   margin-inline: auto;
-  font-size: 1rem;
+  font-family: ChronoType, system-ui, sans-serif;
+  font-size: 1.2rem;
+  line-height: 1.6;
+  letter-spacing: 0.02em;
 }
 body.home-intro.has-site-nav:not(.site-nav-show-brand) {
   padding-top: calc(0.35rem + env(safe-area-inset-top, 0px));
@@ -219,21 +226,27 @@ body.home-intro.has-site-nav.site-nav-show-brand .home-intro__main {
 body.home-intro.has-site-nav .home-intro__main .home-intro__prose h1 {
   text-align: left;
   margin-top: 0;
+  font-size: 2.7rem;
+  font-weight: 400;
+  line-height: 1.2;
+  letter-spacing: 0.02em;
+  color: var(--site-title-gold);
 }
 body.home-intro.has-site-nav .home-intro__main .home-intro__prose > h2 {
-  font-size: 1.65rem;
+  font-size: 1.98rem;
   font-weight: 700;
   line-height: 1.25;
-  margin: 2.5rem 0 1rem;
+  letter-spacing: 0.02em;
+  margin: 3rem 0 1.2rem;
 }
 body.home-intro.has-site-nav .home-intro__main .home-intro__prose > h2:first-of-type {
-  margin-top: 2.75rem;
+  margin-top: 3.3rem;
 }
 body.home-intro.has-site-nav .home-intro__main .home-intro__prose > h2 + p {
   margin-top: 0;
 }
 .home-intro__tools-lead {
-  margin: 0 0 0.85rem;
+  margin: 0 0 1.02rem;
 }
 .home-intro__tools-list {
   margin-bottom: 0;
@@ -254,12 +267,25 @@ body.home-intro.has-site-nav .home-intro__main .home-intro__prose > h2 + p {
 .home-intro__main {
   margin: 0;
 }
+main.home-intro__main:has(#enchantView:not([hidden])) {
+  max-width: none;
+  width: 100%;
+}
+.home-enchant-view {
+  width: 100%;
+  max-width: 74rem;
+  margin: 0 auto;
+  padding-top: 2.25rem;
+}
+.home-enchant-view[hidden] {
+  display: none !important;
+}
 .home-intro__list {
-  margin: 0 0 1.25rem;
-  padding-left: 1.35rem;
+  margin: 0 0 1.5rem;
+  padding-left: 1.62rem;
 }
 .home-intro__list li {
-  margin-bottom: 0.35rem;
+  margin-bottom: 0.42rem;
 }
 .home-intro__tools-list li:last-child {
   margin-bottom: 0;
@@ -317,6 +343,12 @@ main:has(> .builds-hub) {
 main:has(> .builds-hub) > h1,
 main:has(> .builds-hub) > .builds-hub {
   width: min(var(--builds-hub-max), 100%);
+}
+main:has(> .builds-hub) > h1 {
+  font-family: ChronoType, system-ui, sans-serif;
+  letter-spacing: 0.02em;
+  font-size: calc(1.65rem * 1.3);
+  color: var(--site-title-gold);
 }
 h1 {
   margin: 0 0 1.35rem;
@@ -620,7 +652,8 @@ main > .class-picker__menu {
   background: rgba(158, 199, 255, 0.08);
 }
 .builds-hub__label {
-  font-size: 0.95rem;
+  font-family: ChronoType, system-ui, sans-serif;
+  font-size: calc(0.95rem * 1.2);
   font-weight: 600;
   line-height: 1.2;
   margin-bottom: 0.35rem;
@@ -644,7 +677,7 @@ main > .class-picker__menu {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
   .builds-hub__label {
-    font-size: 0.82rem;
+    font-size: calc(0.82rem * 1.2);
   }
 }
 
@@ -971,99 +1004,6 @@ body.set-checker-sidebar-open.has-build-variant-nav .build-variant-nav {
   flex: 1 1 auto;
   min-height: 0;
   overflow-y: auto;
-}
-.set-checker-dps-pane {
-  flex: 1 1 auto;
-  min-height: 0;
-  overflow-y: auto;
-}
-.set-checker-dps-inner {
-  display: flex;
-  flex-direction: column;
-  gap: 0.65rem;
-  padding-right: 0.15rem;
-}
-.set-checker-dps-toolbar {
-  display: flex;
-  justify-content: flex-start;
-}
-.set-checker-dps-heading {
-  margin: 0;
-  font-size: 1.05rem;
-  color: #f0f0f0;
-}
-.set-checker-dps-slug {
-  margin: 0;
-  font-size: 0.82rem;
-  color: #9a9a9a;
-}
-.set-checker-dps-slug code {
-  font-size: inherit;
-}
-.set-checker-dps-placeholder-msg {
-  margin: 0;
-}
-.set-checker-dps-wiki-lines {
-  margin: 0;
-  font-size: 0.78rem;
-  line-height: 1.35;
-  color: #b8b8b8;
-  word-break: break-word;
-}
-.set-checker-dps-shots {
-  margin: 0;
-  padding: 0.6rem 0.65rem;
-  font-size: 0.75rem;
-  line-height: 1.35;
-  background: #0f0f12;
-  border: 1px solid #353540;
-  border-radius: 0.35rem;
-  overflow-x: auto;
-  color: #c8dcf0;
-}
-.set-checker-row-title--weapon {
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-  gap: 0.5rem;
-}
-.set-checker-row-title-start {
-  display: inline-flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.35rem 0.45rem;
-  flex: 1 1 auto;
-  min-width: 0;
-}
-.set-checker-row-title--weapon .set-checker-row-title-text {
-  flex: 0 1 auto;
-}
-.set-checker-row-dps-actions {
-  display: inline-flex;
-  flex-shrink: 0;
-  align-items: center;
-  gap: 0.18rem;
-  margin-left: 0.35rem;
-}
-.set-checker-dps-pause {
-  box-sizing: border-box;
-  min-width: 2rem;
-  height: 1.95rem;
-  padding: 0 0.4rem;
-  font: inherit;
-  font-size: 0.88rem;
-  line-height: 1;
-  color: #e8f4ff;
-  background: linear-gradient(#2a3540, #1e252e);
-  border: 1px solid #455a66;
-  border-radius: 0.35rem;
-  cursor: pointer;
-}
-.set-checker-dps-pause:hover,
-.set-checker-dps-pause:focus-visible {
-  outline: none;
-  border-color: #6abfff;
-  color: #fff;
 }
 .set-checker-loading {
   margin: 0;

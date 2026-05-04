@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>ROTMG Builds — Introduction</title>
   <link rel="stylesheet" href="builds.css">
+  <link rel="stylesheet" href="enchanting-sim/style.css">
   <script>
     (function () {
       var map = {
@@ -35,36 +36,88 @@
 <body class="home-intro has-site-nav">
   <script src="site-nav.js"></script>
   <main class="home-intro__main">
-    <div class="home-intro__prose">
-    <h1>Introduction</h1>
-    <p>As game balance continues to shift with each update, it’s important to stay up to date with which builds perform best at any given time. This guide focuses on the current best builds, providing a practical overview of what’s strong right now and how to make the most of each setup. I’ll be updating this regularly as balance changes roll out.</p>
-    <p>In addition to listing top builds, this guide also aims to help you understand the core concepts of creating your own build—covering things like:</p>
-    <ul class="home-intro__list">
-      <li>Building around a specific weapon or ability</li>
-      <li>Optimizing Attack and Dexterity Ratios for highest DPS</li>
-      <li>Effective item swapouts for different situations</li>
-    </ul>
-    <p>Whether you’re following the meta or experimenting with your own setups, this guide should give you a solid foundation to work from.</p>
-
-    <h2>Building Around a Specific Weapon or Ability</h2>
-    <p>When creating a meta build, the first thing to decide is <strong>which stat (or stats)</strong> you want to focus on to make your setup as strong as possible. Most of the time, <strong>Attack and Dexterity</strong> are the go-to, since they directly boost your weapon’s damage and fire rate.</p>
-    <p>However, if you plan to build around a <strong>different stat</strong>, like <strong>Wisdom</strong> or <strong>Vitality</strong>, you’ll need a solid reason—usually tied to how your <strong>ability</strong> or <strong>weapon</strong> scales. The main thing is understanding what part of your build benefits the most from additional stats and building around that.</p>
-    <p>For example, take the <strong>Full Wisdom Rogue</strong>, which currently has the <strong>highest single-target DPS</strong> in the game. Instead of stacking Attack or Dexterity, it invests heavily in <strong>Wisdom</strong> because its cloak’s scaling becomes incredibly strong as Wisdom increases. This justifies skipping traditional DPS enchants and items—though adding a touch of <strong>Dexterity</strong> still helps smooth out damage. (We’ll explore the Rogue in more detail later.)</p>
-
-    <h2>Balancing DPS Stats for Optimal Damage (Attack/Dexterity Builds)</h2>
-    <p>When building around <strong>Attack and Dexterity</strong>, finding the right balance between the two is what maximizes your DPS. <strong>Attack</strong> makes each shot hit harder, while <strong>Dexterity</strong> increases how fast those shots fire — and stacking one without the other often leads to wasted potential.</p>
-    <p>This balance point isn’t fixed — it depends on your <strong>weapon’s average damage, rate of fire, number of shots, and even the enemy’s defense.</strong> For example, high-damage weapons usually benefit more from <strong>Dexterity</strong>, while low-damage or multi-shot weapons tend to scale better with <strong>Attack</strong>.</p>
-
-    <h2>Effective Item Swapouts and When to Use Them</h2>
-    <p>Item swapouts are pieces of gear you can quickly switch to for a specific advantage — whether that’s boosting your <strong>damage</strong> or increasing <strong>survivability</strong> (which sometimes increases your <strong>DPS</strong>).</p>
-
-    <h2>Current Meta-Builds:-</h2>
-    <p class="home-intro__tools-lead"><strong>Those two tools will help you during making your builds:</strong></p>
-    <ul class="home-intro__list home-intro__tools-list">
-      <li><a class="home-intro__tool-link" href="https://outsmited.github.io/EnchantingSimulator/main" target="_blank" rel="noopener noreferrer">Enchanting Simulator</a> (Precision Cog &amp; Honeycomb &amp; Premium Cards currently have inaccurate weight multipliers, will be fixed later)</li>
-      <li><a class="home-intro__tool-link" href="https://outsmited.github.io/OptimizeDPS/main" target="_blank" rel="noopener noreferrer">DPS Optimization Tool</a> automatically calculates your ideal Attack/Dexterity split. Just enter your weapon’s stats and the target’s defense, and it will show you which combination gives the highest possible DPS for your setup.</li>
-    </ul>
-    </div>
+    <div class="home-intro__prose" id="introView"></div>
+    <section class="home-enchant-view" id="enchantView" hidden>
+      <div id="enchantSimMount"></div>
+    </section>
   </main>
+  <script src="enchanting-sim/embed.js"></script>
+  <script>
+    (function () {
+      var introEl = document.getElementById("introView");
+      var enchantView = document.getElementById("enchantView");
+      var enchantMount = document.getElementById("enchantSimMount");
+      if (!introEl || !enchantView || !enchantMount) return;
+
+      var params = new URLSearchParams(window.location.search);
+      var showingEnchant = params.get("view") === "enchant-sim";
+      var enchantMounted = false;
+      var enchantMountPromise = null;
+
+      function loadIntro() {
+        if (introEl.dataset.loaded === "true") return;
+        fetch("intro.html", { cache: "no-cache" })
+          .then(function (r) {
+            if (!r.ok) throw new Error(String(r.status));
+            return r.text();
+          })
+          .then(function (html) {
+            introEl.innerHTML = html;
+            introEl.dataset.loaded = "true";
+          })
+          .catch(function () {
+            introEl.innerHTML =
+              '<p class="home-intro__load-error">Could not load the introduction. Try refreshing, or open <a class="home-intro__tool-link" href="intro.html">intro.html</a> directly.</p>';
+            introEl.dataset.loaded = "true";
+          });
+      }
+
+      function showIntro() {
+        document.title = "ROTMG Builds — Introduction";
+        introEl.hidden = false;
+        enchantView.hidden = true;
+        document.body.classList.add("home-intro");
+        loadIntro();
+      }
+
+      function showEnchantSim() {
+        document.title = "ROTMG Builds — Enchantment Sim";
+        introEl.hidden = true;
+        enchantView.hidden = false;
+        document.body.classList.remove("home-intro");
+        if (typeof window.mountEnchantingSim === "function") {
+          if (enchantMounted) return;
+          if (!enchantMountPromise) {
+            enchantMountPromise = window
+              .mountEnchantingSim(enchantMount, {
+                pagePath: "enchanting-sim/main.html",
+                dataBasePath: "enchanting-sim"
+              })
+              .then(function () {
+                enchantMounted = true;
+              })
+              .catch(function () {
+                enchantMountPromise = null;
+                enchantMounted = false;
+                throw new Error("mount failed");
+              });
+          }
+          enchantMountPromise.catch(function () {
+            enchantMount.innerHTML =
+              '<p class="home-intro__load-error">Could not load the enchantment simulator.</p>';
+          });
+        } else {
+          enchantMount.innerHTML =
+            '<p class="home-intro__load-error">Simulator loader is unavailable.</p>';
+        }
+      }
+
+      if (showingEnchant) {
+        showEnchantSim();
+      } else {
+        showIntro();
+      }
+    })();
+  </script>
 </body>
 </html>

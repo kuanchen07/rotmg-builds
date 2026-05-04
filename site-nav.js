@@ -7,12 +7,21 @@
   var introHref = inClasses ? "../index.html" : "index.html";
   var buildsHref = inClasses ? "builds.html" : "classes/builds.html";
   var creditsHref = inClasses ? "credits.html" : "classes/credits.html";
+  var enchantHref = inClasses
+    ? "../index.html?view=enchant-sim"
+    : "index.html?view=enchant-sim";
   /* Local UI asset only; item sprites use scripts/lib/icon-cdn-base.cjs (B2). */
   var iconSrc = inClasses ? "../icons/menu.png" : "icons/menu.png";
 
   var fileName = path.split("/").pop() || "";
+  var query = new URLSearchParams(location.search || "");
+  var requestedView = query.get("view");
+  var isEnchantRoute = path.indexOf("/enchanting-sim/") !== -1;
+  var isEnchantSim = requestedView === "enchant-sim" || isEnchantRoute;
   var isIntro =
-    !inClasses && (fileName === "" || fileName === "index.html" || /^\/?$/.test(path));
+    !inClasses &&
+    !isEnchantSim &&
+    (fileName === "" || fileName === "index.html" || /^\/?$/.test(path));
   var isBuildsHub = /^(builds\.html)$/i.test(fileName);
   var isCredits = /^(credits\.html)$/i.test(fileName);
 
@@ -24,6 +33,7 @@
   var introAttr = isIntro ? ' aria-current="page"' : "";
   var buildsAttr = isBuildsHub ? ' aria-current="page"' : "";
   var creditsAttr = isCredits ? ' aria-current="page"' : "";
+  var enchantAttr = isEnchantSim ? ' aria-current="page"' : "";
 
   var aside = document.createElement("aside");
   aside.id = "site-nav";
@@ -46,6 +56,11 @@
     '"' +
     buildsAttr +
     ">Builds</a>" +
+    '<a class="site-nav__link" href="' +
+    enchantHref +
+    '"' +
+    enchantAttr +
+    ">Enchant Sim</a>" +
     '<a class="site-nav__link" href="' +
     creditsHref +
     '"' +

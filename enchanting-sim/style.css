@@ -1,235 +1,490 @@
+@import url("../fonts/chronotype/webfont.css");
 
-    :root{
-      --bg:#121212; --card:#1e1e1e; --ink:#eee; --muted:#9fb0d9;
-      --accent:#00bcd4; --accent-d:#0097a7; --chip:#444; --slot:#2a2a2a;
-      --border:#333; --panel:#0f0f0f;
-    }
-    html, body{ background:var(--bg); color:var(--ink); font-family:system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }
-    h1{ color:var(--accent); text-align:center; margin:20px 0; }
-    .container{ max-width:1100px; margin:0 auto; padding:12px 16px 40px; }
-    select, button, input{ padding:10px; margin:10px; border-radius:8px; border:none; color:var(--ink); background:#222; }
-    button{ background:var(--accent); color:#fff; cursor:pointer; }
-    button:hover{ background:var(--accent-d); }
-    .card{ background:var(--card); border-radius:12px; padding:16px; margin-top:12px; }
-    .cols{ display:flex; gap:16px; flex-wrap:wrap; }
-    .col{ flex:1 1 360px; min-width:320px; }
-    .muted{ color:var(--muted); font-size:12px; }
-    .small{ font-size:12px; color:#fff; }
-
-    .slot-btn{ display:inline-flex; align-items:center; justify-content:center; width:48px; height:48px; margin:5px; border-radius:50%; background:var(--chip); color:#fff; cursor:pointer; user-select:none; }
-    .slot-btn.active{ background:var(--accent); }
-    .slot{ background:var(--slot); border-radius:10px; padding:10px; width:240px; position:relative; min-height:60px; }
-    .slot-container{ display:flex; gap:10px; flex-wrap:wrap; margin-top:10px; }
-    .lock-toggle{ position:absolute; top:8px; right:8px; background:#333; color:#ccc; border:none; border-radius:6px; cursor:pointer; padding:2px 6px; font-size:12px; }
-    .locked{ background:#00796b !important; color:#fff !important; }
-
-    .aug-wrap{ position:relative; }
-    #augmentInfo{ font-size:13px; color:#ddd; background:#181818; border:1px solid var(--border); border-radius:8px; padding:10px 12px; margin:6px 10px 0; white-space:pre-line; display:none; max-width:560px; }
-
-    .prob-row{ display:flex; align-items:center; flex-wrap:wrap; gap:10px; }
-    #targetEnchantInput{ flex:1; min-width:260px; max-width:480px; font-size:14px; padding:8px; border-radius:8px; border:none; }
-    #suggestions{ position:relative; flex:1; max-width:480px; }
-    .suggest-box{ position:absolute; background:var(--card); border:1px solid var(--border); border-radius:6px; max-height:220px; overflow-y:auto; z-index:10; width:100%; box-shadow:0 0 8px rgba(0,0,0,0.45); }
-    .suggest-item{ padding:6px 8px; cursor:pointer; font-size:13px; }
-    .suggest-item:hover{ background:#333; }
-
-    .toggle-row{ display:flex; align-items:center; justify-content:space-between; gap:8px; }
-    #weightDetails{ display:none; margin-top:8px; background:var(--panel); border-radius:10px; padding:10px; }
-
-    .awaken-row{ display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
-    .inline{ display:inline-flex; align-items:center; gap:8px; }
-    datalist option{ color:#000; }
-    #awakenItem{ min-width:260px; max-width:480px; }
-    #rollDelta{ color:#ffd54f; font-size:12px; margin-left:8px; opacity:0; transition:opacity .4s ease; }
-    #rollDelta.show{ opacity:1; }
-
-    pre{ white-space:pre-wrap; word-break:break-word; }
-  
-/* === v10 Smoothness & Styling Enhancements === */
-
-/* General transitions */
-button, select, input, .slot {
-  transition: all 0.25s ease;
+.enchant-sim-shell {
+  --sim-card: #161616;
+  --sim-card-border: #2f2f2f;
+  --sim-card-border-strong: #c89f3d;
+  --sim-ink: #f5f5f5;
+  --sim-muted: #a8a8a8;
+  --sim-cyan: #2fd6ff;
+  --sim-cyan-strong: #1fc6ef;
+  --sim-gold: #f6c167;
+  --sim-gold-strong: #c89f3d;
+  --sim-danger: #8f3848;
+  --sim-danger-hover: #a44458;
+  --sim-slot-off: #121212;
+  --sim-slot-on: #2a2111;
+  --sim-input: #131313;
+  --sim-panel: #121212;
+  position: relative;
+  max-width: none;
+  margin: 0 auto;
+  padding: 1rem 1rem 2rem;
+  color: var(--sim-ink);
+  font-family: ui-monospace, "Cascadia Mono", "Cascadia Code", Consolas, "Courier New",
+    monospace;
 }
 
-/* Hover animations */
-button:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-}
-select:hover, input:hover {
-  background: #2a2a2a;
-  box-shadow: 0 0 6px rgba(0,188,212,0.3);
-}
-.slot:hover {
-  transform: scale(1.02);
-  box-shadow: 0 0 12px rgba(0,188,212,0.2);
+.enchant-sim-shell .container {
+  max-width: none;
+  margin: 0 auto;
+  padding: 0.35rem 0.45rem 0.6rem;
 }
 
-/* Probability row alignment */
-.prob-row {
+.enchant-sim-shell h1 {
+  margin: 0.55rem 0 1rem;
+  font-size: clamp(1.5rem, 2.4vw, 2.2rem);
+  font-weight: 400;
+  letter-spacing: 0.06em;
+  text-align: left;
+  font-family: ChronoType, ui-monospace, monospace;
+  color: var(--sim-gold);
+}
+
+.enchant-sim-shell h3 {
+  margin: 0 0 0.6rem;
+  font-size: 1rem;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  font-family: ChronoType, ui-monospace, monospace;
+  color: #f0dca8;
+}
+
+.enchant-sim-shell .card {
+  border-radius: 14px;
+  padding: 0.9rem 0.95rem;
+  margin-top: 0.75rem;
+  border: 1px solid var(--sim-card-border);
+  background: var(--sim-card);
+  transition: border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.enchant-sim-shell .card:hover,
+.enchant-sim-shell .card:focus-within {
+  border-color: var(--sim-card-border-strong);
+  box-shadow: 0 0 0 1px rgba(200, 159, 61, 0.18);
+}
+
+.enchant-sim-shell .cols {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 0.75rem;
+}
+
+.enchant-sim-shell .col {
+  min-width: 0;
+}
+
+.enchant-sim-shell .eligibility-bar__inner {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  gap: 10px;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem 1rem;
+}
+
+.enchant-sim-shell #eligibilityText {
+  flex: 1 1 220px;
+  min-width: 0;
+  line-height: 1.45;
+  text-align: right;
+}
+
+.enchant-sim-shell .eligibility-slot-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.45rem 0.65rem;
+  flex-shrink: 0;
+}
+
+.enchant-sim-shell .eligibility-slot-row__label {
+  font-size: 0.82rem;
+  letter-spacing: 0.04em;
+  color: var(--sim-muted);
+  white-space: nowrap;
+}
+
+.enchant-sim-shell #slotSelector {
+  display: inline-flex;
+  align-items: center;
   flex-wrap: wrap;
 }
-.prob-row input {
-  flex: 1;
-  min-width: 260px;
-  max-width: 480px;
-}
-.prob-row #calcProbBtn {
-  margin-left: auto;
+
+/* Slot-count eligibility bar: tier rim/glow only on hover (idle matches other cards). */
+.enchant-sim-shell #eligibility.card:focus-within:not(:hover) {
+  border-color: var(--sim-card-border);
+  box-shadow: none;
 }
 
-/* Awaken search styling (same as probability search) */
-.awaken-wrapper {
-  position: relative;
-  display: inline-block;
-  width: 100%;
-  max-width: 480px;
-}
-#awakenItem {
-  width: 100%;
-  padding: 10px;
-  border-radius: 8px;
-  border: none;
-  background: var(--slot);
-  color: var(--ink);
-}
-#awakenSuggestBox {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  right: 0;
-  z-index: 50;
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  box-shadow: 0 6px 16px rgba(0,0,0,0.45);
-  max-height: 220px;
-  overflow-y: auto;
-  display: none;
-}
-#awakenSuggestBox .suggest-item {
-  padding: 8px 10px;
-  cursor: pointer;
-  font-size: 13px;
-}
-#awakenSuggestBox .suggest-item:hover,
-#awakenSuggestBox .suggest-item.active {
-  background: #333;
+.enchant-sim-shell #eligibility.card:has(.slot-btn--slots-1.active):hover {
+  border-color: #43d880;
+  box-shadow:
+    0 0 0 1px rgba(68, 220, 130, 0.32),
+    0 0 18px rgba(68, 220, 130, 0.22);
 }
 
-
-/* === v11 Layout & UI Enhancements === */
-
-/* Slot grid fix */
-#slotsContainer {
-  display: grid !important;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)) !important;
-  gap: 14px !important;
-  justify-content: center !important;
+.enchant-sim-shell #eligibility.card:has(.slot-btn--slots-2.active):hover {
+  border-color: #5aa0fc;
+  box-shadow:
+    0 0 0 1px rgba(88, 160, 255, 0.34),
+    0 0 18px rgba(88, 160, 255, 0.2);
 }
 
-/* Lock button and slot content balance */
-.slot {
-  position: relative;
-  background: var(--slot);
+.enchant-sim-shell #eligibility.card:has(.slot-btn--slots-3.active):hover {
+  border-color: #c074ff;
+  box-shadow:
+    0 0 0 1px rgba(184, 100, 255, 0.34),
+    0 0 18px rgba(184, 100, 255, 0.2);
+}
+
+.enchant-sim-shell #eligibility.card:has(.slot-btn--slots-4.active):hover {
+  border-color: var(--sim-gold);
+  box-shadow: 0 0 0 1px rgba(200, 159, 61, 0.3), 0 0 18px rgba(246, 193, 103, 0.22);
+}
+
+.enchant-sim-shell select,
+.enchant-sim-shell input,
+.enchant-sim-shell button {
+  border: 1px solid #3a3a3a;
   border-radius: 10px;
-  padding: 30px 12px 12px;
-  min-width: 220px;
-  max-width: 240px;
-  min-height: 100px;
-  text-align: center;
-  display: flex;
+  padding: 0.55rem 0.62rem;
+  margin: 0.25rem 0;
+  color: var(--sim-ink);
+  background: var(--sim-input);
+  font: inherit;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
+}
+
+.enchant-sim-shell select,
+.enchant-sim-shell input {
+  width: 100%;
+}
+
+.enchant-sim-shell input:focus,
+.enchant-sim-shell select:focus {
+  outline: none;
+  border-color: var(--sim-cyan);
+  box-shadow: 0 0 0 2px rgba(47, 214, 255, 0.24);
+}
+
+.enchant-sim-shell button:focus-visible {
+  outline: none;
+  border-color: var(--sim-cyan);
+  box-shadow: 0 0 0 2px rgba(47, 214, 255, 0.24);
+}
+
+.enchant-sim-shell button {
+  cursor: pointer;
+}
+
+.enchant-sim-shell #rollBtn {
+  margin-right: 0.45rem;
+  background: var(--sim-gold);
+  color: #1a1408;
+  border-color: var(--sim-gold-strong);
+  font-size: 1rem;
+  font-weight: 700;
+  padding: 0.62rem 0.9rem;
+  box-shadow: 0 0 0 1px rgba(200, 159, 61, 0.18);
+}
+
+.enchant-sim-shell #rollBtn:hover {
+  background: #ffd27b;
+  border-color: #ddb055;
+  box-shadow: 0 0 0 1px rgba(200, 159, 61, 0.3);
+}
+
+.enchant-sim-shell #rollBtn:disabled {
+  background: #3a3428;
+  color: #8a8478;
+  border-color: #4a4438;
+  cursor: not-allowed;
+  box-shadow: none;
+  opacity: 0.85;
+}
+
+.enchant-sim-shell #rollBtn:disabled:hover {
+  background: #3a3428;
+  border-color: #4a4438;
+  box-shadow: none;
+}
+
+.enchant-sim-shell #resetDust {
+  background: var(--sim-danger);
+  border-color: #bd5d71;
+  color: #ffe6eb;
+}
+
+.enchant-sim-shell #resetDust:hover {
+  background: var(--sim-danger-hover);
+}
+
+.enchant-sim-shell .slot-btn {
+  position: relative;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  flex-direction: column;
-  box-sizing: border-box;
-}
-.lock-toggle {
-  position: absolute !important;
-  top: 6px !important;
-  right: 6px !important;
-  z-index: 5;
-  background: #333;
-  color: #eee;
-  border: 1px solid #444;
-  border-radius: 8px;
-  padding: 2px 6px;
-  font-size: 11px;
-}
-.lock-toggle.locked {
-  background: var(--accent, #00bcd4);
-  color: #001116;
-}
-
-/* Awaken search box styling */
-.awaken-wrapper {
-  position: relative;
-  display: inline-block;
-  width: 100%;
-  max-width: 380px;
-}
-#awakenItem {
-  width: 100%;
-  padding: 10px;
-  border-radius: 8px;
-  border: none;
-  background: var(--slot);
-  color: var(--ink);
-  transition: all 0.25s ease;
-}
-#awakenItem:focus {
+  width: 46px;
+  height: 46px;
+  margin: 0.2rem 0.4rem 0.1rem 0;
+  border: 1px solid transparent;
+  background: transparent;
+  color: #d2d2d2;
+  user-select: none;
+  cursor: pointer;
   outline: none;
-  box-shadow: 0 0 8px rgba(0,188,212,0.4);
 }
 
-/* Awaken dropdown styled like Target Probability */
-#awakenSuggestBox {
+.enchant-sim-shell .slot-btn__face {
   position: absolute;
-  top: 100%;
+  inset: 5px;
+  transform: rotate(45deg);
+  border: 1px solid #464646;
+  border-radius: 5px;
+  background: var(--sim-slot-off);
+  box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.45);
+  transition: border-color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.enchant-sim-shell .slot-btn__count {
+  position: relative;
+  z-index: 1;
+  font-size: 0.86rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+}
+
+.enchant-sim-shell .slot-btn:hover .slot-btn__face {
+  border-color: #7a7a7a;
+}
+
+/* Slot-count tier accents (ROTmg-style: uncommon / rare / legendary / divine) */
+.enchant-sim-shell .slot-btn--slots-1.active .slot-btn__face {
+  background: #143222;
+  border-color: #2cb86a;
+  box-shadow:
+    inset 0 0 10px rgba(68, 220, 130, 0.22),
+    0 0 12px rgba(68, 220, 130, 0.38);
+}
+
+.enchant-sim-shell .slot-btn--slots-2.active .slot-btn__face {
+  background: #152536;
+  border-color: #3d8ae8;
+  box-shadow:
+    inset 0 0 10px rgba(88, 160, 255, 0.22),
+    0 0 12px rgba(88, 160, 255, 0.38);
+}
+
+.enchant-sim-shell .slot-btn--slots-3.active .slot-btn__face {
+  background: #22152e;
+  border-color: #a855ec;
+  box-shadow:
+    inset 0 0 10px rgba(184, 100, 255, 0.22),
+    0 0 12px rgba(184, 100, 255, 0.4);
+}
+
+.enchant-sim-shell .slot-btn--slots-4.active .slot-btn__face {
+  background: var(--sim-slot-on);
+  border-color: var(--sim-gold-strong);
+  box-shadow: inset 0 0 10px rgba(246, 193, 103, 0.28), 0 0 12px rgba(246, 193, 103, 0.35);
+}
+
+.enchant-sim-shell .slot-btn--slots-1.active {
+  color: #caffdf;
+}
+
+.enchant-sim-shell .slot-btn--slots-2.active {
+  color: #cae8ff;
+}
+
+.enchant-sim-shell .slot-btn--slots-3.active {
+  color: #f0ddff;
+}
+
+.enchant-sim-shell .slot-btn--slots-4.active {
+  color: #fff;
+}
+
+.enchant-sim-shell .slot-btn:focus-visible .slot-btn__face {
+  border-color: var(--sim-cyan);
+  box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.45), 0 0 0 2px rgba(47, 214, 255, 0.24);
+}
+
+.enchant-sim-shell #slotsContainer {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)) !important;
+  gap: 0.55rem !important;
+}
+
+.enchant-sim-shell .slot {
+  position: relative;
+  min-height: 88px;
+  border-radius: 11px;
+  border: 1px solid var(--sim-card-border);
+  background: var(--sim-panel);
+  padding: 1.45rem 0.62rem 0.62rem;
+  text-align: center;
+  transition: border-color 0.18s ease;
+}
+
+.enchant-sim-shell .slot:hover {
+  border-color: var(--sim-card-border-strong);
+}
+
+.enchant-sim-shell .lock-toggle {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  border-radius: 8px;
+  padding: 0.15rem 0.45rem;
+  border: 1px solid #4a4a4a;
+  background: #1a1a1a;
+  color: #ddd;
+  font-size: 0.78rem;
+}
+
+.enchant-sim-shell .lock-toggle.locked,
+.enchant-sim-shell .locked {
+  background: #2a2111 !important;
+  color: #f6c167 !important;
+  border-color: var(--sim-gold-strong);
+  font-weight: 700;
+}
+
+.enchant-sim-shell .toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.55rem;
+}
+
+.enchant-sim-shell #weightDetails {
+  margin-top: 0.55rem;
+  border-radius: 10px;
+  border: 1px solid var(--sim-card-border);
+  background: #121212;
+  padding: 0.6rem 0.7rem;
+}
+
+.enchant-sim-shell #toggleWeightBtn,
+.enchant-sim-shell #calcProbBtn {
+  background: #1a1a1a;
+  color: var(--sim-gold);
+  border-color: var(--sim-gold-strong);
+  font-weight: 700;
+  box-shadow: 0 0 0 1px rgba(200, 159, 61, 0.18);
+}
+
+.enchant-sim-shell #toggleWeightBtn:hover,
+.enchant-sim-shell #calcProbBtn:hover {
+  background: #221b0f;
+}
+
+.enchant-sim-shell .prob-row,
+.enchant-sim-shell .awaken-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.enchant-sim-shell .inline {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.9rem;
+  color: #d7d7d7;
+}
+
+.enchant-sim-shell #targetEnchantInput,
+.enchant-sim-shell #awakenItem {
+  flex: 1 1 280px;
+  min-width: 240px;
+}
+
+.enchant-sim-shell #suggestions {
+  position: relative;
+  flex: 1 1 260px;
+}
+
+.enchant-sim-shell .suggest-box {
+  position: absolute;
   left: 0;
   right: 0;
-  z-index: 50;
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  box-shadow: 0 6px 16px rgba(0,0,0,0.45);
+  top: 100%;
+  z-index: 20;
   max-height: 220px;
   overflow-y: auto;
-  display: none;
-  animation: fadeIn 0.15s ease-in-out;
-}
-#awakenSuggestBox .suggest-item {
-  padding: 8px 10px;
-  cursor: pointer;
-  font-size: 13px;
-  transition: background 0.2s ease;
-}
-#awakenSuggestBox .suggest-item:hover,
-#awakenSuggestBox .suggest-item.active {
-  background: #333;
-  color: var(--accent);
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(-3px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-/* === v12 Awaken input visual parity with Probability input === */
-#awakenItem {
-  flex: 1;
-  min-width: 260px;
-  max-width: 480px; /* visually match targetEnchantInput */
-  font-size: 14px;
-  padding: 8px;
   border-radius: 8px;
-  border: none;
+  border: 1px solid var(--sim-card-border);
+  background: #121212;
 }
-/* Maintain smooth hover/focus like inputs */
-#awakenItem:hover { background: #2a2a2a; box-shadow: 0 0 6px rgba(0,188,212,0.3); }
-#awakenItem:focus { outline: none; box-shadow: 0 0 8px rgba(0,188,212,0.4); }
+
+.enchant-sim-shell .suggest-item {
+  padding: 0.4rem 0.55rem;
+  cursor: pointer;
+  font-size: 0.86rem;
+  transition: background-color 0.14s ease, color 0.14s ease;
+}
+
+.enchant-sim-shell .suggest-item:hover,
+.enchant-sim-shell .suggest-item.is-active {
+  background: rgba(47, 214, 255, 0.16);
+  color: #f8fdff;
+}
+
+.enchant-sim-shell #augmentInfo {
+  display: none;
+  margin-top: 0.4rem;
+  border-radius: 10px;
+  border: 1px solid var(--sim-card-border);
+  background: #121212;
+  color: #e7e7e7;
+  padding: 0.62rem 0.7rem;
+  white-space: pre-line;
+  font-size: 0.85rem;
+}
+
+.enchant-sim-shell .muted {
+  font-size: 0.82rem;
+  color: var(--sim-muted);
+}
+
+.enchant-sim-shell .small {
+  font-size: 0.82rem;
+}
+
+.enchant-sim-shell #rollDelta {
+  margin-left: 0.4rem;
+  color: var(--sim-gold);
+  opacity: 0;
+  transition: opacity 0.35s ease;
+}
+
+.enchant-sim-shell #rollDelta.show {
+  opacity: 1;
+}
+
+.enchant-sim-shell pre {
+  margin: 0;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+@media (max-width: 720px) {
+  .enchant-sim-shell {
+    padding: 0.8rem 0.65rem 1.35rem;
+  }
+
+  .enchant-sim-shell h1 {
+    font-size: 1.45rem;
+  }
+
+  .enchant-sim-shell #rollBtn,
+  .enchant-sim-shell #resetDust,
+  .enchant-sim-shell #calcProbBtn {
+    width: 100%;
+    margin-right: 0;
+  }
+}
