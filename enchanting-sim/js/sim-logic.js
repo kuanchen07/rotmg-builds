@@ -76,9 +76,26 @@ function someLabel(labelsUpper, pred) {
   return false;
 }
 
+/** Returns 1–4 from TIER1…TIER4 on labels, or null if absent. */
+function tierFromEnchantLabels(labelsUpper) {
+  for (const lab of labelsUpper) {
+    if (lab === 'TIER1') return 1;
+    if (lab === 'TIER2') return 2;
+    if (lab === 'TIER3') return 3;
+    if (lab === 'TIER4') return 4;
+  }
+  return null;
+}
+
+/** Folder basename under icons/enchantments/<stem>/tierN.png (matches extracted assets). */
+function resolveEnchantTieredRel(folderStem, labelsUpper) {
+  const t = tierFromEnchantLabels(labelsUpper) ?? 1;
+  return `enchantments/${folderStem}/tier${t}.png`;
+}
+
 /**
  * Map enchant labels to icons under icons/ (first matching rule wins).
- * Returns relative path e.g. enchantments/on-enchant.png, or null for ? placeholder.
+ * Returns relative path e.g. enchantments/on-enchant/tier2.png, or null for ? placeholder.
  */
 function resolveEnchantIconFile(labels) {
   const L = enchantLabelsUpper(labels);
@@ -86,48 +103,52 @@ function resolveEnchantIconFile(labels) {
   if (someLabel(L, l => l === 'AWAKENED')) return null;
 
   if (someLabel(L, l => l === 'ONABILITY' || l.startsWith('ONABILITY'))) {
-    return 'enchantments/on-enchant.png';
+    return resolveEnchantTieredRel('on-enchant', L);
   }
   if (someLabel(L, l => l === 'ONSHOOT' || l.startsWith('ONSHOOT'))) {
-    return 'enchantments/on-enchant.png';
+    return resolveEnchantTieredRel('on-enchant', L);
   }
   if (someLabel(L, l => l === 'ONHIT' || l.startsWith('ONHIT'))) {
-    return 'enchantments/on-enchant.png';
+    return resolveEnchantTieredRel('on-enchant', L);
   }
 
-  if (someLabel(L, l => l === 'SINGLESTAT')) return 'enchantments/single-stat-enchant.png';
-  if (someLabel(L, l => l === 'DUALSTAT')) return 'enchantments/dual-stat-enchant.png';
+  if (someLabel(L, l => l === 'SINGLESTAT')) {
+    return resolveEnchantTieredRel('single-stat-enchant', L);
+  }
+  if (someLabel(L, l => l === 'DUALSTAT')) {
+    return resolveEnchantTieredRel('dual-stat-enchant', L);
+  }
 
   if (someLabel(L, l => l === 'LIFEREGEN' || l.includes('LIFEREGEN'))) {
-    return 'enchantments/life-regen-enchant.png';
+    return resolveEnchantTieredRel('life-regen-enchant', L);
   }
   if (someLabel(L, l => l === 'MANAREGEN' || l.includes('MANAREGEN'))) {
-    return 'enchantments/mana-regen-enchant.png';
+    return resolveEnchantTieredRel('mana-regen-enchant', L);
   }
 
   if (someLabel(L, l => l.includes('WEAPONRANGE'))) {
-    return 'enchantments/range-wep-enchant.png';
+    return resolveEnchantTieredRel('range-wep-enchant', L);
   }
   if (someLabel(L, l => l === 'WEAPON' || l.includes('WEAPONDAMAGE') || l.includes('WEAPONFIRERATE'))) {
-    return 'enchantments/melee-wep-enchant.png';
+    return resolveEnchantTieredRel('melee-wep-enchant', L);
   }
 
   if (someLabel(L, l => l.includes('DAMAGERESISTANCE'))) {
-    return 'enchantments/dmg-res-enchant.png';
+    return resolveEnchantTieredRel('dmg-res-enchant', L);
   }
 
   if (someLabel(L, l => l.includes('CASTING'))) {
-    return 'enchantments/ability-enchant.png';
+    return resolveEnchantTieredRel('ability-enchant', L);
   }
 
-  if (someLabel(L, l => l === 'RING')) return 'enchantments/ring-enchant.png';
+  if (someLabel(L, l => l === 'RING')) return resolveEnchantTieredRel('ring-enchant', L);
 
   if (someLabel(L, l => l === 'REWARD' || l.includes('REWARDBONUS'))) {
-    return 'enchantments/reward-enchant.png';
+    return resolveEnchantTieredRel('reward-enchant', L);
   }
 
   if (someLabel(L, l => l === 'UNIQUE' || l.endsWith('UNIQUE'))) {
-    return 'enchantments/unique-enchant.png';
+    return resolveEnchantTieredRel('unique-enchant', L);
   }
 
   return null;
