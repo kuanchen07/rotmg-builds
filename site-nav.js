@@ -75,7 +75,7 @@
     brandStrip.className = "site-brand-strip";
     brandStrip.setAttribute("aria-label", "ROTMG set checker");
     brandStrip.innerHTML =
-      '<span class="site-brand-strip__text">ROTMG set checker - made by evolz</span>';
+      '<span class="site-brand-strip__text">ROTMG set checker - by evolz</span>';
   }
 
   var main = document.querySelector("main");
