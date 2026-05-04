@@ -188,6 +188,60 @@ function resolveDataUrl(fileName){
   return base ? `${base}/${fileName}` : fileName;
 }
 
+function resolveEnchantIconUrl(fileName){
+  const path = String(window.location.pathname || "");
+  const inSimDir = /\/enchanting-sim(\/|$)/i.test(path);
+  return (inSimDir ? "../icons/" : "icons/") + fileName;
+}
+
+function syncLockToggleVisual(lockBtn){
+  const img = lockBtn.querySelector("img");
+  if (!img) return;
+  const locked = lockBtn.classList.contains("locked");
+  img.src = resolveEnchantIconUrl(locked ? "lock.png" : "unlock.png");
+  img.alt = locked ? "Slot locked" : "Slot unlocked";
+  lockBtn.setAttribute("aria-pressed", locked ? "true" : "false");
+}
+
+const ENCHANT_SLOT_GRID_COUNT = 4;
+
+/** Lock control for slot cells. When disabled, stays on unlock visually (inactive grid cell). */
+function makeLockToggleButton(disabled){
+  const lock=document.createElement('button');
+  lock.type='button';
+  lock.className='lock-toggle';
+  const lockImg=document.createElement('img');
+  lock.appendChild(lockImg);
+  if(disabled){
+    lock.disabled=true;
+    lock.setAttribute('aria-disabled','true');
+    lock.setAttribute('aria-label','Inactive slot');
+    lockImg.src=resolveEnchantIconUrl('unlock.png');
+    lockImg.alt='Slot unlocked (inactive)';
+    lock.removeAttribute('aria-pressed');
+  } else {
+    lock.setAttribute('aria-label','Toggle slot lock');
+    syncLockToggleVisual(lock);
+    lock.onclick=()=>{
+      lock.classList.toggle('locked');
+      syncLockToggleVisual(lock);
+    };
+  }
+  return lock;
+}
+
+function setEnchantSlotEmpty(slotBodyEl){
+  slotBodyEl.innerHTML='<span class="slot__title">Empty Slot</span>';
+}
+
+function setEnchantSlotContent(slotBodyEl,name,description){
+  const desc=
+    description!=null && String(description).trim()!=='' ?
+      `<span class="slot__desc muted">${description}</span>`
+    : '';
+  slotBodyEl.innerHTML=`<span class="slot__title">${name}</span>${desc}`;
+}
+
 function initEnchantSimulator(){
   if (simulatorDidInit) return Promise.resolve();
   if (simulatorInitPromise) return simulatorInitPromise;
@@ -351,17 +405,29 @@ function renderSlotButtons(){
 function renderSlots(){
   const c=document.getElementById('slotsContainer'); c.innerHTML='';
   currentEnchantments=[];
-  for(let i=0;i<selectedSlots;i++){
-    const d=document.createElement('div'); d.className='slot';
-    const info=document.createElement('div'); info.textContent='Empty Slot';
-    const lock=document.createElement('button'); lock.className='lock-toggle'; lock.textContent='Lock';
-    lock.onclick=()=>{lock.classList.toggle('locked');lock.textContent=lock.classList.contains('locked')?'Locked':'Lock';};
-    d.appendChild(lock); d.appendChild(info);
+  for(let position=1; position<=ENCHANT_SLOT_GRID_COUNT; position++){
+    const d=document.createElement('div');
+    d.className='slot slot--grid-' + position;
+    const active = position<=selectedSlots;
+    const info=document.createElement('div');
+
+    const lockToggle=makeLockToggleButton(!active);
+
+    if(!active){
+      d.classList.add('slot--placeholder');
+      info.className='slot__body';
+      info.innerHTML='<span class="slot__title muted">\u2014</span>';
+    } else {
+      info.className='slot__body';
+      setEnchantSlotEmpty(info);
+      currentEnchantments.push({enchant:null,element:info,lockBtn:lockToggle});
+    }
+
+    d.appendChild(lockToggle);
+    d.appendChild(info);
     c.appendChild(d);
-    currentEnchantments.push({enchant:null,element:info,lockBtn:lock});
   }
 }
-
 /* ========================== UI: Augment dropdown + info ========================== */
 function populateAugmentDropdown(){
   const sel=document.getElementById('artifactCard'); sel.innerHTML='';
@@ -821,10 +887,10 @@ function rollEnchantments(){
   for(const slot of currentEnchantments){
     if(slot.lockBtn.classList.contains('locked')&&slot.enchant) continue;
     const valid=pool.filter(e=>isCompatible(e,taken));
-    if(!valid.length){slot.enchant=null;slot.element.textContent='Empty Slot';continue;}
+    if(!valid.length){slot.enchant=null;setEnchantSlotEmpty(slot.element);continue;}
     const pick=weightedPick(valid);
     slot.enchant=pick;
-    slot.element.innerHTML=`${pick.name}<br><span class='muted'>${pick.description||''}</span>`;
+    setEnchantSlotContent(slot.element,pick.name,pick.description||'');
     taken.push(pick);
   }
   enforceLockValidity();
@@ -933,8 +999,9 @@ function enforceLockValidity(){
   const validNames=new Set(pool.map(e=>e.name));
   for(const s of currentEnchantments){
     if(s.enchant && !validNames.has(s.enchant.name)){
-      s.enchant=null; s.element.textContent='Empty Slot';
-      s.lockBtn.classList.remove('locked'); s.lockBtn.textContent='Lock';
+      s.enchant=null; setEnchantSlotEmpty(s.element);
+      s.lockBtn.classList.remove('locked');
+      syncLockToggleVisual(s.lockBtn);
     }
   }
 }
