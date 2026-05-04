@@ -3,6 +3,11 @@
     return String(basePath || "enchanting-sim").replace(/\/+$/, "");
   }
 
+  function resolveScriptUrl(pagePath, scriptSrc) {
+    var pageUrl = new URL(pagePath, window.location.href);
+    return new URL(scriptSrc, pageUrl).toString();
+  }
+
   async function mountEnchantingSim(container, options) {
     if (!container) {
       throw new Error("mountEnchantingSim requires a container element.");
@@ -34,9 +39,19 @@
     var scripts = Array.prototype.slice.call(doc.querySelectorAll("script"));
     for (var i = 0; i < scripts.length; i += 1) {
       var sourceScript = scripts[i];
-      if (sourceScript.src) continue;
+      var scriptText = "";
+      if (sourceScript.src) {
+        var externalUrl = resolveScriptUrl(pagePath, sourceScript.getAttribute("src"));
+        var scriptResponse = await fetch(externalUrl, { cache: "no-cache" });
+        if (!scriptResponse.ok) {
+          throw new Error("Unable to load simulator script: " + externalUrl + " (" + scriptResponse.status + ")");
+        }
+        scriptText = await scriptResponse.text();
+      } else {
+        scriptText = String(sourceScript.textContent || "");
+      }
       var runtimeScript = document.createElement("script");
-      runtimeScript.text = String(sourceScript.textContent || "");
+      runtimeScript.text = scriptText;
       document.body.appendChild(runtimeScript);
       document.body.removeChild(runtimeScript);
     }
