@@ -64,6 +64,103 @@ function resolveEnchantIconUrl(fileName) {
   return (inSimDir ? "../icons/" : "icons/") + fileName;
 }
 
+/** Uppercase enchant labels (matches normalizeAllData). */
+function enchantLabelsUpper(labels) {
+  return (labels || []).map(l => String(l).toUpperCase());
+}
+
+function someLabel(labelsUpper, pred) {
+  for (const lab of labelsUpper) {
+    if (pred(lab)) return true;
+  }
+  return false;
+}
+
+/**
+ * Map enchant labels to icons under icons/ (first matching rule wins).
+ * Returns relative path e.g. enchantments/on-enchant.png, or null for ? placeholder.
+ */
+function resolveEnchantIconFile(labels) {
+  const L = enchantLabelsUpper(labels);
+
+  if (someLabel(L, l => l === 'AWAKENED')) return null;
+
+  if (someLabel(L, l => l === 'ONABILITY' || l.startsWith('ONABILITY'))) {
+    return 'enchantments/on-enchant.png';
+  }
+  if (someLabel(L, l => l === 'ONSHOOT' || l.startsWith('ONSHOOT'))) {
+    return 'enchantments/on-enchant.png';
+  }
+  if (someLabel(L, l => l === 'ONHIT' || l.startsWith('ONHIT'))) {
+    return 'enchantments/on-enchant.png';
+  }
+
+  if (someLabel(L, l => l === 'SINGLESTAT')) return 'enchantments/single-stat-enchant.png';
+  if (someLabel(L, l => l === 'DUALSTAT')) return 'enchantments/dual-stat-enchant.png';
+
+  if (someLabel(L, l => l === 'LIFEREGEN' || l.includes('LIFEREGEN'))) {
+    return 'enchantments/life-regen-enchant.png';
+  }
+  if (someLabel(L, l => l === 'MANAREGEN' || l.includes('MANAREGEN'))) {
+    return 'enchantments/mana-regen-enchant.png';
+  }
+
+  if (someLabel(L, l => l.includes('WEAPONRANGE'))) {
+    return 'enchantments/range-wep-enchant.png';
+  }
+  if (someLabel(L, l => l === 'WEAPON' || l.includes('WEAPONDAMAGE') || l.includes('WEAPONFIRERATE'))) {
+    return 'enchantments/melee-wep-enchant.png';
+  }
+
+  if (someLabel(L, l => l.includes('DAMAGERESISTANCE'))) {
+    return 'enchantments/dmg-res-enchant.png';
+  }
+
+  if (someLabel(L, l => l.includes('CASTING'))) {
+    return 'enchantments/ability-enchant.png';
+  }
+
+  if (someLabel(L, l => l === 'RING')) return 'enchantments/ring-enchant.png';
+
+  if (someLabel(L, l => l === 'REWARD' || l.includes('REWARDBONUS'))) {
+    return 'enchantments/reward-enchant.png';
+  }
+
+  if (someLabel(L, l => l === 'UNIQUE' || l.endsWith('UNIQUE'))) {
+    return 'enchantments/unique-enchant.png';
+  }
+
+  return null;
+}
+
+function escapeEnchantHtml(s) {
+  return String(s || "")
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+function buildEnchantTitleRow(name, labels) {
+  const safeName = escapeEnchantHtml(name);
+  const iconRel = resolveEnchantIconFile(labels);
+  if (iconRel) {
+    const src = resolveEnchantIconUrl(iconRel);
+    return (
+      '<span class="slot__title-row">' +
+      `<img class="slot__enchant-icon" src="${escapeEnchantHtml(src)}" alt="" width="32" height="32" decoding="async" loading="lazy" />` +
+      `<span class="slot__title">${safeName}</span>` +
+      '</span>'
+    );
+  }
+  return (
+    '<span class="slot__title-row">' +
+    '<span class="slot__icon-placeholder" aria-hidden="true">?</span>' +
+    `<span class="slot__title">${safeName}</span>` +
+    '</span>'
+  );
+}
+
 function syncLockToggleVisual(lockBtn) {
   const img = lockBtn.querySelector("img");
   if (!img) return;
@@ -99,15 +196,23 @@ function makeLockToggleButton(disabled) {
 }
 
 function setEnchantSlotEmpty(slotBodyEl) {
-  slotBodyEl.innerHTML = '<span class="slot__title">Empty Slot</span>';
+  slotBodyEl.innerHTML =
+    '<span class="slot__title-row slot__title-row--empty"><span class="slot__title">Empty Slot</span></span>';
 }
 
-function setEnchantSlotContent(slotBodyEl, name, description) {
+function setEnchantSlotContent(slotBodyEl, name, description, enchantOrLabels) {
+  const labels =
+    enchantOrLabels && Array.isArray(enchantOrLabels.labels) ?
+      enchantOrLabels.labels
+      : Array.isArray(enchantOrLabels) ?
+        enchantOrLabels
+        : null;
   const desc =
-    description != null && String(description).trim() !== '' ?
-      `<span class="slot__desc muted">${description}</span>`
+    description != null && String(description).trim() !== ''
+      ? `<span class="slot__desc muted">${escapeEnchantHtml(description)}</span>`
       : '';
-  slotBodyEl.innerHTML = `<span class="slot__title">${name}</span>${desc}`;
+  const titleRow = buildEnchantTitleRow(name, labels);
+  slotBodyEl.innerHTML = `${titleRow}${desc}`;
 }
 
 /* ========================== Loaders & Normalizers ========================== */
@@ -169,7 +274,7 @@ function buildAwakenList() {
   const box = document.getElementById('awakenItem');
   const fillAwakenBtn = document.getElementById('fillAwakenedEnchantBtn');
   chk.onchange = () => {
-    if (chk.checked) { box.style.display = 'inline-block'; }
+    if (chk.checked) { box.style.display = 'block'; }
     else { box.style.display = 'none'; box.value = ''; chosenAwakenItem = ''; }
     updateFillAwakenedEnchantButton();
     refreshEligibility(); enforceLockValidity(); updateWeightDebug();
@@ -257,7 +362,7 @@ function renderSlots() {
     if (!active) {
       d.classList.add('slot--placeholder');
       info.className = 'slot__body';
-      info.innerHTML = '<span class="slot__title muted">—</span>';
+      info.innerHTML = '<span class="slot__title-row slot__title-row--inactive"><span class="slot__title muted">—</span></span>';
     } else {
       info.className = 'slot__body';
       setEnchantSlotEmpty(info);
@@ -731,7 +836,7 @@ function rollEnchantments() {
     if (!valid.length) { slot.enchant = null; setEnchantSlotEmpty(slot.element); continue; }
     const pick = weightedPick(valid);
     slot.enchant = pick;
-    setEnchantSlotContent(slot.element, pick.name, pick.description || '');
+    setEnchantSlotContent(slot.element, pick.name, pick.description || '', pick);
     taken.push(pick);
   }
   enforceLockValidity();

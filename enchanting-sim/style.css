@@ -159,6 +159,8 @@
 .enchant-sim-shell select,
 .enchant-sim-shell input:not([type="checkbox"]) {
   width: 100%;
+  max-width: 100%;
+  min-width: 0;
 }
 
 .enchant-sim-shell input[type="checkbox"] {
@@ -374,11 +376,50 @@
   display: contents;
 }
 
-.enchant-sim-shell .slot .slot__title {
+.enchant-sim-shell .slot .slot__title-row {
   grid-column: 1;
   grid-row: 1;
   min-width: 0;
   align-self: center;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.enchant-sim-shell .slot .slot__title-row--empty,
+.enchant-sim-shell .slot .slot__title-row--inactive {
+  display: flex;
+}
+
+.enchant-sim-shell .slot .slot__enchant-icon {
+  width: 32px;
+  height: 32px;
+  flex: 0 0 32px;
+  object-fit: contain;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  -ms-interpolation-mode: nearest-neighbor;
+}
+
+.enchant-sim-shell .slot .slot__icon-placeholder {
+  flex: 0 0 32px;
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  border: 1px dashed var(--sim-muted);
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--sim-muted);
+  font-size: 1.1rem;
+  font-weight: 700;
+  line-height: 1;
+  user-select: none;
+}
+
+.enchant-sim-shell .slot .slot__title {
+  min-width: 0;
   font-size: 0.93rem;
   line-height: 1.38;
 }
@@ -516,6 +557,12 @@
   position: relative;
 }
 
+.enchant-sim-shell .roll-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
 .enchant-sim-shell .target-enchant-wrap #targetEnchantInput {
   width: 100%;
   box-sizing: border-box;
@@ -598,8 +645,77 @@
     padding: 0.8rem 0.65rem 1.35rem;
   }
 
+  .enchant-sim-shell .container {
+    padding: 0.3rem 0.25rem 0.55rem;
+  }
+
   .enchant-sim-shell h1 {
     font-size: 1.45rem;
+  }
+
+  .enchant-sim-shell .cols {
+    grid-template-columns: 1fr;
+  }
+
+  .enchant-sim-shell .col,
+  .enchant-sim-shell .aug-wrap {
+    min-width: 0;
+  }
+
+  .enchant-sim-shell .awaken-row,
+  .enchant-sim-shell .prob-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .enchant-sim-shell .awaken-row .inline {
+    width: 100%;
+  }
+
+  .enchant-sim-shell #awakenItem {
+    min-width: 0;
+    flex: 1 1 auto;
+  }
+
+  .enchant-sim-shell .target-enchant-wrap {
+    min-width: 0;
+    width: 100%;
+    flex: 1 1 auto;
+  }
+
+  .enchant-sim-shell .eligibility-bar__inner {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.55rem;
+  }
+
+  .enchant-sim-shell .eligibility-slot-row {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .enchant-sim-shell #eligibilityText {
+    text-align: left;
+    flex: 1 1 auto;
+  }
+
+  .enchant-sim-shell #slotSelector {
+    gap: 0.2rem;
+  }
+
+  .enchant-sim-shell .slot-btn {
+    width: 42px;
+    height: 42px;
+    margin: 0.15rem 0;
+  }
+
+  .enchant-sim-shell .slot-btn__face {
+    inset: 6px;
+  }
+
+  .enchant-sim-shell .roll-actions {
+    flex-direction: column;
+    align-items: stretch;
   }
 
   .enchant-sim-shell #rollBtn,
