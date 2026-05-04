@@ -25,8 +25,7 @@
 </select>
 <div class="awaken-row">
 <label class="inline"><input id="canAwaken" type="checkbox"/> Can be Awakened</label>
-<input id="awakenItem" list="awakenList" placeholder="Type to search awakenable items..."/>
-<datalist id="awakenList"></datalist>
+<input id="awakenItem" placeholder="Type to search awakenable items..." type="text"/>
 </div>
 </div>
 <div class="col aug-wrap">
@@ -64,6 +63,7 @@
 <h3>Target Enchantment Probability</h3>
 <div class="prob-row">
 <input id="targetEnchantInput" placeholder="Type enchantment name..." type="text"/>
+<button type="button" class="small" id="fillAwakenedEnchantBtn" style="display:none" aria-label="Fill target enchant with awakened line for this item">Awakened enchant</button>
 <div id="suggestions"></div>
 <button id="calcProbBtn">Calculate Probability</button>
 <label class="inline"><input id="compareCardsMode" type="checkbox"/> Compare Cards</label>
@@ -145,6 +145,41 @@ const AWAKEN_ITEM_TYPE = {
 };
 let AWAKENABLE_ITEMS=[], chosenAwakenItem="";
 
+function resolveAwakenedEnchantDisplayName(baseTrimmed){
+  const chosenNorm = normalizeName(baseTrimmed);
+  if(!chosenNorm || !ENCHANTS.length) return null;
+  const matches = [];
+  for(const [awakenNorm, bases] of Object.entries(AWAKENING_MAP)){
+    if((bases||[]).some(b => b === chosenNorm)) matches.push(awakenNorm);
+  }
+  if(!matches.length) return null;
+  let awakenNorm = matches[0];
+  if(matches.length > 1){
+    const sorted = [...matches].sort((a,b)=>{
+      const na = ENCHANTS.find(x => normalizeName(x.name) === a)?.name || a;
+      const nb = ENCHANTS.find(x => normalizeName(x.name) === b)?.name || b;
+      return na.localeCompare(nb);
+    });
+    awakenNorm = sorted[0];
+  }
+  const e = ENCHANTS.find(x => normalizeName(x.name) === awakenNorm);
+  return e ? e.name : null;
+}
+function updateFillAwakenedEnchantButton(){
+  const btn=document.getElementById('fillAwakenedEnchantBtn');
+  const chk=document.getElementById('canAwaken');
+  const box=document.getElementById('awakenItem');
+  if(!btn || !chk || !box) return;
+  if(!chk.checked){
+    btn.style.display='none';
+    return;
+  }
+  btn.style.display='inline-block';
+  const base=(box.value||'').trim();
+  const resolved=base ? resolveAwakenedEnchantDisplayName(base) : null;
+  btn.disabled=!resolved;
+}
+
 /* ========================== Init ========================== */
 function resolveDataUrl(fileName){
   const base = String(window.__ENCHANT_SIM_DATA_BASE__ || "").replace(/\/+$/, "");
@@ -164,6 +199,7 @@ function initEnchantSimulator(){
     populateAugmentDropdown();
     refreshEligibility();
     updateWeightDebug();
+    updateFillAwakenedEnchantButton();
     simulatorDidInit = true;
   })()
     .catch((err)=>{
@@ -238,17 +274,18 @@ function buildAwakenList(){
   const set=new Set();
   for(const arr of Object.values(AWAKENING_MAP)){ (arr||[]).forEach(n=>set.add(n)); }
   AWAKENABLE_ITEMS = Array.from(set).sort();
-  const dl=document.getElementById('awakenList'); dl.innerHTML='';
-  AWAKENABLE_ITEMS.forEach(n=>{ const opt=document.createElement('option'); opt.value=n; dl.appendChild(opt); });
   const chk=document.getElementById('canAwaken');
   const box=document.getElementById('awakenItem');
+  const fillAwakenBtn=document.getElementById('fillAwakenedEnchantBtn');
   chk.onchange=()=>{
     if(chk.checked){ box.style.display='inline-block'; }
     else { box.style.display='none'; box.value=''; chosenAwakenItem=''; }
+    updateFillAwakenedEnchantButton();
     refreshEligibility(); enforceLockValidity(); updateWeightDebug();
   };
   box.addEventListener('input',()=>{
     chosenAwakenItem = box.value.trim();
+    updateFillAwakenedEnchantButton();
     const type=AWAKEN_ITEM_TYPE[chosenAwakenItem];
     if(type){
       const sel=document.getElementById('itemType');
@@ -256,6 +293,16 @@ function buildAwakenList(){
     }
     refreshEligibility(); enforceLockValidity(); updateWeightDebug();
   });
+  if(fillAwakenBtn){
+    fillAwakenBtn.onclick=()=>{
+      const target=document.getElementById('targetEnchantInput');
+      const name=resolveAwakenedEnchantDisplayName((box.value||'').trim());
+      if(!target || !name) return;
+      target.value=name;
+      target.dispatchEvent(new Event('input',{bubbles:true}));
+    };
+  }
+  updateFillAwakenedEnchantButton();
 }
 
 /* ========================== UI: Slots ========================== */
@@ -741,7 +788,7 @@ function runMonteCarloForArtifact({itemType, targetName, artifactName, trials=MO
   });
 }
 function setProbabilityBusy(isBusy, label){
-  const ids=['calcProbBtn','compareCardsMode','targetEnchantInput','itemType','artifactCard'];
+  const ids=['calcProbBtn','compareCardsMode','targetEnchantInput','itemType','artifactCard','fillAwakenedEnchantBtn'];
   ids.forEach(id=>{
     const el=document.getElementById(id);
     if(el) el.disabled=isBusy;
@@ -998,7 +1045,7 @@ function refreshEligibility(){
 
   // Create suggestions container (properly positioned below the input)
   const wrapper = document.createElement('div');
-  wrapper.style.position = 'relative';
+  wrapper.className = 'target-enchant-wrap';
   input.parentNode.insertBefore(wrapper, input);
   wrapper.appendChild(input);
 

@@ -397,10 +397,24 @@
   color: #d7d7d7;
 }
 
-.enchant-sim-shell #targetEnchantInput,
 .enchant-sim-shell #awakenItem {
   flex: 1 1 280px;
   min-width: 240px;
+}
+
+.enchant-sim-shell .target-enchant-wrap {
+  flex: 1 1 280px;
+  min-width: 240px;
+  position: relative;
+}
+
+.enchant-sim-shell .target-enchant-wrap #targetEnchantInput {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.enchant-sim-shell #fillAwakenedEnchantBtn {
+  flex: 0 0 auto;
 }
 
 .enchant-sim-shell #suggestions {
