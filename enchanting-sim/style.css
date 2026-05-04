@@ -157,8 +157,16 @@
 }
 
 .enchant-sim-shell select,
-.enchant-sim-shell input {
+.enchant-sim-shell input:not([type="checkbox"]) {
   width: 100%;
+}
+
+.enchant-sim-shell input[type="checkbox"] {
+  width: auto;
+  margin: 0;
+  padding: 0;
+  border-radius: 4px;
+  align-self: center;
 }
 
 .enchant-sim-shell input:focus,
@@ -166,6 +174,13 @@
   outline: none;
   border-color: var(--sim-cyan);
   box-shadow: 0 0 0 2px rgba(47, 214, 255, 0.24);
+}
+
+.enchant-sim-shell input[type="checkbox"]:focus,
+.enchant-sim-shell input[type="checkbox"]:focus-visible {
+  outline: none;
+  box-shadow: none;
+  border-color: #3a3a3a;
 }
 
 .enchant-sim-shell button:focus-visible {
@@ -397,9 +412,18 @@
   color: #d7d7d7;
 }
 
+.enchant-sim-shell label.inline:has(input[type="checkbox"]) {
+  min-height: 44px;
+  padding-block: 0.35rem;
+  padding-inline: 0.15rem;
+  line-height: 1.4;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+
 .enchant-sim-shell #awakenItem {
-  flex: 1 1 280px;
-  min-width: 240px;
+  flex: 1 1 360px;
+  min-width: 22rem;
 }
 
 .enchant-sim-shell .target-enchant-wrap {
@@ -433,6 +457,10 @@
   border-radius: 8px;
   border: 1px solid var(--sim-card-border);
   background: #121212;
+}
+
+.enchant-sim-shell .suggest-box:empty {
+  display: none;
 }
 
 .enchant-sim-shell .suggest-item {
