@@ -29,7 +29,7 @@
 </div>
 </div>
 <div class="col aug-wrap">
-<h3>Choose Artifact / Card / Engraving</h3>
+<h3>Choose Artifact / Card</h3>
 <select id="artifactCard"></select>
 <div id="augmentInfo"></div>
 <div>
@@ -75,6 +75,8 @@
 </div>
 <script>
 /* ========================== Globals & Utilities ========================== */
+/** When false: engravings stay in engravings.json + window.__RAW_ENVS but are omitted from dropdown, rolls, and Compare Cards. Set true to restore. */
+const INCLUDE_ENGRAVINGS_IN_UI = false;
 let ENCHANTS=[], AUGMENTS=[], AUGMENTS_BY_NAME={};
 let selectedSlots=1, currentEnchantments=[], totalDustUsed=0;
 const BASE_DUST={1:50,2:65,3:80,4:100};
@@ -236,7 +238,7 @@ async function loadAugments(){
     ]);
     const artifacts=await aRes.json();
     const engravings=await eRes.json();
-    AUGMENTS=[...artifacts, ...engravings];
+    AUGMENTS = INCLUDE_ENGRAVINGS_IN_UI ? [...artifacts, ...engravings] : [...artifacts];
     AUGMENTS_BY_NAME={}; AUGMENTS.forEach(x=>AUGMENTS_BY_NAME[x.name]=x);
     window.__RAW_ARTS=artifacts; window.__RAW_ENVS=engravings;
   }catch(e){ console.error(e); AUGMENTS=[]; AUGMENTS_BY_NAME={}; }
@@ -388,7 +390,7 @@ function populateAugmentDropdown(){
   addGroup('Tarot Cards', artifacts.filter(isTarot));
   addGroup('Artifacts',   artifacts.filter(isArtifact));
   addGroup('Premium Cards', artifacts.filter(isPremium));
-  addGroup('Engravings',  engravings);
+  if (INCLUDE_ENGRAVINGS_IN_UI) addGroup('Engravings', engravings);
 
   sel.onchange=()=>{ updateAugmentInfo(); refreshEligibility(); enforceLockValidity(); updateWeightDebug(); };
   updateAugmentInfo();
