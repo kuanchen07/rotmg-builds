@@ -4,7 +4,7 @@ const INCLUDE_ENGRAVINGS_IN_UI = false;
 let ENCHANTS = [], AUGMENTS = [], AUGMENTS_BY_NAME = {};
 let selectedSlots = 1, currentEnchantments = [], totalDustUsed = 0;
 const BASE_DUST = { 1: 50, 2: 65, 3: 80, 4: 100 };
-const MONTE_CARLO_TRIALS = 10000;
+const MONTE_CARLO_TRIALS = 50000;
 const MONTE_CARLO_CHUNK_SIZE = 1000;
 let probabilityRunToken = 0;
 let simulatorInitPromise = null;
