@@ -544,6 +544,14 @@
   gap: 0.65rem;
 }
 
+.enchant-sim-shell .sim-results.sim-results--pending {
+  display: none;
+}
+
+.enchant-sim-shell .sim-results.sim-results--batch-only {
+  grid-template-columns: 1fr;
+}
+
 .enchant-sim-shell .sim-result-block {
   border: 1px solid var(--sim-card-border);
   border-radius: 10px;

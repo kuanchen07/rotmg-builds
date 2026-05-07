@@ -210,6 +210,19 @@ function isPathConfiguredFirstTargetOnly(slotCount) {
   }
   return true;
 }
+function quickEstimateMatchesPathSemantics(slotCount) {
+  if (slotCount === 1) return true;
+  if (slotCount < 2) return false;
+  return isPathConfiguredFirstTargetOnly(slotCount);
+}
+function updatePathSimResultsPresence({ showQuick }) {
+  const root = document.getElementById('pathSimResults');
+  const quickBlock = document.getElementById('pathSimQuickResult');
+  if (!root) return;
+  root.classList.remove('sim-results--pending');
+  root.classList.toggle('sim-results--batch-only', !showQuick);
+  if (quickBlock) quickBlock.hidden = !showQuick;
+}
 function buildPathPhasesFromInputs(slotCount) {
   const p1r = parsePathPhase1OrError();
   if (p1r.error) return { error: p1r.error };
@@ -879,7 +892,15 @@ async function calculatePathProbability() {
   const out = document.getElementById('pathResult');
   const quickOut = document.getElementById('probResult');
   if (!out) return;
-  if (!it) { out.textContent = 'Select item type first.'; return; }
+
+  const showQuick = quickEstimateMatchesPathSemantics(selectedSlots);
+  updatePathSimResultsPresence({ showQuick });
+  if (!showQuick && quickOut) quickOut.textContent = '';
+
+  if (!it) {
+    out.textContent = 'Select item type first.';
+    return;
+  }
 
   const pathBatchN = commitPathBatchTrialsInput();
   const pathRunBtn = document.getElementById('calcPathBtn');
@@ -889,28 +910,31 @@ async function calculatePathProbability() {
   const token = ++probabilityRunToken;
   const quickMonteCarloTrials = pathBatchN * QUICK_ESTIMATE_PATH_MULTIPLIER;
 
-  const quickEstimatePromise = (async () => {
-    if (!quickOut) return;
-    if (!quickParsedTargets.targetNames.length) {
-      quickOut.textContent = 'Type enchant name first.';
-      return;
-    }
-    await runQuickEstimateSimulation({
-      itemType: it,
-      targetNames: quickParsedTargets.targetNames,
-      artifactName,
-      token,
-      out: quickOut,
-      trials: quickMonteCarloTrials
-    });
-  })().catch((err) => {
-    console.warn('[enchant quick-estimate]', 'failed during path run', err);
-    if (token === probabilityRunToken && quickOut) quickOut.textContent = 'Quick estimate failed.';
-  });
+  const quickEstimatePromise = showQuick
+    ? (async () => {
+        if (!quickOut) return;
+        if (!quickParsedTargets.targetNames.length) {
+          quickOut.textContent = 'Type enchant name first.';
+          return;
+        }
+        await runQuickEstimateSimulation({
+          itemType: it,
+          targetNames: quickParsedTargets.targetNames,
+          artifactName,
+          token,
+          out: quickOut,
+          trials: quickMonteCarloTrials
+        });
+      })().catch(err => {
+        console.warn('[enchant quick-estimate]', 'failed during path run', err);
+        if (token === probabilityRunToken && quickOut) quickOut.textContent = 'Quick estimate failed.';
+      })
+    : Promise.resolve();
 
   const phaseConfig = buildPathPhasesFromInputs(selectedSlots);
   if (phaseConfig.error) {
     out.textContent = phaseConfig.error;
+    await quickEstimatePromise;
     return;
   }
   const phases = phaseConfig.phases || [];
@@ -998,6 +1022,8 @@ async function calculatePathProbability() {
     });
 
     const summaryLines = [];
+    const artifactDisplay =
+      artifactName && artifactName !== 'None' ? artifactName : 'None (no card)';
     if (batch.nSuccess > 0) {
       summaryLines.push(`Average rolls: ${batch.avgRolls.toFixed(2)}`);
       summaryLines.push(`Average dust: ${batch.avgDust.toFixed(2)}`);
@@ -1007,6 +1033,7 @@ async function calculatePathProbability() {
       summaryLines.push(
         `Dust min / max: ${batch.minDust.toFixed(2)} / ${batch.maxDust.toFixed(2)}`
       );
+      summaryLines.push(`Artifact / Card: ${escapeEnchantHtml(artifactDisplay)}`);
       summaryLines.push(`Average simulated path time: ${batch.avgPathMs.toFixed(1)} ms`);
       summaryLines.push('');
     }

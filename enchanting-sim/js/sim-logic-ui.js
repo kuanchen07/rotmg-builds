@@ -468,6 +468,8 @@ function mountStatTradeoffPickerSection(mount) {
   applyBtn.className = 'path-stat-tradeoff-apply-btn';
   applyBtn.textContent = 'Apply to alternates';
   applyBtn.onclick = () => {
+    const altDetailsEl = document.getElementById('path-phase-2-alts-disclosure');
+    if (altDetailsEl) altDetailsEl.open = true;
     const tierNow = document.getElementById('path-stat-tradeoff-tier')?.value || 'IV';
     const { appliedNames, skippedParts, checkedStats } = computeStatTradeoffPickerSelectionForTier(tierNow);
     const container = document.getElementById('path-phase-2-alts');
@@ -584,6 +586,7 @@ function renderPathPhaseUI() {
       }
 
       const altDetails = document.createElement('details');
+      altDetails.id = 'path-phase-2-alts-disclosure';
       altDetails.className = 'path-phase-2-alts-disclosure';
 
       const altSummary = document.createElement('summary');
