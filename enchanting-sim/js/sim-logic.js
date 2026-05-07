@@ -167,13 +167,31 @@ function resolveEnchantTieredRel(folderStem, labelsUpper) {
 }
 
 /**
+ * Relative path under icons/ for awakened enchants (enchantments/awakened/<slug>.png).
+ * Slug matches `icons/enchantments/awakened/` filenames: strip apostrophes, kebab-case.
+ */
+function awakenedEnchantIconRel(displayName) {
+  let s = String(displayName || "")
+    .replace(/[\u2018\u2019]/g, "'")
+    .replace(/'/g, "")
+    .replace(/\s+/g, " ")
+    .trim()
+    .toLowerCase();
+  if (!s) return null;
+  const slug = s.replace(/\s+/g, "-");
+  return `enchantments/awakened/${slug}.png`;
+}
+
+/**
  * Map enchant labels to icons under icons/ (first matching rule wins).
  * Returns relative path e.g. enchantments/on-enchant/tier2.png, or null for ? placeholder.
+ * @param {string[]|null} labels
+ * @param {string} [enchantDisplayName] — required for AWAKENED icons
  */
-function resolveEnchantIconFile(labels) {
+function resolveEnchantIconFile(labels, enchantDisplayName) {
   const L = enchantLabelsUpper(labels);
 
-  if (someLabel(L, l => l === 'AWAKENED')) return null;
+  if (someLabel(L, l => l === 'AWAKENED')) return awakenedEnchantIconRel(enchantDisplayName);
 
   if (someLabel(L, l => l === 'UNIQUE' || l.endsWith('UNIQUE'))) {
     return 'enchantments/unique-enchant.png';
@@ -237,7 +255,7 @@ function escapeEnchantHtml(s) {
 
 function buildEnchantTitleRow(name, labels) {
   const safeName = escapeEnchantHtml(name);
-  const iconRel = resolveEnchantIconFile(labels);
+  const iconRel = resolveEnchantIconFile(labels, name);
   if (iconRel) {
     const src = resolveEnchantIconUrl(iconRel);
     return (
