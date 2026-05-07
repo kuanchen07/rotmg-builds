@@ -4,8 +4,15 @@ const INCLUDE_ENGRAVINGS_IN_UI = false;
 let ENCHANTS = [], AUGMENTS = [], AUGMENTS_BY_NAME = {};
 let selectedSlots = 1, currentEnchantments = [], totalDustUsed = 0;
 const BASE_DUST = { 1: 50, 2: 65, 3: 80, 4: 100 };
+/** Default trials for Compare Cards Monte Carlo runs (Enchant Simulation uses path-based sizing). */
 const MONTE_CARLO_TRIALS = 50000;
 const MONTE_CARLO_CHUNK_SIZE = 1000;
+/** Default / bounds for path batch size (user-editable in the path tool UI). */
+const PATH_SIM_BATCH_TRIALS_DEFAULT = 10000;
+const PATH_SIM_BATCH_TRIALS_MIN = 1;
+const PATH_SIM_BATCH_TRIALS_MAX = 1_000_000;
+/** Quick Estimate uses this × "Paths per run" for one-roll Monte Carlo sample size. */
+const QUICK_ESTIMATE_PATH_MULTIPLIER = 10;
 let probabilityRunToken = 0;
 let simulatorInitPromise = null;
 let simulatorDidInit = false;

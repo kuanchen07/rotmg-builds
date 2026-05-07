@@ -508,7 +508,8 @@
 }
 
 .enchant-sim-shell #toggleWeightBtn,
-.enchant-sim-shell #calcProbBtn {
+.enchant-sim-shell #calcPathBtn,
+.enchant-sim-shell #compareCardsBtn {
   background: #1a1a1a;
   color: var(--sim-gold);
   border-color: var(--sim-gold-strong);
@@ -517,7 +518,8 @@
 }
 
 .enchant-sim-shell #toggleWeightBtn:hover,
-.enchant-sim-shell #calcProbBtn:hover {
+.enchant-sim-shell #calcPathBtn:hover,
+.enchant-sim-shell #compareCardsBtn:hover {
   background: #221b0f;
 }
 
@@ -527,6 +529,511 @@
   align-items: center;
   flex-wrap: wrap;
   gap: 0.5rem;
+}
+
+.enchant-sim-shell .path-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.enchant-sim-shell .sim-results {
+  margin-top: 0.7rem;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.65rem;
+}
+
+.enchant-sim-shell .sim-result-block {
+  border: 1px solid var(--sim-card-border);
+  border-radius: 10px;
+  background: #121212;
+  padding: 0.55rem 0.65rem;
+}
+
+.enchant-sim-shell .sim-result-block h4 {
+  margin: 0 0 0.35rem;
+  font-size: 0.84rem;
+  letter-spacing: 0.03em;
+  color: #f0dca8;
+}
+
+.enchant-sim-shell #compareCardsResult {
+  margin: 0.15rem 0 0.45rem;
+}
+
+.enchant-sim-shell .compare-cards-table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--sim-card-border);
+  border-radius: 10px;
+  background: #121212;
+}
+
+.enchant-sim-shell #compareCardsTable {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 720px;
+}
+
+.enchant-sim-shell #compareCardsTable th,
+.enchant-sim-shell #compareCardsTable td {
+  padding: 0.42rem 0.5rem;
+  border-bottom: 1px solid var(--sim-card-border);
+  text-align: left;
+  font-size: 0.82rem;
+}
+
+.enchant-sim-shell #compareCardsTable th {
+  color: #f0dca8;
+  background: #171717;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.enchant-sim-shell #compareCardsTable tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.enchant-sim-shell .path-stepper {
+  gap: 0;
+}
+
+.enchant-sim-shell .path-step {
+  display: grid;
+  grid-template-columns: 2.25rem minmax(0, 1fr);
+  gap: 0 0.65rem;
+  align-items: start;
+  padding-bottom: 0.5rem;
+}
+
+.enchant-sim-shell .path-step:not(.path-step--last) {
+  padding-bottom: 0.65rem;
+}
+
+.enchant-sim-shell .path-step__track {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100%;
+  position: relative;
+}
+
+.enchant-sim-shell .path-step__track::after {
+  content: "";
+  flex: 1;
+  width: 2px;
+  margin-top: 0.2rem;
+  min-height: 0.5rem;
+  background: var(--sim-card-border);
+  border-radius: 1px;
+}
+
+.enchant-sim-shell .path-step--last .path-step__track::after {
+  display: none;
+}
+
+.enchant-sim-shell .path-step__pill {
+  flex-shrink: 0;
+  width: 1.65rem;
+  height: 1.65rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  background: var(--sim-slot-on);
+  border: 1px solid var(--sim-card-border-strong);
+  color: var(--sim-gold);
+}
+
+.enchant-sim-shell .path-step__body {
+  min-width: 0;
+  padding-bottom: 0.15rem;
+}
+
+.enchant-sim-shell .path-step__heading {
+  font-family: ChronoType, ui-monospace, monospace;
+  font-size: 0.92rem;
+  letter-spacing: 0.04em;
+  color: #f0dca8;
+  margin: 0 0 0.45rem;
+  font-weight: 400;
+}
+
+.enchant-sim-shell .path-step__field--flush {
+  margin: 0;
+}
+
+.enchant-sim-shell .path-step__auto-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.45rem 0.6rem;
+}
+
+.enchant-sim-shell .path-step__badge-auto {
+  display: inline-block;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--sim-gold-strong);
+  border: 1px solid var(--sim-card-border-strong);
+  border-radius: 6px;
+  padding: 0.2rem 0.45rem;
+  background: rgba(42, 33, 17, 0.8);
+}
+
+.enchant-sim-shell .path-step__auto-desc {
+  flex: 1 1 12rem;
+  min-width: 0;
+}
+
+.enchant-sim-shell .path-hint,
+.enchant-sim-shell .path-stat-tradeoff-picker-hint,
+.enchant-sim-shell .path-stat-tradeoff-apply-feedback {
+  font-family: system-ui, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-size: 0.78rem;
+  line-height: 1.4;
+  color: var(--sim-muted);
+  opacity: 0.85;
+  margin: 0;
+}
+
+.enchant-sim-shell .path-phase-sublabel {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--sim-muted);
+  letter-spacing: 0.03em;
+  margin-bottom: 0.3rem;
+}
+
+.enchant-sim-shell .path-phase-sublabel--spaced {
+  margin-top: 0.55rem;
+}
+
+.enchant-sim-shell .path-phase-2-anchor-block {
+  margin-bottom: 0.35rem;
+}
+
+.enchant-sim-shell .path-phase-2-alts-disclosure {
+  margin-top: 0.55rem;
+  border: 1px solid var(--sim-card-border);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.02);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.enchant-sim-shell .path-phase-2-alts-summary {
+  cursor: pointer;
+  display: list-item;
+  font-size: 0.8rem;
+  color: var(--sim-muted);
+  letter-spacing: 0.03em;
+  padding: 0.5rem 0.65rem;
+  margin: 0;
+  user-select: none;
+  list-style-position: outside;
+}
+
+.enchant-sim-shell .path-phase-2-alts-summary::-webkit-details-marker {
+  color: var(--sim-gold-strong);
+}
+
+.enchant-sim-shell .path-phase-2-alts-inner {
+  padding: 0 0.65rem 0.6rem;
+}
+
+.enchant-sim-shell .path-phase-2-alts {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin-bottom: 0.35rem;
+}
+
+.enchant-sim-shell .path-phase-2-alt-row {
+  display: grid;
+  grid-template-columns: 5.5rem minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.4rem 0.5rem;
+}
+
+.enchant-sim-shell .path-phase-2-alt-label {
+  font-size: 0.78rem;
+  color: var(--sim-muted);
+  margin: 0;
+}
+
+.enchant-sim-shell .path-phase-2-alt-wrap {
+  min-width: 0;
+}
+
+.enchant-sim-shell .path-phase-2-add-alt {
+  margin-top: 0.2rem;
+  align-self: flex-start;
+}
+
+.enchant-sim-shell .path-phase-2-alt-remove {
+  padding: 0.35rem 0.5rem;
+  font-size: 0.78rem;
+}
+
+.enchant-sim-shell #pathPhasesFieldset {
+  border: 0;
+  margin: 0;
+  padding: 0;
+  min-width: 0;
+}
+
+.enchant-sim-shell .path-phase-row {
+  display: grid;
+  grid-template-columns: 110px minmax(0, 1fr);
+  align-items: center;
+  gap: 0.45rem 0.6rem;
+}
+
+.enchant-sim-shell .path-phase-label {
+  font-size: 0.84rem;
+  color: var(--sim-muted);
+  letter-spacing: 0.03em;
+}
+
+.enchant-sim-shell .path-phase-row .target-enchant-wrap {
+  min-width: 0;
+}
+
+.enchant-sim-shell .path-phase-dual-inputs {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.enchant-sim-shell .path-phase-or {
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.enchant-sim-shell .path-phase-row--auto {
+  grid-template-columns: 110px minmax(0, 1fr);
+  align-items: start;
+}
+
+.enchant-sim-shell .path-phase-field-col {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-width: 0;
+}
+
+.enchant-sim-shell .path-stat-tradeoff-disclosure {
+  margin-top: 0.55rem;
+  border-radius: 10px;
+  border: 1px solid var(--sim-card-border);
+  background: rgba(255, 255, 255, 0.03);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  overflow: hidden;
+}
+
+.enchant-sim-shell .path-stat-tradeoff-picker__summary {
+  cursor: pointer;
+  display: list-item;
+  font-family: system-ui, "Segoe UI", Roboto, sans-serif;
+  font-size: 0.68rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--sim-muted);
+  opacity: 0.95;
+  padding: 0.55rem 0.75rem;
+  margin: 0;
+  user-select: none;
+  list-style-position: outside;
+}
+
+.enchant-sim-shell .path-stat-tradeoff-picker__summary::-webkit-details-marker {
+  color: var(--sim-gold-strong);
+}
+
+.enchant-sim-shell .path-stat-tradeoff-picker {
+  margin-top: 0;
+  padding: 0 0.75rem 0.65rem;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.enchant-sim-shell .path-stat-tradeoff-picker__tier {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+  font-size: 0.85rem;
+  font-family: system-ui, "Segoe UI", Roboto, sans-serif;
+}
+
+.enchant-sim-shell .path-stat-tradeoff-tier-select {
+  width: 7rem;
+  max-width: 7rem;
+  min-width: 7rem;
+  margin: 0;
+  padding: 0.45rem 0.55rem;
+  border-radius: 10px;
+  background: var(--sim-input);
+  border: 1px solid #3a3a3a;
+  color: var(--sim-ink);
+  font: inherit;
+}
+
+.enchant-sim-shell .path-stat-tradeoff-picker__gain {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.4rem;
+  font-size: 0.85rem;
+  font-family: system-ui, "Segoe UI", Roboto, sans-serif;
+}
+
+.enchant-sim-shell .path-stat-tradeoff-plus-select {
+  flex: 1;
+  max-width: 12rem;
+  min-width: 0;
+  margin: 0;
+  padding: 0.45rem 0.55rem;
+  border-radius: 10px;
+  background: var(--sim-input);
+  border: 1px solid #3a3a3a;
+  color: var(--sim-ink);
+  font: inherit;
+}
+
+.enchant-sim-shell .path-stat-tradeoff-lose-label {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--sim-muted);
+  letter-spacing: 0.03em;
+  margin: 0 0 0.25rem;
+}
+
+.enchant-sim-shell .path-stat-tradeoff-append {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin: 0 0 0.45rem;
+  font-family: system-ui, "Segoe UI", Roboto, sans-serif;
+  font-size: 0.82rem;
+  color: var(--sim-muted);
+  cursor: pointer;
+}
+
+.enchant-sim-shell .path-stat-tradeoff-append input {
+  margin: 0;
+}
+
+.enchant-sim-shell .path-stat-tradeoff-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 0.65rem;
+  margin-bottom: 0.5rem;
+}
+
+.enchant-sim-shell .path-stat-tradeoff-cb {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: system-ui, "Segoe UI", Roboto, sans-serif;
+  font-size: 0.85rem;
+  color: #d7d7d7;
+  cursor: pointer;
+  margin: 0;
+  padding: 0.15rem 0;
+  min-height: 0;
+}
+
+.enchant-sim-shell .path-stat-tradeoff-cb input[type="checkbox"] {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  margin: 0;
+}
+
+.enchant-sim-shell .path-stat-tradeoff-cb::before {
+  content: "";
+  flex-shrink: 0;
+  width: 14px;
+  height: 14px;
+  border: 1px solid var(--sim-card-border-strong);
+  border-radius: 3px;
+  background: var(--sim-input);
+  box-sizing: border-box;
+}
+
+.enchant-sim-shell .path-stat-tradeoff-cb:has(input:checked)::before {
+  background: var(--sim-gold);
+  border-color: var(--sim-gold-strong);
+  box-shadow: inset 0 0 0 2px #1a1408;
+}
+
+.enchant-sim-shell .path-stat-tradeoff-cb:has(input:focus-visible)::before {
+  outline: 2px solid rgba(47, 214, 255, 0.4);
+  outline-offset: 2px;
+}
+
+.enchant-sim-shell .path-stat-tradeoff-apply-row {
+  margin-bottom: 0.35rem;
+}
+
+.enchant-sim-shell .path-stat-tradeoff-apply-btn {
+  margin: 0;
+  padding: 0.52rem 0.85rem;
+  font-size: 0.92rem;
+  font-weight: 600;
+  border-radius: 10px;
+  color: var(--sim-gold);
+  background: transparent;
+  border: 1px solid var(--sim-gold-strong);
+  box-shadow: none;
+}
+
+.enchant-sim-shell .path-stat-tradeoff-apply-btn:hover:not(:disabled) {
+  background: rgba(246, 193, 103, 0.12);
+  border-color: var(--sim-gold);
+}
+
+.enchant-sim-shell .path-stat-tradeoff-apply-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.enchant-sim-shell .path-stat-tradeoff-picker-hint,
+.enchant-sim-shell .path-stat-tradeoff-apply-feedback {
+  margin-top: 0.35rem;
+  opacity: 0.55;
+}
+
+.enchant-sim-shell .path-controls {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.enchant-sim-shell .path-controls .inline {
+  gap: 0.35rem;
+}
+
+.enchant-sim-shell .path-controls input[type="number"] {
+  width: 7.5rem;
+  min-width: 0;
+  margin: 0;
 }
 
 .enchant-sim-shell .inline {
@@ -563,9 +1070,25 @@
   gap: 0.45rem;
 }
 
-.enchant-sim-shell .target-enchant-wrap #targetEnchantInput {
+.enchant-sim-shell #path-phase-1,
+.enchant-sim-shell #compareCardsTargetInput {
   width: 100%;
   box-sizing: border-box;
+}
+
+.enchant-sim-shell .compare-cards-target-block {
+  margin-bottom: 0.65rem;
+}
+
+.enchant-sim-shell .compare-cards-target-label {
+  display: block;
+  margin-bottom: 0.35rem;
+  font-size: 0.9rem;
+}
+
+.enchant-sim-shell .compare-cards-actions .target-enchant-wrap {
+  flex: 1 1 240px;
+  min-width: 0;
 }
 
 .enchant-sim-shell #fillAwakenedEnchantBtn {
@@ -663,7 +1186,8 @@
   }
 
   .enchant-sim-shell .awaken-row,
-  .enchant-sim-shell .prob-row {
+  .enchant-sim-shell .prob-row,
+  .enchant-sim-shell .path-controls {
     flex-direction: column;
     align-items: stretch;
   }
@@ -675,6 +1199,33 @@
   .enchant-sim-shell #awakenItem {
     min-width: 0;
     flex: 1 1 auto;
+  }
+
+  .enchant-sim-shell .path-phase-row {
+    grid-template-columns: 1fr;
+    gap: 0.25rem;
+  }
+
+  .enchant-sim-shell .path-phase-dual-inputs {
+    grid-template-columns: 1fr;
+  }
+
+  .enchant-sim-shell .path-phase-or {
+    justify-self: start;
+  }
+
+  .enchant-sim-shell .path-step {
+    grid-template-columns: 1.75rem minmax(0, 1fr);
+    gap: 0 0.45rem;
+  }
+
+  .enchant-sim-shell .path-phase-2-alt-row {
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-rows: auto auto;
+  }
+
+  .enchant-sim-shell .path-phase-2-alt-label {
+    grid-column: 1 / -1;
   }
 
   .enchant-sim-shell .target-enchant-wrap {
@@ -720,8 +1271,17 @@
 
   .enchant-sim-shell #rollBtn,
   .enchant-sim-shell #resetDust,
-  .enchant-sim-shell #calcProbBtn {
+  .enchant-sim-shell #calcPathBtn,
+  .enchant-sim-shell #compareCardsBtn {
     width: 100%;
     margin-right: 0;
+  }
+
+  .enchant-sim-shell .path-controls input[type="number"] {
+    width: 100%;
+  }
+
+  .enchant-sim-shell .sim-results {
+    grid-template-columns: 1fr;
   }
 }

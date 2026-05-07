@@ -35,6 +35,7 @@
     container.appendChild(sourceShell);
 
     global.__ENCHANT_SIM_DATA_BASE__ = dataBasePath;
+    global.__ENCHANT_PATH_BATCH_WORKER_HREF__ = resolveScriptUrl(pagePath, 'js/path-batch-worker.js');
 
     var scripts = Array.prototype.slice.call(doc.querySelectorAll("script"));
     for (var i = 0; i < scripts.length; i += 1) {

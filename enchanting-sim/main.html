@@ -17,8 +17,7 @@
 <div class="col">
 <h3>Choose Item Type</h3>
 <select id="itemType">
-<option value="">-- Select Item --</option>
-<option value="WEAPON">Weapon</option>
+<option value="WEAPON" selected>Weapon</option>
 <option value="ABILITY">Ability</option>
 <option value="ARMOR">Armor</option>
 <option value="RING">Ring</option>
@@ -59,19 +58,61 @@
 </div>
 <div id="weightDetails"></div>
 </div>
-<div class="card" id="probabilityTool">
-<h3>Target Enchantment Probability</h3>
+<div class="card" id="simulationTool">
+<h3>Enchant Simulation</h3>
 <div class="prob-row">
-<input id="targetEnchantInput" placeholder="Type enchantment name..." type="text"/>
 <button aria-label="Fill target enchant with awakened line for this item" class="small" id="fillAwakenedEnchantBtn" style="display:none" type="button">Awakened enchant</button>
-<button id="calcProbBtn">Calculate Probability</button>
-<label class="inline"><input id="compareCardsMode" type="checkbox"/> Compare Cards</label>
 </div>
+<fieldset id="pathPhasesFieldset">
+<div class="path-row" id="pathPhasesMount"></div>
+</fieldset>
+<div class="path-controls">
+<label class="inline" for="pathBatchTrialsInput">Paths per run</label>
+<input id="pathBatchTrialsInput" type="number" min="1" max="1000000" step="1" value="10000" inputmode="numeric" title="Number of independent path simulations per click (1–1,000,000)"/>
+<button id="calcPathBtn" type="button">Run 10,000 paths</button>
+</div>
+<div class="sim-results">
+<div class="sim-result-block">
+<h4>Quick Estimate</h4>
 <div class="muted" id="probResult"></div>
+</div>
+<div class="sim-result-block">
+<h4>Path Batch</h4>
+<div class="muted" id="pathResult"></div>
+</div>
+</div>
+</div>
+<div class="card" id="compareCardsTool">
+<h3>Compare Cards</h3>
+<div class="compare-cards-target-block">
+<label class="compare-cards-target-label" for="compareCardsTargetInput">Target enchant(s)</label>
+<div class="compare-cards-actions prob-row">
+<input class="path-phase-input" id="compareCardsTargetInput" placeholder="Type enchant name first." type="text"/>
+<button id="compareCardsBtn" type="button">Compare All Cards</button>
+</div>
+</div>
+<div class="muted" id="compareCardsResult"></div>
+<div class="compare-cards-table-wrap">
+<table id="compareCardsTable">
+<thead>
+<tr>
+<th>Rank</th>
+<th>Card</th>
+<th>Probability</th>
+<th>Hits/Trials</th>
+<th>Expected Dust</th>
+<th>Expected Rolls</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody id="compareCardsTableBody"></tbody>
+</table>
+</div>
 </div>
 </div>
 </div>
 <script src="js/sim-globals.js"></script>
+<script src="js/path-sim-core.js"></script>
 <script src="js/sim-logic.js"></script>
 <script src="js/sim-autocomplete.js"></script>
 <script src="js/sim-bootstrap.js"></script>

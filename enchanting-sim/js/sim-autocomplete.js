@@ -1,8 +1,61 @@
 /* ---------- IMPROVED AUTOCOMPLETE FOR TARGET ENCHANT INPUT ---------- */
-(function enableEnchantAutocomplete() {
-  const input = document.getElementById('targetEnchantInput');
 
-  // Create suggestions container (properly positioned below the input)
+const enchantHaystackCache = new Map();
+
+function romanToInt(token) {
+  if (!token || typeof token !== 'string') return 0;
+  const upper = token.trim().toUpperCase();
+  if (!/^[IVXLCDM]+$/.test(upper)) return 0;
+  const map = { I: 1, V: 5, X: 10, L: 50, C: 100, D: 500, M: 1000 };
+  let total = 0;
+  for (let i = 0; i < upper.length; i++) {
+    const cur = map[upper[i]];
+    const next = map[upper[i + 1]];
+    if (cur == null) return 0;
+    if (next != null && cur < next) total -= cur;
+    else total += cur;
+  }
+  return total > 0 && total <= 39 ? total : 0;
+}
+
+function trailingRomanTier(name) {
+  const parts = String(name || '').trim().split(/\s+/);
+  if (!parts.length) return null;
+  const n = romanToInt(parts[parts.length - 1]);
+  return n > 0 ? n : null;
+}
+
+function enchantAutocompleteHaystack(name) {
+  if (enchantHaystackCache.has(name)) return enchantHaystackCache.get(name);
+  const lower = String(name || '').toLowerCase();
+  let extra = '';
+  const tier = trailingRomanTier(name);
+  if (tier != null) extra += ` ${tier}`;
+  const abbrevs = [
+    ['relative', 'rel'],
+    ['attack', 'atk'],
+    ['defense', 'def'],
+    ['dexterity', 'dex'],
+    ['vitality', 'vit'],
+    ['speed', 'spd'],
+    ['wisdom', 'wis'],
+  ];
+  for (const [word, abbr] of abbrevs) {
+    if (lower.includes(word)) extra += ` ${abbr}`;
+  }
+  const haystack = lower + extra;
+  enchantHaystackCache.set(name, haystack);
+  return haystack;
+}
+
+function escapeRegexChars(s) {
+  return String(s).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+function initEnchantTargetAutocomplete(input, options = {}) {
+  if (!input || input.dataset.enchantAutocompleteInitialized === '1') return;
+  input.dataset.enchantAutocompleteInitialized = '1';
+
   const wrapper = document.createElement('div');
   wrapper.className = 'target-enchant-wrap';
   input.parentNode.insertBefore(wrapper, input);
@@ -18,23 +71,38 @@
   wrapper.appendChild(suggestionsBox);
 
   let activeIndex = -1;
+  /** After picking a suggestion we dispatch `input`; without this the handler would rebuild the list because the chosen name still matches. */
+  let suppressSuggestionsOnce = false;
 
   input.addEventListener('input', () => {
-    const query = input.value.trim().toLowerCase();
+    if (suppressSuggestionsOnce) {
+      suppressSuggestionsOnce = false;
+      suggestionsBox.innerHTML = '';
+      activeIndex = -1;
+      return;
+    }
+    const full = input.value || '';
+    const commaIndex = full.lastIndexOf(',');
+    const prefix = commaIndex >= 0 ? full.slice(0, commaIndex + 1) : '';
+    const queryRaw = commaIndex >= 0 ? full.slice(commaIndex + 1) : full;
+    const query = queryRaw.trim().toLowerCase();
     suggestionsBox.innerHTML = '';
     activeIndex = -1;
     if (!query || !ENCHANTS.length) return;
 
     const itemType = document.getElementById('itemType').value;
-    const eligible = eligiblePool(itemType);
-
-    // Split search terms into words, match if all appear in enchant name (order-insensitive)
+    let eligible = eligiblePool(itemType);
+    if (
+      options.excludePathSimTier12 &&
+      typeof isPathSimDisallowedTierName === 'function'
+    ) {
+      eligible = eligible.filter(e => !isPathSimDisallowedTierName(e.name));
+    }
     const terms = query.split(/\s+/).filter(Boolean);
     const matches = eligible.filter(e => {
-      const name = e.name.toLowerCase();
-      return terms.every(t => name.includes(t));
+      const haystack = enchantAutocompleteHaystack(e.name);
+      return terms.every(t => haystack.includes(t));
     }).slice(0, 15);
-
     if (!matches.length) return;
 
     matches.forEach(e => {
@@ -42,8 +110,10 @@
       div.className = 'suggest-item';
       div.innerHTML = highlightMatch(e.name, terms);
       div.onclick = () => {
-        input.value = e.name;
+        suppressSuggestionsOnce = true;
+        input.value = prefix ? `${prefix} ${e.name}` : e.name;
         suggestionsBox.innerHTML = '';
+        input.dispatchEvent(new Event('input', { bubbles: true }));
       };
       suggestionsBox.appendChild(div);
     });
@@ -52,7 +122,6 @@
   input.addEventListener('keydown', e => {
     const items = Array.from(suggestionsBox.children);
     if (!items.length) return;
-
     if (e.key === 'ArrowDown') {
       activeIndex = (activeIndex + 1) % items.length;
       updateActive(items);
@@ -63,8 +132,13 @@
       e.preventDefault();
     } else if (e.key === 'Enter' && activeIndex >= 0) {
       e.preventDefault();
-      input.value = items[activeIndex].textContent;
+      suppressSuggestionsOnce = true;
+      const full = input.value || '';
+      const commaIndex = full.lastIndexOf(',');
+      const prefix = commaIndex >= 0 ? full.slice(0, commaIndex + 1) : '';
+      input.value = prefix ? `${prefix} ${items[activeIndex].textContent}` : items[activeIndex].textContent;
       suggestionsBox.innerHTML = '';
+      input.dispatchEvent(new Event('input', { bubbles: true }));
     }
   });
 
@@ -77,15 +151,21 @@
       el.classList.toggle('is-active', i === activeIndex);
     });
   }
-
   function highlightMatch(name, terms) {
     let result = name;
     terms.forEach(t => {
-      const regex = new RegExp(`(${t})`, 'ig');
+      const escaped = escapeRegexChars(t);
+      const regex = new RegExp(`(${escaped})`, 'ig');
       result = result.replace(regex, '<b>$1</b>');
     });
     return result;
   }
+}
+window.initEnchantTargetAutocomplete = initEnchantTargetAutocomplete;
+
+(function enableEnchantAutocomplete() {
+  initEnchantTargetAutocomplete(document.getElementById('path-phase-1'), { excludePathSimTier12: true });
+  initEnchantTargetAutocomplete(document.getElementById('compareCardsTargetInput'), { excludePathSimTier12: true });
 })();
 
 (function enableAwakenAutocompleteV12() {
@@ -121,8 +201,15 @@
   wrapper.appendChild(suggestionsBox);
 
   let activeIndex = -1;
+  let suppressSuggestionsOnce = false;
 
   input.addEventListener('input', () => {
+    if (suppressSuggestionsOnce) {
+      suppressSuggestionsOnce = false;
+      suggestionsBox.innerHTML = '';
+      activeIndex = -1;
+      return;
+    }
     const q = (input.value || '').trim().toLowerCase();
     suggestionsBox.innerHTML = '';
     activeIndex = -1;
@@ -140,6 +227,7 @@
       const re = new RegExp('(' + q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'ig');
       div.innerHTML = name.replace(re, '<b>$1</b>');
       div.onclick = () => {
+        suppressSuggestionsOnce = true;
         input.value = name;
         suggestionsBox.innerHTML = '';
         // Trigger existing listeners in buildAwakenList()

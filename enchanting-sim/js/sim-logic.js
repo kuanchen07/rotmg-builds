@@ -1,5 +1,5 @@
 function normalizeName(s) {
-  return String(s || "").replace(/[\u2018\u2019]/g, "'").replace(/\s+/g, " ").trim().toLowerCase();
+  return PathSimCore.normalizeName(s);
 }
 function awakenBaseDisplayName(normalizedBaseName) {
   const norm = normalizeName(normalizedBaseName);
@@ -16,6 +16,79 @@ function nameMultiplierLookup(dict, enchantName) {
   return null;
 }
 function prettyStat(s) { return s.charAt(0) + s.slice(1).toLowerCase(); }
+function parseTargetList(raw) {
+  const seen = new Set();
+  const targetNames = [];
+  for (const part of String(raw || '').split(',')) {
+    const trimmed = part.trim();
+    if (!trimmed) continue;
+    const norm = normalizeName(trimmed);
+    if (!norm || seen.has(norm)) continue;
+    seen.add(norm);
+    targetNames.push(trimmed);
+  }
+  return {
+    targetNames,
+    targetNorms: new Set(targetNames.map(normalizeName))
+  };
+}
+/** Tier I/II (Roman suffix after space). Path simulation disallows these targets. */
+function isPathSimDisallowedTierName(name) {
+  if (typeof name !== 'string') return false;
+  return /(?:^| )(?:II|I)$/.test(name.trim());
+}
+function getTargetDisplayLabel(targetNames) {
+  return (targetNames || []).join(', ');
+}
+/** RealmEye-style stat names for `{gain} -{loss} Tradeoff {tier}` (alphabetical). */
+const STAT_TRADEOFF_STATS = ['Attack', 'Defense', 'Dexterity', 'Life', 'Mana', 'Speed', 'Vitality', 'Wisdom'];
+function statTradeoffMinusStatsForGain(gainStat) {
+  return STAT_TRADEOFF_STATS.filter(s => s !== gainStat);
+}
+function statTradeoffEnchantName(gainLabel, lossLabel, tierRoman) {
+  return `${gainLabel} -${lossLabel} Tradeoff ${tierRoman}`;
+}
+let statTradeoffAltTailHintRe = null;
+function statTradeoffAltTailHintRegex() {
+  if (!statTradeoffAltTailHintRe) {
+    const esc = s => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    statTradeoffAltTailHintRe = new RegExp(
+      `^(${STAT_TRADEOFF_STATS.map(esc).join('|')})\\s*-\\s*`,
+      'i'
+    );
+  }
+  return statTradeoffAltTailHintRe;
+}
+/** Tail after last comma — same rule as alternate-row autocomplete. */
+function getAlternateInputTailForHint(raw) {
+  const full = String(raw || '');
+  const commaIndex = full.lastIndexOf(',');
+  const tail = commaIndex >= 0 ? full.slice(commaIndex + 1).trim() : full.trim();
+  return tail;
+}
+function alternateRowHintsStatTradeoff(raw) {
+  const tail = getAlternateInputTailForHint(raw);
+  if (!tail) return false;
+  return statTradeoffAltTailHintRegex().test(tail);
+}
+function syncPathStatTradeoffDisclosure() {
+  const disclosure = document.getElementById('path-stat-tradeoff-disclosure');
+  if (!disclosure) return;
+  const container = document.getElementById('path-phase-2-alts');
+  let expand = false;
+  if (container) {
+    container.querySelectorAll('.path-phase-2-alt-input').forEach(inp => {
+      if (alternateRowHintsStatTradeoff(inp.value)) expand = true;
+    });
+  }
+  disclosure.open = expand;
+}
+/** Max alternate rows for path phase 2 (`path-phase-2-alt-*`). */
+const PATH_PHASE_2_ALT_MAX = 12;
+const monteCarloPoolBaseCache = new Map();
+function clearMonteCarloPoolBaseCache() {
+  monteCarloPoolBaseCache.clear();
+}
 
 function resolveAwakenedEnchantDisplayName(baseTrimmed) {
   const chosenNorm = normalizeName(baseTrimmed);
@@ -102,6 +175,10 @@ function resolveEnchantIconFile(labels) {
 
   if (someLabel(L, l => l === 'AWAKENED')) return null;
 
+  if (someLabel(L, l => l === 'UNIQUE' || l.endsWith('UNIQUE'))) {
+    return 'enchantments/unique-enchant.png';
+  }
+
   if (someLabel(L, l => l === 'ONABILITY' || l.startsWith('ONABILITY'))) {
     return resolveEnchantTieredRel('on-enchant', L);
   }
@@ -145,10 +222,6 @@ function resolveEnchantIconFile(labels) {
 
   if (someLabel(L, l => l === 'REWARD' || l.includes('REWARDBONUS'))) {
     return resolveEnchantTieredRel('reward-enchant', L);
-  }
-
-  if (someLabel(L, l => l === 'UNIQUE' || l.endsWith('UNIQUE'))) {
-    return resolveEnchantTieredRel('unique-enchant', L);
   }
 
   return null;
@@ -284,6 +357,7 @@ function normalizeAllData() {
     guaranteedMods: a.guaranteedMods || []
   }));
   AUGMENTS_BY_NAME = {}; AUGMENTS.forEach(x => AUGMENTS_BY_NAME[x.name] = x);
+  clearMonteCarloPoolBaseCache();
 }
 
 /* ========================== UI: Awakenable items ========================== */
@@ -298,11 +372,13 @@ function buildAwakenList() {
     if (chk.checked) { box.style.display = 'block'; }
     else { box.style.display = 'none'; box.value = ''; chosenAwakenItem = ''; }
     updateFillAwakenedEnchantButton();
+    clearMonteCarloPoolBaseCache();
     refreshEligibility(); enforceLockValidity(); updateWeightDebug();
   };
   box.addEventListener('input', () => {
     chosenAwakenItem = box.value.trim();
     updateFillAwakenedEnchantButton();
+    clearMonteCarloPoolBaseCache();
     const canonicalBaseName = Object.keys(AWAKEN_ITEM_TYPE).find(
       k => normalizeName(k) === normalizeName(chosenAwakenItem)
     ) || chosenAwakenItem;
@@ -315,7 +391,7 @@ function buildAwakenList() {
   });
   if (fillAwakenBtn) {
     fillAwakenBtn.onclick = () => {
-      const target = document.getElementById('targetEnchantInput');
+      const target = document.getElementById('path-phase-1');
       const name = resolveAwakenedEnchantDisplayName((box.value || '').trim());
       if (!target || !name) return;
       target.value = name;
@@ -337,6 +413,7 @@ function renderSlotButtons() {
     btn.setAttribute('aria-pressed', 'true');
     selectedSlots = slots;
     renderSlots();
+    renderPathPhaseUI();
     refreshEligibility();
     enforceLockValidity();
     updateWeightDebug();
@@ -395,6 +472,516 @@ function renderSlots() {
     c.appendChild(d);
   }
 }
+function readPathPhaseValues() {
+  const ids = [
+    'path-phase-1',
+    'path-phase-2-anchor',
+    'path-phase-2-or',
+    'path-phase-2a',
+    'path-phase-2b',
+    'path-phase-3',
+    'path-phase-4'
+  ];
+  const out = {};
+  for (const id of ids) {
+    const el = document.getElementById(id);
+    if (el) out[id] = el.value;
+  }
+  for (let i = 0; i < PATH_PHASE_2_ALT_MAX; i++) {
+    const el = document.getElementById(`path-phase-2-alt-${i}`);
+    if (el) out[`path-phase-2-alt-${i}`] = el.value;
+  }
+  return out;
+}
+function getRestoredPhase2OrValue(prev) {
+  const combined = (prev['path-phase-2-or'] || '').trim();
+  if (combined) return prev['path-phase-2-or'];
+  const a = (prev['path-phase-2a'] || '').trim();
+  const b = (prev['path-phase-2b'] || '').trim();
+  if (a && b) return `${a}, ${b}`;
+  if (a) return a;
+  if (b) return b;
+  return '';
+}
+function getPhase2RestoreState(prev) {
+  let anchor = (prev['path-phase-2-anchor'] || '').trim();
+  const alts = [];
+  for (let i = 0; i < PATH_PHASE_2_ALT_MAX; i++) {
+    const v = (prev[`path-phase-2-alt-${i}`] || '').trim();
+    if (v) alts.push(v);
+  }
+  if (!anchor && alts.length === 0) {
+    const legacy = getRestoredPhase2OrValue(prev);
+    if (legacy) {
+      const p = parseTargetList(legacy);
+      if (p.targetNames.length >= 2) {
+        return { anchor: '', alts: [...p.targetNames] };
+      }
+    }
+    const a = (prev['path-phase-2a'] || '').trim();
+    const b = (prev['path-phase-2b'] || '').trim();
+    if (a && b) return { anchor: '', alts: [a, b] };
+  }
+  return { anchor, alts };
+}
+function renderPathPhase2AltRowsContent(container, values) {
+  const n = Math.max(1, values.length);
+  container.innerHTML = '';
+  for (let i = 0; i < n; i++) {
+    const row = document.createElement('div');
+    row.className = 'path-phase-2-alt-row';
+    const lbl = document.createElement('label');
+    lbl.className = 'path-phase-2-alt-label';
+    lbl.setAttribute('for', `path-phase-2-alt-${i}`);
+    lbl.textContent = i === 0 ? 'Alternate' : `Alternate ${i + 1}`;
+    const inpWrap = document.createElement('div');
+    inpWrap.className = 'target-enchant-wrap path-phase-2-alt-wrap';
+    const inp = document.createElement('input');
+    inp.type = 'text';
+    inp.id = `path-phase-2-alt-${i}`;
+    inp.className = 'path-phase-input path-phase-2-alt-input';
+    inp.placeholder = 'OR option';
+    inp.value = values[i] || '';
+    inpWrap.appendChild(inp);
+    row.appendChild(lbl);
+    row.appendChild(inpWrap);
+    if (n > 1) {
+      const rm = document.createElement('button');
+      rm.type = 'button';
+      rm.className = 'small path-phase-2-alt-remove';
+      rm.textContent = 'Remove';
+      const removeIndex = i;
+      rm.onclick = () => {
+        const c = document.getElementById('path-phase-2-alts');
+        if (!c) return;
+        const v = [...c.querySelectorAll('.path-phase-2-alt-input')].map(x => x.value.trim());
+        v.splice(removeIndex, 1);
+        renderPathPhase2AltRowsContent(c, v.length ? v : ['']);
+        updatePathStatTradeoffPickerUI();
+      };
+      row.appendChild(rm);
+    }
+    container.appendChild(row);
+    if (typeof window.initEnchantTargetAutocomplete === 'function') {
+      window.initEnchantTargetAutocomplete(inp, { excludePathSimTier12: true });
+    }
+  }
+  syncPathStatTradeoffDisclosure();
+}
+function collectPathPhase2FromDom() {
+  const anchor = (document.getElementById('path-phase-2-anchor')?.value || '').trim();
+  const alts = [];
+  const container = document.getElementById('path-phase-2-alts');
+  if (container) {
+    container.querySelectorAll('.path-phase-2-alt-input').forEach(inp => {
+      const t = inp.value.trim();
+      if (t) alts.push(t);
+    });
+  }
+  return { anchor, alts };
+}
+function createPathStep(stepper, stepNum, { title }, contentFn) {
+  const step = document.createElement('div');
+  step.className = 'path-step';
+  const track = document.createElement('div');
+  track.className = 'path-step__track';
+  const pill = document.createElement('div');
+  pill.className = 'path-step__pill';
+  pill.textContent = String(stepNum);
+  track.appendChild(pill);
+  const body = document.createElement('div');
+  body.className = 'path-step__body';
+  if (title) {
+    const h = document.createElement('div');
+    h.className = 'path-step__heading';
+    h.textContent = title;
+    body.appendChild(h);
+  }
+  contentFn(body);
+  step.appendChild(track);
+  step.appendChild(body);
+  stepper.appendChild(step);
+}
+function formatOrdinal(n) {
+  if (n % 100 >= 11 && n % 100 <= 13) return `${n}th`;
+  if (n % 10 === 1) return `${n}st`;
+  if (n % 10 === 2) return `${n}nd`;
+  if (n % 10 === 3) return `${n}rd`;
+  return `${n}th`;
+}
+function rebuildStatTradeoffMinusCheckboxGrid(cbWrapEl, gainStat) {
+  cbWrapEl.innerHTML = '';
+  const onCbChange = () => {
+    const feedbackEl = document.getElementById('path-stat-tradeoff-apply-feedback');
+    if (feedbackEl) feedbackEl.textContent = '';
+    updatePathStatTradeoffPickerUI();
+  };
+  for (const stat of statTradeoffMinusStatsForGain(gainStat)) {
+    const lab = document.createElement('label');
+    lab.className = 'path-stat-tradeoff-cb';
+    const cb = document.createElement('input');
+    cb.type = 'checkbox';
+    cb.dataset.tradeoffMinus = stat;
+    cb.addEventListener('change', onCbChange);
+    lab.appendChild(cb);
+    lab.appendChild(document.createTextNode(`−${stat}`));
+    cbWrapEl.appendChild(lab);
+  }
+}
+function computeStatTradeoffPickerSelectionForTier(tierRoman) {
+  const it = document.getElementById('itemType')?.value;
+  const mount = document.getElementById('path-stat-tradeoff-picker');
+  const gainStat = document.getElementById('path-stat-tradeoff-plus')?.value;
+  if (!it || !mount || !gainStat) {
+    return { appliedNames: [], skippedParts: [], checkedStats: [] };
+  }
+  const pool = eligiblePool(it);
+  const poolNorms = new Set(pool.map(e => normalizeName(e.name)));
+  const checkboxes = mount.querySelectorAll('input[type="checkbox"][data-tradeoff-minus]');
+  const checkedStats = [];
+  checkboxes.forEach(cb => {
+    if (cb.checked) checkedStats.push(cb.dataset.tradeoffMinus);
+  });
+  checkedStats.sort();
+  const appliedNames = [];
+  const skippedParts = [];
+  for (const loseStat of checkedStats) {
+    const rawName = statTradeoffEnchantName(gainStat, loseStat, tierRoman);
+    const match = ENCHANTS.find(e => normalizeName(e.name) === normalizeName(rawName));
+    const canonical = match ? match.name : rawName;
+    if (poolNorms.has(normalizeName(canonical))) {
+      appliedNames.push(canonical);
+    } else {
+      const label = `−${loseStat}`;
+      skippedParts.push(match ? `${label} (not in pool)` : `${label} (unknown)`);
+    }
+  }
+  return { appliedNames, skippedParts, checkedStats };
+}
+function updatePathStatTradeoffPickerUI() {
+  const mount = document.getElementById('path-stat-tradeoff-picker');
+  if (!mount) return;
+  const hintEl = document.getElementById('path-stat-tradeoff-picker-hint');
+  const applyBtn = document.getElementById('path-stat-tradeoff-apply');
+  const it = document.getElementById('itemType')?.value;
+  const tier = document.getElementById('path-stat-tradeoff-tier')?.value || 'IV';
+  if (!it) {
+    if (applyBtn) applyBtn.disabled = true;
+    if (hintEl) hintEl.textContent = 'Select an item type to use the quick picker.';
+    return;
+  }
+  const { appliedNames, skippedParts, checkedStats } = computeStatTradeoffPickerSelectionForTier(tier);
+  if (!checkedStats.length) {
+    if (applyBtn) applyBtn.disabled = true;
+    if (hintEl) hintEl.textContent = 'Check loss stats to preview; Apply fills alternate OR rows.';
+    return;
+  }
+  if (!appliedNames.length) {
+    if (applyBtn) applyBtn.disabled = true;
+    if (hintEl) {
+      hintEl.textContent = 'No matching enchants for the selected item type (and filters). Change item type or tier, or pick different stats.';
+    }
+    return;
+  }
+  if (applyBtn) applyBtn.disabled = false;
+  if (hintEl) {
+    if (skippedParts.length) {
+      hintEl.textContent = `Ready: ${appliedNames.length} of ${checkedStats.length} in pool. Skipped: ${skippedParts.join(', ')}.`;
+    } else {
+      hintEl.textContent = `All ${appliedNames.length} selected pair(s) are in the pool.`;
+    }
+  }
+}
+function mountStatTradeoffPickerSection(mount) {
+  const disclosure = document.createElement('details');
+  disclosure.id = 'path-stat-tradeoff-disclosure';
+  disclosure.className = 'path-stat-tradeoff-disclosure';
+
+  const disclosureSummary = document.createElement('summary');
+  disclosureSummary.className = 'path-stat-tradeoff-picker__summary';
+  disclosureSummary.textContent = 'Quick pick: stat −stat tradeoff';
+
+  const wrap = document.createElement('div');
+  wrap.id = 'path-stat-tradeoff-picker';
+  wrap.className = 'path-stat-tradeoff-picker';
+
+  const tierRow = document.createElement('div');
+  tierRow.className = 'path-stat-tradeoff-picker__tier';
+  const tierLab = document.createElement('span');
+  tierLab.textContent = 'Tier';
+  const tierSel = document.createElement('select');
+  tierSel.id = 'path-stat-tradeoff-tier';
+  tierSel.className = 'path-stat-tradeoff-tier-select';
+  for (const r of ['III', 'IV']) {
+    const o = document.createElement('option');
+    o.value = r;
+    o.textContent = r;
+    tierSel.appendChild(o);
+  }
+  tierSel.value = 'IV';
+
+  const gainRow = document.createElement('div');
+  gainRow.className = 'path-stat-tradeoff-picker__gain';
+  const gainLab = document.createElement('span');
+  gainLab.textContent = 'Gain';
+  const gainSel = document.createElement('select');
+  gainSel.id = 'path-stat-tradeoff-plus';
+  gainSel.className = 'path-stat-tradeoff-plus-select';
+  for (const s of STAT_TRADEOFF_STATS) {
+    const o = document.createElement('option');
+    o.value = s;
+    o.textContent = s;
+    gainSel.appendChild(o);
+  }
+  gainSel.value = 'Wisdom';
+
+  const loseLab = document.createElement('div');
+  loseLab.className = 'path-stat-tradeoff-lose-label';
+  loseLab.textContent = 'Lose';
+
+  const cbWrap = document.createElement('div');
+  cbWrap.className = 'path-stat-tradeoff-stats';
+  rebuildStatTradeoffMinusCheckboxGrid(cbWrap, gainSel.value);
+
+  const clearStatTradeoffFeedback = () => {
+    const feedbackEl = document.getElementById('path-stat-tradeoff-apply-feedback');
+    if (feedbackEl) feedbackEl.textContent = '';
+  };
+
+  gainSel.addEventListener('change', () => {
+    clearStatTradeoffFeedback();
+    rebuildStatTradeoffMinusCheckboxGrid(cbWrap, gainSel.value);
+    updatePathStatTradeoffPickerUI();
+  });
+
+  tierSel.addEventListener('change', () => {
+    clearStatTradeoffFeedback();
+    updatePathStatTradeoffPickerUI();
+  });
+
+  gainRow.appendChild(gainLab);
+  gainRow.appendChild(gainSel);
+
+  const appendRow = document.createElement('label');
+  appendRow.className = 'path-stat-tradeoff-append';
+  const appendCb = document.createElement('input');
+  appendCb.type = 'checkbox';
+  appendCb.id = 'path-stat-tradeoff-append';
+  appendRow.appendChild(appendCb);
+  appendRow.appendChild(document.createTextNode(' Append to alternates (keep existing rows; dedupe)'));
+
+  const applyRow = document.createElement('div');
+  applyRow.className = 'path-stat-tradeoff-apply-row';
+  const applyBtn = document.createElement('button');
+  applyBtn.type = 'button';
+  applyBtn.id = 'path-stat-tradeoff-apply';
+  applyBtn.className = 'path-stat-tradeoff-apply-btn';
+  applyBtn.textContent = 'Apply to alternates';
+  applyBtn.onclick = () => {
+    const tierNow = document.getElementById('path-stat-tradeoff-tier')?.value || 'IV';
+    const { appliedNames, skippedParts, checkedStats } = computeStatTradeoffPickerSelectionForTier(tierNow);
+    const container = document.getElementById('path-phase-2-alts');
+    const feedbackEl = document.getElementById('path-stat-tradeoff-apply-feedback');
+    const append = document.getElementById('path-stat-tradeoff-append')?.checked;
+    if (!container || !appliedNames.length) return;
+    let rows = [...appliedNames];
+    if (append) {
+      const existing = [...container.querySelectorAll('.path-phase-2-alt-input')]
+        .map(x => x.value.trim())
+        .filter(Boolean);
+      const seen = new Set(existing.map(n => normalizeName(n)));
+      for (const name of appliedNames) {
+        const nn = normalizeName(name);
+        if (!seen.has(nn)) {
+          existing.push(name);
+          seen.add(nn);
+        }
+      }
+      rows = existing.length ? existing : [''];
+    }
+    renderPathPhase2AltRowsContent(container, rows);
+    updatePathStatTradeoffPickerUI();
+    let msg = '';
+    if (skippedParts.length) {
+      msg = `Applied ${appliedNames.length} of ${checkedStats.length} to alternates: skipped ${skippedParts.join(', ')}.`;
+    } else {
+      msg = `Applied ${appliedNames.length} enchant(s) to alternate rows.`;
+    }
+    const { anchor, alts } = collectPathPhase2FromDom();
+    if (!anchor && !alts.length) {
+      msg += ' Add at least one anchor or alternate for 2nd phase.';
+    }
+    if (feedbackEl) feedbackEl.textContent = msg;
+  };
+
+  const feedback = document.createElement('div');
+  feedback.id = 'path-stat-tradeoff-apply-feedback';
+  feedback.className = 'path-stat-tradeoff-apply-feedback';
+
+  const hint = document.createElement('div');
+  hint.id = 'path-stat-tradeoff-picker-hint';
+  hint.className = 'path-stat-tradeoff-picker-hint';
+
+  tierRow.appendChild(tierLab);
+  tierRow.appendChild(tierSel);
+
+  wrap.appendChild(tierRow);
+  wrap.appendChild(gainRow);
+  wrap.appendChild(loseLab);
+  wrap.appendChild(cbWrap);
+  wrap.appendChild(appendRow);
+  applyRow.appendChild(applyBtn);
+  wrap.appendChild(applyRow);
+  wrap.appendChild(hint);
+  wrap.appendChild(feedback);
+  disclosure.appendChild(disclosureSummary);
+  disclosure.appendChild(wrap);
+  mount.appendChild(disclosure);
+}
+function renderPathPhaseUI() {
+  const mount = document.getElementById('pathPhasesMount');
+  if (!mount) return;
+  const prev = readPathPhaseValues();
+  mount.innerHTML = '';
+  mount.className = 'path-row path-stepper';
+
+  const p2 = getPhase2RestoreState(prev);
+  let stepNum = 1;
+
+  createPathStep(mount, stepNum, { title: '1st target' }, body => {
+    const wrap = document.createElement('div');
+    wrap.className = 'path-step__field path-step__field--flush';
+    const w = document.createElement('div');
+    w.className = 'target-enchant-wrap';
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.id = 'path-phase-1';
+    input.className = 'path-phase-input';
+    input.placeholder = 'Enchantment name';
+    input.value = prev['path-phase-1'] || '';
+    w.appendChild(input);
+    wrap.appendChild(w);
+    body.appendChild(wrap);
+    if (typeof window.initEnchantTargetAutocomplete === 'function') {
+      window.initEnchantTargetAutocomplete(input, { excludePathSimTier12: true });
+    }
+  });
+  stepNum++;
+
+  if (selectedSlots >= 2) {
+    createPathStep(mount, stepNum, { title: '2nd target (OR pool)' }, body => {
+      const ancBlock = document.createElement('div');
+      ancBlock.className = 'path-phase-2-anchor-block';
+      const ancLabel = document.createElement('label');
+      ancLabel.className = 'path-phase-sublabel';
+      ancLabel.setAttribute('for', 'path-phase-2-anchor');
+      ancLabel.textContent = 'Anchor (optional)';
+      const ancWrap = document.createElement('div');
+      ancWrap.className = 'target-enchant-wrap';
+      const ancInp = document.createElement('input');
+      ancInp.type = 'text';
+      ancInp.id = 'path-phase-2-anchor';
+      ancInp.className = 'path-phase-input';
+      ancInp.placeholder =
+        'e.g. Relative Wisdom Bonus IV — locks in phase 3 if an alternate hits phase 2 first';
+      ancInp.value = p2.anchor || '';
+      ancWrap.appendChild(ancInp);
+      ancBlock.appendChild(ancLabel);
+      ancBlock.appendChild(ancWrap);
+      body.appendChild(ancBlock);
+      if (typeof window.initEnchantTargetAutocomplete === 'function') {
+        window.initEnchantTargetAutocomplete(ancInp, { excludePathSimTier12: true });
+      }
+
+      const altDetails = document.createElement('details');
+      altDetails.className = 'path-phase-2-alts-disclosure';
+
+      const altSummary = document.createElement('summary');
+      altSummary.className = 'path-phase-2-alts-summary';
+      altSummary.textContent = 'Alternates (OR)';
+      altDetails.appendChild(altSummary);
+
+      const altInner = document.createElement('div');
+      altInner.className = 'path-phase-2-alts-inner';
+
+      const altContainer = document.createElement('div');
+      altContainer.id = 'path-phase-2-alts';
+      altContainer.className = 'path-phase-2-alts';
+      const altVals = p2.alts.length ? p2.alts : [''];
+      renderPathPhase2AltRowsContent(altContainer, altVals);
+      altContainer.addEventListener('input', syncPathStatTradeoffDisclosure);
+      altInner.appendChild(altContainer);
+
+      const addBtn = document.createElement('button');
+      addBtn.type = 'button';
+      addBtn.className = 'small path-phase-2-add-alt';
+      addBtn.textContent = '+ Add alternate';
+      addBtn.onclick = () => {
+        const c = document.getElementById('path-phase-2-alts');
+        if (!c) return;
+        const v = [...c.querySelectorAll('.path-phase-2-alt-input')].map(x => x.value.trim());
+        if (v.length >= PATH_PHASE_2_ALT_MAX) return;
+        v.push('');
+        renderPathPhase2AltRowsContent(c, v);
+        updatePathStatTradeoffPickerUI();
+      };
+      altInner.appendChild(addBtn);
+      altDetails.appendChild(altInner);
+      body.appendChild(altDetails);
+
+      mountStatTradeoffPickerSection(body);
+      updatePathStatTradeoffPickerUI();
+    });
+    stepNum++;
+  }
+
+  if (selectedSlots === 3) {
+    createPathStep(mount, stepNum, { title: '3rd target' }, body => {
+      const badgeRow = document.createElement('div');
+      badgeRow.className = 'path-step__auto-row';
+      const badge = document.createElement('span');
+      badge.className = 'path-step__badge-auto';
+      badge.textContent = 'Auto';
+      const desc = document.createElement('span');
+      desc.className = 'path-hint path-step__auto-desc';
+      desc.textContent =
+        'After phase 2: either OR the remaining alternates, or anchor-only, depending on what locked first.';
+      badgeRow.appendChild(badge);
+      badgeRow.appendChild(desc);
+      body.appendChild(badgeRow);
+    });
+    stepNum++;
+  }
+
+  if (selectedSlots >= 4) {
+    for (let phase = 3; phase <= selectedSlots; phase++) {
+      const ph = phase;
+      createPathStep(mount, stepNum, { title: `${formatOrdinal(phase)} target` }, body => {
+        const wrap = document.createElement('div');
+        wrap.className = 'path-step__field path-step__field--flush';
+        const w = document.createElement('div');
+        w.className = 'target-enchant-wrap';
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.id = `path-phase-${ph}`;
+        input.className = 'path-phase-input';
+        input.placeholder = 'Type enchantment…';
+        input.value = prev[`path-phase-${ph}`] || '';
+        w.appendChild(input);
+        wrap.appendChild(w);
+        body.appendChild(wrap);
+        if (typeof window.initEnchantTargetAutocomplete === 'function') {
+          window.initEnchantTargetAutocomplete(input, { excludePathSimTier12: true });
+        }
+      });
+      stepNum++;
+    }
+  }
+
+  mount.querySelectorAll('.path-step').forEach((el, i, arr) => {
+    if (i === arr.length - 1) el.classList.add('path-step--last');
+  });
+}
 /* ========================== UI: Augment dropdown + info ========================== */
 function populateAugmentDropdown() {
   const sel = document.getElementById('artifactCard'); sel.innerHTML = '';
@@ -426,6 +1013,7 @@ function populateAugmentDropdown() {
   if (INCLUDE_ENGRAVINGS_IN_UI) addGroup('Engravings', engravings);
 
   sel.onchange = () => { updateAugmentInfo(); refreshEligibility(); enforceLockValidity(); updateWeightDebug(); };
+  sel.addEventListener('change', () => clearMonteCarloPoolBaseCache());
   updateAugmentInfo();
 }
 function updateAugmentInfo() {
@@ -585,18 +1173,7 @@ function applyAugmentMultipliers(pool) {
 
 /* ========================== Rolling & Probabilities ========================== */
 function isCompatible(candidate, chosenArray) {
-  const cLabels = new Set(candidate.labels || []);
-  const cIncompat = new Set(candidate.incompatLabels || []);
-  for (const ch of chosenArray) {
-    if (!ch) continue;
-    const chLabels = new Set(ch.labels || []);
-    const chIncompat = new Set(ch.incompatLabels || []);
-    for (const x of cLabels) if (chIncompat.has(x)) return false;
-    for (const x of chLabels) if (cIncompat.has(x)) return false;
-    if (cLabels.has('SINGLESTAT') && chLabels.has('SINGLESTAT')) return false;
-    if (cLabels.has('MANAREGEN') && chLabels.has('MANAREGEN')) return false;
-  }
-  return true;
+  return PathSimCore.isCompatible(candidate, chosenArray);
 }
 function weightedPick(list) {
   const total = list.reduce((a, b) => a + b.weight, 0);
@@ -623,26 +1200,23 @@ function withArtifactCardSelection(tempName, fn) {
 function getPoolForArtifact(itemType, artifactName) {
   return withArtifactCardSelection(artifactName, () => getCurrentPool(itemType, true));
 }
-function getPerRollDustForArtifact(artifactName) {
-  const lockedCount = currentEnchantments.filter(s => s.lockBtn.classList.contains('locked')).length;
-  const baseDust = BASE_DUST[selectedSlots] || 0;
-  const augCost = AUGMENTS_BY_NAME[artifactName]?.cost || 0;
-  return (baseDust + augCost) * Math.pow(2, lockedCount);
-}
-function buildMonteCarloContext({ itemType, targetName, artifactName }) {
-  const targetNorm = normalizeName(targetName);
-  const slotSnapshot = getSimulationSlotSnapshot();
-  const pool = getPoolForArtifact(itemType, artifactName);
-  const perRollDust = getPerRollDustForArtifact(artifactName);
+function getMonteCarloPoolBase(itemType, artifactName) {
+  const key = `${String(itemType || '')}\0${String(artifactName || '')}`;
+  const cached = monteCarloPoolBaseCache.get(key);
+  if (cached) return cached;
 
+  const pool = getPoolForArtifact(itemType, artifactName);
   const entries = pool.map((e, idx) => ({
     idx,
     enchant: e,
     weight: e.weight,
     normName: normalizeName(e.name)
   }));
+  const normToIndex = new Map();
+  for (const entry of entries) {
+    if (!normToIndex.has(entry.normName)) normToIndex.set(entry.normName, entry.idx);
+  }
   const size = entries.length;
-
   const compatibility = Array.from({ length: size }, () => new Array(size).fill(true));
   for (let i = 0; i < size; i++) {
     for (let j = 0; j < size; j++) {
@@ -650,117 +1224,79 @@ function buildMonteCarloContext({ itemType, targetName, artifactName }) {
     }
   }
 
-  const lockedEnchants = slotSnapshot.filter(s => s.locked && s.enchant).map(s => s.enchant);
-  const lockedPoolIndices = [];
-  const lockedExternal = [];
-  for (const locked of lockedEnchants) {
-    const n = normalizeName(locked.name);
-    const poolIdx = entries.findIndex(e => e.normName === n);
-    if (poolIdx >= 0) lockedPoolIndices.push(poolIdx);
-    else lockedExternal.push(locked);
-  }
-
-  const externalCompatibility = entries.map(e => isCompatible(e.enchant, lockedExternal));
-  const isTargetIndex = entries.map(e => e.normName === targetNorm);
-  const hasLockedTarget = lockedEnchants.some(e => normalizeName(e.name) === targetNorm);
-  const hasRollableSlot = slotSnapshot.some(s => !(s.locked && s.enchant));
-
-  const initialCandidateIndices = [];
-  for (let idx = 0; idx < size; idx++) {
-    if (!externalCompatibility[idx]) continue;
-    let ok = true;
-    for (const lockedIdx of lockedPoolIndices) {
-      if (!compatibility[idx][lockedIdx]) { ok = false; break; }
-    }
-    if (ok) initialCandidateIndices.push(idx);
-  }
-  const hasCompatibleTarget = initialCandidateIndices.some(idx => isTargetIndex[idx]);
-
-  return {
+  const base = { key, entries, compatibility, size, normToIndex };
+  monteCarloPoolBaseCache.set(key, base);
+  return base;
+}
+function getPerRollDustForArtifact(artifactName) {
+  const lockedCount = currentEnchantments.filter(s => s.lockBtn.classList.contains('locked')).length;
+  return getPerRollDustForArtifactWithLockCount(artifactName, lockedCount, selectedSlots);
+}
+function getPerRollDustForArtifactWithLockCount(artifactName, lockedCount, slotCount = selectedSlots) {
+  const baseDust = BASE_DUST[slotCount] || 0;
+  const augCost = AUGMENTS_BY_NAME[artifactName]?.cost || 0;
+  return (baseDust + augCost) * Math.pow(2, lockedCount);
+}
+function buildMonteCarloContextFromBase(base, { targetNorms, artifactName, slotSnapshot, requireNewTarget = false, slotCount = selectedSlots }) {
+  const augCost = AUGMENTS_BY_NAME[artifactName]?.cost || 0;
+  return PathSimCore.buildMonteCarloContextFromBase(base, {
+    targetNorms,
     slotSnapshot,
-    entries,
-    compatibility,
-    lockedPoolIndices,
-    externalCompatibility,
-    isTargetIndex,
-    hasLockedTarget,
-    hasRollableSlot,
-    hasCompatibleTarget,
-    perRollDust,
-    validSetCache: new Map(),
-    samplerCache: new Map(),
-    targetNorm
-  };
+    requireNewTarget,
+    slotCount,
+    augCost
+  });
+}
+function buildMonteCarloContextFromSnapshot({ itemType, targetNorms, artifactName, slotSnapshot, requireNewTarget = false, slotCount = selectedSlots }) {
+  const base = getMonteCarloPoolBase(itemType, artifactName);
+  return buildMonteCarloContextFromBase(base, {
+    targetNorms,
+    artifactName,
+    slotSnapshot,
+    requireNewTarget,
+    slotCount
+  });
+}
+function buildMonteCarloContext({ itemType, targetName, artifactName, targetNames, slotSnapshot = getSimulationSlotSnapshot(), requireNewTarget = false, slotCount = selectedSlots }) {
+  const parsed = Array.isArray(targetNames) && targetNames.length
+    ? { targetNames, targetNorms: new Set(targetNames.map(normalizeName)) }
+    : parseTargetList(targetName);
+  return buildMonteCarloContextFromSnapshot({
+    itemType,
+    artifactName,
+    slotSnapshot,
+    targetNorms: parsed.targetNorms,
+    requireNewTarget,
+    slotCount
+  });
 }
 function getTakenKey(indices) {
-  const uniq = Array.from(new Set(indices));
-  uniq.sort((a, b) => a - b);
-  return uniq.join(',');
+  return PathSimCore.getTakenKey(indices);
 }
 function getValidCandidateIndices(ctx, takenIndices) {
-  const takenKey = getTakenKey(takenIndices);
-  const cached = ctx.validSetCache.get(takenKey);
-  if (cached) return cached;
-
-  const valid = [];
-  for (let idx = 0; idx < ctx.entries.length; idx++) {
-    if (!ctx.externalCompatibility[idx]) continue;
-    let ok = true;
-    for (const t of takenIndices) {
-      if (!ctx.compatibility[idx][t]) { ok = false; break; }
-    }
-    if (ok) valid.push(idx);
-  }
-  ctx.validSetCache.set(takenKey, valid);
-  return valid;
+  return PathSimCore.getValidCandidateIndices(ctx, takenIndices);
 }
 function getOrBuildSampler(ctx, validIndices) {
-  const key = validIndices.join(',');
-  const cached = ctx.samplerCache.get(key);
-  if (cached) return cached;
-
-  const cumulative = [];
-  let total = 0;
-  for (const idx of validIndices) {
-    total += ctx.entries[idx].weight;
-    cumulative.push(total);
-  }
-  const sampler = { indices: validIndices, cumulative, total };
-  ctx.samplerCache.set(key, sampler);
-  return sampler;
+  return PathSimCore.getOrBuildSampler(ctx, validIndices);
 }
 function pickIndexFromSampler(sampler) {
-  if (!sampler.indices.length || sampler.total <= 0) return null;
-  let r = Math.random() * sampler.total;
-  let lo = 0, hi = sampler.cumulative.length - 1;
-  while (lo < hi) {
-    const mid = (lo + hi) >> 1;
-    if (r <= sampler.cumulative[mid]) hi = mid;
-    else lo = mid + 1;
-  }
-  return sampler.indices[lo];
+  return PathSimCore.pickIndexFromSampler(sampler);
 }
 function simulateOneRollHitFast(ctx) {
-  const taken = ctx.lockedPoolIndices.slice();
-  if (ctx.hasLockedTarget) return true;
-  for (const slot of ctx.slotSnapshot) {
-    if (slot.locked && slot.enchant) continue;
-    const validIndices = getValidCandidateIndices(ctx, taken);
-    if (!validIndices.length) continue;
-    const sampler = getOrBuildSampler(ctx, validIndices);
-    const pickedIdx = pickIndexFromSampler(sampler);
-    if (pickedIdx == null) continue;
-    if (ctx.isTargetIndex[pickedIdx]) return true;
-    taken.push(pickedIdx);
-  }
-  return false;
+  return PathSimCore.simulateOneRollHitFast(ctx);
 }
-function runMonteCarloForArtifact({ itemType, targetName, artifactName, trials = MONTE_CARLO_TRIALS, chunkSize = MONTE_CARLO_CHUNK_SIZE, token, onProgress }) {
+function cloneSlotSnapshot(slotSnapshot) {
+  return PathSimCore.cloneSlotSnapshot(slotSnapshot);
+}
+function simulateOneRollAndCapture(ctx) {
+  return PathSimCore.simulateOneRollAndCapture(ctx);
+}
+function runMonteCarloForArtifact({ itemType, targetName, targetNames, artifactName, trials = MONTE_CARLO_TRIALS, chunkSize = MONTE_CARLO_CHUNK_SIZE, token, onProgress }) {
   return new Promise(resolve => {
-    const ctx = buildMonteCarloContext({ itemType, targetName, artifactName });
+    const ctx = buildMonteCarloContext({ itemType, targetName, targetNames, artifactName });
     const t0 = performance.now();
 
-    if (ctx.hasLockedTarget) {
+    if (ctx.hasLockedAnyTarget) {
       return resolve({
         hits: trials,
         trials,
@@ -822,17 +1358,565 @@ function runMonteCarloForArtifact({ itemType, targetName, artifactName, trials =
     step();
   });
 }
-function setProbabilityBusy(isBusy, label) {
-  const ids = ['calcProbBtn', 'compareCardsMode', 'targetEnchantInput', 'itemType', 'artifactCard', 'fillAwakenedEnchantBtn'];
+/** Parses #path-phase-1; returns `{ phase1 }` or `{ error }`. */
+function parsePathPhase1OrError() {
+  const phase1Raw = document.getElementById('path-phase-1')?.value || '';
+  const phase1 = parseTargetList(phase1Raw);
+  if (phase1.targetNames.length < 1) {
+    return { error: '1st target must contain at least one enchant.' };
+  }
+  for (const tName of phase1.targetNames) {
+    if (isPathSimDisallowedTierName(tName)) {
+      return { error: '1st target: tier I/II enchants cannot be used in path simulation.' };
+    }
+  }
+  return { phase1 };
+}
+function isPathConfiguredFirstTargetOnly(slotCount) {
+  if (slotCount < 2) return false;
+  const { anchor, alts } = collectPathPhase2FromDom();
+  if (anchor || alts.length > 0) return false;
+  for (let phaseNum = 3; phaseNum <= slotCount; phaseNum++) {
+    const parsed = parseTargetList(document.getElementById(`path-phase-${phaseNum}`)?.value || '');
+    if (parsed.targetNames.length > 0) return false;
+  }
+  return true;
+}
+function buildPathPhasesFromInputs(slotCount) {
+  const p1r = parsePathPhase1OrError();
+  if (p1r.error) return { error: p1r.error };
+  const phase1 = p1r.phase1;
+
+  if (slotCount >= 2 && isPathConfiguredFirstTargetOnly(slotCount)) {
+    return {
+      phases: [{
+        phaseIndex: 1,
+        targetNames: phase1.targetNames,
+        targetNorms: phase1.targetNorms,
+        requireNewTarget: false
+      }]
+    };
+  }
+
+  const phases = [{
+    phaseIndex: 1,
+    targetNames: phase1.targetNames,
+    targetNorms: phase1.targetNorms,
+    requireNewTarget: false
+  }];
+
+  if (slotCount >= 2) {
+    const { anchor, alts } = collectPathPhase2FromDom();
+    const asymmetric = !!anchor;
+    const displayNames = asymmetric ? [anchor, ...alts] : [...alts];
+    if (displayNames.length < 1) {
+      return { error: '2nd phase: add at least one enchant (anchor and/or alternate row).' };
+    }
+    const seen = new Set();
+    const nameByNorm = {};
+    for (const raw of displayNames) {
+      if (isPathSimDisallowedTierName(raw)) {
+        return { error: '2nd phase: tier I/II enchants cannot be used in path simulation.' };
+      }
+      const n = normalizeName(raw);
+      if (!n) {
+        return { error: '2nd phase: every OR target needs a non-empty enchant name.' };
+      }
+      if (seen.has(n)) {
+        return { error: '2nd phase: all OR targets must be different enchants.' };
+      }
+      seen.add(n);
+      nameByNorm[n] = raw.trim();
+    }
+    const anchorNorm = asymmetric ? normalizeName(anchor) : null;
+    const altNorms = alts.map(a => normalizeName(a));
+    const allNormsOrdered = asymmetric ? [anchorNorm, ...altNorms] : altNorms;
+    const phase2TargetNorms = new Set(allNormsOrdered);
+    const requireNewTarget = displayNames.some(name => phase1.targetNorms.has(normalizeName(name)));
+    const phase3SummaryLine = asymmetric
+      ? 'Auto: OR alternates if anchor locked in phase 2; anchor if an alternate locked first'
+      : 'Auto: OR of remaining alternates after phase 2';
+
+    phases.push({
+      phaseIndex: 2,
+      targetNames: displayNames,
+      targetNorms: phase2TargetNorms,
+      requireNewTarget,
+      phase2Symmetric: !asymmetric,
+      phase2AnchorNorm: anchorNorm,
+      phase2AltNorms: altNorms,
+      phase2OrNorms: allNormsOrdered,
+      phase2NameByNorm: nameByNorm
+    });
+
+    if (slotCount === 3 && displayNames.length > 1) {
+      phases.push({
+        phaseIndex: 3,
+        autoComplementFromPhase2: true,
+        requireNewTarget: false,
+        phase2Symmetric: !asymmetric,
+        phase2AnchorNorm: anchorNorm,
+        phase2AltNorms: altNorms,
+        phase2OrNorms: allNormsOrdered,
+        phase2NameByNorm: nameByNorm,
+        phase3SummaryLine,
+        targetNames: [phase3SummaryLine]
+      });
+    }
+  }
+
+  if (slotCount >= 4) {
+    for (let phaseNum = 3; phaseNum <= slotCount; phaseNum++) {
+      const parsed = parseTargetList(document.getElementById(`path-phase-${phaseNum}`)?.value || '');
+      if (!parsed.targetNames.length) {
+        return { error: `${formatOrdinal(phaseNum)} target must include at least one enchant.` };
+      }
+      for (const tName of parsed.targetNames) {
+        if (isPathSimDisallowedTierName(tName)) {
+          return {
+            error: `${formatOrdinal(phaseNum)} target: tier I/II enchants cannot be used in path simulation.`
+          };
+        }
+      }
+      phases.push({
+        phaseIndex: phaseNum,
+        targetNames: parsed.targetNames,
+        targetNorms: parsed.targetNorms,
+        requireNewTarget: false
+      });
+    }
+  }
+
+  return { phases };
+}
+/** Abort extremely long runs (bug or absurd odds) without freezing the tab indefinitely. */
+async function runPathUntilComplete({
+  itemType,
+  artifactName,
+  initialSlotSnapshot,
+  phases,
+  slotCount,
+  token,
+  onProgress,
+  yieldEveryRolls = 2500
+}) {
+  const poolBase = getMonteCarloPoolBase(itemType, artifactName);
+  const augCost = AUGMENTS_BY_NAME[artifactName]?.cost || 0;
+  return PathSimCore.runPathUntilCompleteAsync({
+    poolBase,
+    phases,
+    initialSlotSnapshot,
+    slotCount,
+    augCost,
+    checkCancel: () => token !== probabilityRunToken,
+    onProgress,
+    yieldEveryRolls
+  });
+}
+
+function mean(arr) {
+  return PathSimCore.mean(arr);
+}
+function minmax(arr) {
+  return PathSimCore.minmax(arr);
+}
+
+/** Strip pool to fields used by path-sim-core only — much cheaper to structured-clone per worker. */
+function slimPoolBaseForWorker(base) {
+  const normToIndex =
+    base.normToIndex instanceof Map
+      ? Object.fromEntries(base.normToIndex)
+      : { ...base.normToIndex };
+  return {
+    key: base.key,
+    size: base.size,
+    normToIndex,
+    entries: base.entries.map(en => ({
+      idx: en.idx,
+      normName: en.normName,
+      weight: en.weight,
+      enchant: {
+        name: en.enchant.name,
+        labels: en.enchant.labels,
+        incompatLabels: en.enchant.incompatLabels
+      }
+    }))
+  };
+}
+
+/** Upper bound on parallel path-batch workers (balances structured-clone/postMessage cost vs throughput). */
+const PATH_BATCH_MAX_PARALLEL = 16;
+
+/** Lazily created; not terminated each batch (reused via one-shot listeners). */
+const pathBatchWorkerCache = [];
+
+function pathBatchWorkerHref() {
+  return typeof window.__ENCHANT_PATH_BATCH_WORKER_HREF__ === 'string' &&
+    window.__ENCHANT_PATH_BATCH_WORKER_HREF__
+    ? window.__ENCHANT_PATH_BATCH_WORKER_HREF__
+    : new URL('js/path-batch-worker.js', window.location.href).href;
+}
+
+function getOrCreatePathBatchWorker(slotIndex) {
+  let w = pathBatchWorkerCache[slotIndex];
+  if (w) return w;
+  w = new Worker(pathBatchWorkerHref());
+  pathBatchWorkerCache[slotIndex] = w;
+  return w;
+}
+
+function resetPathBatchWorkerSlot(slotIndex) {
+  const w = pathBatchWorkerCache[slotIndex];
+  if (w) {
+    try {
+      w.terminate();
+    } catch (e) {
+      /* ignore */
+    }
+    pathBatchWorkerCache[slotIndex] = undefined;
+  }
+}
+
+/** Why workers may be off; use for console diagnostics only. */
+function pathBatchWorkerAvailabilityDetails() {
+  const reasons = [];
+  if (typeof Worker === 'undefined') reasons.push('Worker global missing');
+  if (typeof PathSimCore === 'undefined') reasons.push('PathSimCore not loaded');
+  return {
+    ok: reasons.length === 0,
+    reasons,
+    protocol: typeof window !== 'undefined' && window.location ? window.location.protocol : '(n/a)',
+    hardwareConcurrency:
+      typeof navigator !== 'undefined' && typeof navigator.hardwareConcurrency === 'number'
+        ? navigator.hardwareConcurrency
+        : undefined
+  };
+}
+
+function pathBatchWorkersAvailable() {
+  return pathBatchWorkerAvailabilityDetails().ok;
+}
+
+function mergePathWorkerPartialResults(workerResults, trials) {
+  const successRolls = [];
+  const successDust = [];
+  const successPathMs = [];
+  let nSuccess = 0;
+  let nImpossible = 0;
+  let nRolloutLimit = 0;
+  for (const r of workerResults) {
+    nSuccess += r.nSuccess || 0;
+    nImpossible += r.nImpossible || 0;
+    nRolloutLimit += r.nRolloutLimit || 0;
+    if (Array.isArray(r.successRolls) && r.successRolls.length) {
+      for (let i = 0; i < r.successRolls.length; i++) {
+        successRolls.push(r.successRolls[i]);
+        successDust.push(r.successDust[i]);
+        successPathMs.push(r.successPathMs[i]);
+      }
+    }
+  }
+  const rollsMM = minmax(successRolls);
+  const dustMM = minmax(successDust);
+  return {
+    trials,
+    nSuccess,
+    nImpossible,
+    nRolloutLimit,
+    avgRolls: mean(successRolls),
+    avgDust: mean(successDust),
+    avgPathMs: mean(successPathMs),
+    minRolls: rollsMM.min,
+    maxRolls: rollsMM.max,
+    minDust: dustMM.min,
+    maxDust: dustMM.max
+  };
+}
+
+async function runPathBatchMonteCarloWorkers({
+  itemType,
+  artifactName,
+  initialSlotSnapshot,
+  phases,
+  slotCount,
+  token,
+  trials,
+  onTrialProgress
+}) {
+  const tWall = performance.now();
+  const poolBase = getMonteCarloPoolBase(itemType, artifactName);
+  const slimPool = slimPoolBaseForWorker(poolBase);
+  const augCost = AUGMENTS_BY_NAME[artifactName]?.cost || 0;
+
+  const hc =
+    typeof navigator.hardwareConcurrency === 'number' && navigator.hardwareConcurrency >= 1
+      ? navigator.hardwareConcurrency
+      : 4;
+  const nWorkers = Math.min(PATH_BATCH_MAX_PARALLEL, hc, trials);
+  const counts = [];
+  {
+    const base = Math.floor(trials / nWorkers);
+    const rem = trials % nWorkers;
+    for (let i = 0; i < nWorkers; i++) {
+      counts.push(base + (i < rem ? 1 : 0));
+    }
+  }
+
+  console.info('[enchant path-batch]', 'parallel batch start', {
+    trials,
+    nWorkers,
+    hardwareConcurrency: hc,
+    pathBatchMaxParallel: PATH_BATCH_MAX_PARALLEL,
+    trialsPerWorker: counts,
+    workerScriptHref: pathBatchWorkerHref(),
+    slimPoolSize: slimPool && slimPool.size,
+    slimPoolEntryCount: Array.isArray(slimPool.entries) ? slimPool.entries.length : undefined
+  });
+
+  const activeWorkers = [];
+  let progressReported = 0;
+
+  const runChunk = (count, idx) =>
+    new Promise((resolve, reject) => {
+      if (count === 0) {
+        resolve({
+          cancelled: false,
+          trialsDone: 0,
+          nSuccess: 0,
+          nImpossible: 0,
+          nRolloutLimit: 0,
+          successRolls: [],
+          successDust: [],
+          successPathMs: []
+        });
+        return;
+      }
+      let w;
+      try {
+        w = getOrCreatePathBatchWorker(idx);
+      } catch (e) {
+        reject(e);
+        return;
+      }
+      activeWorkers.push(w);
+      const onMsg = ev => {
+        const d = ev.data || {};
+        if (d.clientToken !== token) {
+          resolve({
+            cancelled: false,
+            trialsDone: 0,
+            nSuccess: 0,
+            nImpossible: 0,
+            nRolloutLimit: 0,
+            successRolls: [],
+            successDust: [],
+            successPathMs: [],
+            stale: true
+          });
+          return;
+        }
+        const done = d.trialsDone != null ? d.trialsDone : count;
+        progressReported += done;
+        if (typeof onTrialProgress === 'function') {
+          onTrialProgress(progressReported, trials, d);
+        }
+        resolve(d);
+      };
+      const onErr = err => {
+        resetPathBatchWorkerSlot(idx);
+        reject(err);
+      };
+      w.addEventListener('message', onMsg, { once: true });
+      w.addEventListener('error', onErr, { once: true });
+      w.postMessage({
+        type: 'run',
+        runId: idx,
+        clientToken: token,
+        trials: count,
+        poolBase: slimPool,
+        phases,
+        initialSlotSnapshot,
+        slotCount,
+        augCost
+      });
+    });
+
+  const cancelInterval = setInterval(() => {
+    if (token !== probabilityRunToken) {
+      for (const w of activeWorkers) {
+        try {
+          w.postMessage({ type: 'cancel' });
+        } catch (e) {
+          /* ignore */
+        }
+      }
+    }
+  }, 120);
+
+  try {
+    const workerResults = await Promise.all(counts.map((c, i) => runChunk(c, i)));
+    clearInterval(cancelInterval);
+    if (token !== probabilityRunToken) {
+      return { cancelled: true, trialsDone: progressReported, elapsedMs: performance.now() - tWall };
+    }
+    const staleChunks = workerResults.filter(r => r && r.stale).length;
+    if (staleChunks) {
+      console.warn('[enchant path-batch]', 'stale worker replies (token mismatch)', { staleChunks });
+    }
+    const merged = mergePathWorkerPartialResults(workerResults, trials);
+    console.info('[enchant path-batch]', 'parallel batch done', {
+      elapsedMs: Math.round(performance.now() - tWall),
+      nSuccess: merged.nSuccess,
+      nImpossible: merged.nImpossible,
+      nRolloutLimit: merged.nRolloutLimit
+    });
+    return {
+      ...merged,
+      elapsedMs: performance.now() - tWall
+    };
+  } catch (e) {
+    clearInterval(cancelInterval);
+    console.error('[enchant path-batch]', 'parallel batch threw', e);
+    throw e;
+  }
+}
+
+/**
+ Run many independent path completions from the same starting snapshot; aggregate rolls/dust over successes.
+ */
+async function runPathBatchMonteCarlo({
+  itemType,
+  artifactName,
+  initialSlotSnapshot,
+  phases,
+  slotCount,
+  token,
+  trials,
+  onTrialProgress
+}) {
+  const tWall = performance.now();
+  const successRolls = [];
+  const successDust = [];
+  const successPathMs = [];
+  let nSuccess = 0;
+  let nImpossible = 0;
+  let nRolloutLimit = 0;
+  /** Less frequent yields for large batches; keeps the tab responsive without hundreds of microtasks. */
+  const uiYieldEvery = trials >= 5000 ? 200 : trials >= 1000 ? 100 : 25;
+
+  for (let i = 0; i < trials; i++) {
+    if (token !== probabilityRunToken) {
+      return { cancelled: true, trialsDone: i, elapsedMs: performance.now() - tWall };
+    }
+    const freshSnap = cloneSlotSnapshot(initialSlotSnapshot);
+    const r = await runPathUntilComplete({
+      itemType,
+      artifactName,
+      initialSlotSnapshot: freshSnap,
+      phases,
+      slotCount,
+      token,
+      onProgress: undefined,
+      yieldEveryRolls: 0
+    });
+    if (r.cancelled) {
+      return { cancelled: true, trialsDone: i, elapsedMs: performance.now() - tWall };
+    }
+    if (r.success) {
+      nSuccess++;
+      successRolls.push(r.totalRolls);
+      successDust.push(r.totalDust);
+      successPathMs.push(r.elapsedMs);
+    } else if (r.rolloutLimit) {
+      nRolloutLimit++;
+    } else if (r.impossible) {
+      nImpossible++;
+    }
+
+    if (typeof onTrialProgress === 'function') {
+      onTrialProgress(i + 1, trials, r);
+    }
+    if (i % uiYieldEvery === 0 || i === trials - 1) {
+      await new Promise(res => setTimeout(res, 0));
+    }
+  }
+
+  const rollsMM = minmax(successRolls);
+  const dustMM = minmax(successDust);
+  return {
+    trials,
+    nSuccess,
+    nImpossible,
+    nRolloutLimit,
+    avgRolls: mean(successRolls),
+    avgDust: mean(successDust),
+    avgPathMs: mean(successPathMs),
+    minRolls: rollsMM.min,
+    maxRolls: rollsMM.max,
+    minDust: dustMM.min,
+    maxDust: dustMM.max,
+    elapsedMs: performance.now() - tWall
+  };
+}
+function peekPathBatchTrialsFromInput() {
+  const el = document.getElementById('pathBatchTrialsInput');
+  const raw = String(el?.value ?? '').trim();
+  const n = parseInt(raw, 10);
+  if (!Number.isFinite(n)) return PATH_SIM_BATCH_TRIALS_DEFAULT;
+  return Math.min(PATH_SIM_BATCH_TRIALS_MAX, Math.max(PATH_SIM_BATCH_TRIALS_MIN, n));
+}
+function commitPathBatchTrialsInput() {
+  const el = document.getElementById('pathBatchTrialsInput');
+  if (!el) return PATH_SIM_BATCH_TRIALS_DEFAULT;
+  const n = peekPathBatchTrialsFromInput();
+  el.value = String(n);
+  return n;
+}
+function updatePathBatchRunButtonLabel() {
+  const pathBtn = document.getElementById('calcPathBtn');
+  if (!pathBtn) return;
+  const n = peekPathBatchTrialsFromInput();
+  pathBtn.textContent = `Run ${n.toLocaleString()} paths`;
+}
+function setProbabilityBusy(isBusy) {
+  const ids = ['compareCardsBtn', 'compareCardsTargetInput', 'path-phase-1', 'itemType', 'artifactCard', 'fillAwakenedEnchantBtn', 'calcPathBtn', 'pathBatchTrialsInput'];
   ids.forEach(id => {
     const el = document.getElementById(id);
     if (el) el.disabled = isBusy;
   });
-  if (label) document.getElementById('calcProbBtn').textContent = label;
+  const pathFieldset = document.getElementById('pathPhasesFieldset');
+  if (pathFieldset) pathFieldset.disabled = isBusy;
 }
-function setProbabilityButtonLabel() {
-  const compare = document.getElementById('compareCardsMode')?.checked;
-  document.getElementById('calcProbBtn').textContent = compare ? 'Compare Cards' : 'Calculate Probability';
+function renderQuickEstimateOutput(out, targetLabel, res, elapsedMs) {
+  if (!out) return;
+  const wall = `<br><br>Wall clock: ${(elapsedMs / 1000).toFixed(2)} s`;
+  if (res.impossible) {
+    out.innerHTML = `<b>${targetLabel}</b><br>Chance this roll: 0.0000% (0/${res.trials})<br>Expected rolls: Unreachable<br>Expected Dust Cost: Unreachable${wall}`;
+    return;
+  }
+  const chancePct = (res.hits / res.trials) * 100;
+  out.innerHTML = `<b>${targetLabel}</b><br>Chance this roll (${res.trials.toLocaleString()} sims): ${chancePct.toFixed(4)}% (${res.hits}/${res.trials})<br>Expected rolls to hit: ${res.expectedRolls.toFixed(2)}<br>Expected Dust Cost to hit: ${res.expectedDust.toFixed(2)}${wall}`;
+}
+async function runQuickEstimateSimulation({ itemType, targetNames, artifactName, token, out, trials }) {
+  if (!out) return;
+  const targetLabel = getTargetDisplayLabel(targetNames);
+  out.textContent = 'Running Monte Carlo simulation...';
+  const tWall = performance.now();
+  const res = await runMonteCarloForArtifact({
+    itemType,
+    targetNames,
+    artifactName,
+    trials,
+    token,
+    onProgress: (done, total) => {
+      if (token !== probabilityRunToken) return;
+      if (done === total) return;
+      out.textContent = `Running Monte Carlo simulation... ${done}/${total}`;
+    }
+  });
+  const elapsedMs = performance.now() - tWall;
+  if (token !== probabilityRunToken || res.cancelled) return;
+  renderQuickEstimateOutput(out, targetLabel, res, elapsedMs);
 }
 function rollEnchantments() {
   const it = document.getElementById('itemType').value;
@@ -863,98 +1947,260 @@ function rollEnchantments() {
   enforceLockValidity();
   updateWeightDebug();
 }
-async function calculateProbability() {
+function renderCompareCardsTableRows(results) {
+  const body = document.getElementById('compareCardsTableBody');
+  if (!body) return;
+  body.innerHTML = '';
+  const rows = (results || []).map((r, idx) => {
+    const tr = document.createElement('tr');
+    const note = r.impossible ? 'Unreachable' : 'Reachable';
+    const probabilityText = r.impossible ? '0.0000%' : `${(r.probability * 100).toFixed(4)}%`;
+    const expectedDustText = r.impossible ? 'Unreachable' : r.expectedDust.toFixed(2);
+    const expectedRollsText = r.impossible ? 'Unreachable' : r.expectedRolls.toFixed(2);
+    const cells = [
+      String(idx + 1),
+      r.card,
+      probabilityText,
+      `${r.hits}/${r.trials}`,
+      expectedDustText,
+      expectedRollsText,
+      note
+    ];
+    cells.forEach(text => {
+      const td = document.createElement('td');
+      td.textContent = text;
+      tr.appendChild(td);
+    });
+    return tr;
+  });
+  rows.forEach(row => body.appendChild(row));
+}
+async function compareAllCards() {
   const it = document.getElementById('itemType').value;
-  const q = document.getElementById('targetEnchantInput').value.trim();
-  const out = document.getElementById('probResult');
-  if (!it) { out.textContent = 'Select item type first.'; return; }
-  if (!q) { out.textContent = 'Type enchant name first.'; return; }
-
-  const compareMode = document.getElementById('compareCardsMode').checked;
-  const token = ++probabilityRunToken;
-  setProbabilityBusy(true, compareMode ? 'Comparing...' : 'Simulating...');
-  out.textContent = compareMode ? 'Running card comparison...' : 'Running Monte Carlo simulation...';
-
-  if (compareMode) {
-    const cardNames = AUGMENTS.map(a => a.name);
-    if (!cardNames.length) {
-      setProbabilityBusy(false);
-      setProbabilityButtonLabel();
-      out.textContent = 'No cards available to compare.';
-      return;
-    }
-    const results = [];
-    try {
-      for (let i = 0; i < cardNames.length; i++) {
-        const card = cardNames[i];
-        out.textContent = `Comparing cards... ${i + 1}/${cardNames.length} (${card})`;
-        const res = await runMonteCarloForArtifact({
-          itemType: it,
-          targetName: q,
-          artifactName: card,
-          token,
-          onProgress: (done, total) => {
-            if (token !== probabilityRunToken) return;
-            if (done === total) return;
-            out.textContent = `Comparing cards... ${i + 1}/${cardNames.length} (${card}) ${done}/${total}`;
-          }
-        });
-        if (token !== probabilityRunToken || res.cancelled) return;
-        results.push({
-          card,
-          hits: res.hits,
-          trials: res.trials,
-          probability: res.hits / res.trials,
-          expectedDust: res.expectedDust,
-          expectedRolls: res.expectedRolls,
-          impossible: !!res.impossible
-        });
-      }
-      results.sort((a, b) => {
-        if (b.probability !== a.probability) return b.probability - a.probability;
-        if (a.expectedDust !== b.expectedDust) return a.expectedDust - b.expectedDust;
-        return a.card.localeCompare(b.card);
-      });
-      const lines = results.map((r, idx) => {
-        if (r.impossible) {
-          return `${idx + 1}. ${r.card} — 0.0000% (${r.hits}/${r.trials}), Expected Dust: Unreachable`;
-        }
-        return `${idx + 1}. ${r.card} — ${(r.probability * 100).toFixed(4)}% (${r.hits}/${r.trials}), Expected Dust: ${r.expectedDust.toFixed(2)}, Expected Rolls: ${r.expectedRolls.toFixed(2)}`;
-      });
-      out.innerHTML = `<b>Compare Cards for "${q}" (${MONTE_CARLO_TRIALS.toLocaleString()} trials each)</b><pre class="small">${lines.join('\n')}</pre>`;
-    } finally {
-      if (token === probabilityRunToken) {
-        setProbabilityBusy(false);
-        setProbabilityButtonLabel();
-      }
-    }
+  const q = (document.getElementById('compareCardsTargetInput')?.value || '').trim();
+  const parsedTargets = parseTargetList(q);
+  const status = document.getElementById('compareCardsResult');
+  const compareBtn = document.getElementById('compareCardsBtn');
+  if (!it) {
+    if (status) status.textContent = 'Select item type first.';
+    return;
+  }
+  if (!parsedTargets.targetNames.length) {
+    if (status) status.textContent = 'Type enchant name first.';
+    return;
+  }
+  const cardNames = AUGMENTS.map(a => a.name);
+  if (!cardNames.length) {
+    renderCompareCardsTableRows([]);
+    if (status) status.textContent = 'No cards available to compare.';
     return;
   }
 
-  const augName = document.getElementById('artifactCard').value;
+  const token = ++probabilityRunToken;
+  if (compareBtn) compareBtn.textContent = 'Comparing...';
+  setProbabilityBusy(true);
+  if (status) status.textContent = 'Running card comparison...';
+
+  const results = [];
   try {
-    const res = await runMonteCarloForArtifact({
-      itemType: it,
-      targetName: q,
-      artifactName: augName,
-      token,
-      onProgress: (done, total) => {
-        if (token !== probabilityRunToken) return;
-        if (done === total) return;
-        out.textContent = `Running Monte Carlo simulation... ${done}/${total}`;
-      }
-    });
-    if (token !== probabilityRunToken || res.cancelled) return;
-    if (res.impossible) {
-      out.innerHTML = `<b>${q}</b><br>Chance this roll: 0.0000% (0/${res.trials})<br>Expected rolls: Unreachable<br>Expected Dust Cost: Unreachable`;
-      return;
+    for (let i = 0; i < cardNames.length; i++) {
+      const card = cardNames[i];
+      if (status) status.textContent = `Comparing cards... ${i + 1}/${cardNames.length} (${card})`;
+      const res = await runMonteCarloForArtifact({
+        itemType: it,
+        targetNames: parsedTargets.targetNames,
+        artifactName: card,
+        token,
+        onProgress: (done, total) => {
+          if (token !== probabilityRunToken) return;
+          if (done === total) return;
+          if (status) status.textContent = `Comparing cards... ${i + 1}/${cardNames.length} (${card}) ${done}/${total}`;
+        }
+      });
+      if (token !== probabilityRunToken || res.cancelled) return;
+      results.push({
+        card,
+        hits: res.hits,
+        trials: res.trials,
+        probability: res.hits / res.trials,
+        expectedDust: res.expectedDust,
+        expectedRolls: res.expectedRolls,
+        impossible: !!res.impossible
+      });
     }
-    const chancePct = (res.hits / res.trials) * 100;
-    out.innerHTML = `<b>${q}</b><br>Chance this roll (${res.trials.toLocaleString()} sims): ${chancePct.toFixed(4)}% (${res.hits}/${res.trials})<br>Expected rolls to hit: ${res.expectedRolls.toFixed(2)}<br>Expected Dust Cost to hit: ${res.expectedDust.toFixed(2)}`;
+
+    results.sort((a, b) => {
+      if (b.probability !== a.probability) return b.probability - a.probability;
+      if (a.expectedDust !== b.expectedDust) return a.expectedDust - b.expectedDust;
+      return a.card.localeCompare(b.card);
+    });
+    renderCompareCardsTableRows(results);
+    const targetLabel = getTargetDisplayLabel(parsedTargets.targetNames);
+    if (status) {
+      status.textContent = `Compared ${results.length} cards for "${targetLabel}" (${MONTE_CARLO_TRIALS.toLocaleString()} trials each).`;
+    }
   } finally {
+    if (compareBtn) compareBtn.textContent = 'Compare All Cards';
     if (token === probabilityRunToken) {
       setProbabilityBusy(false);
-      setProbabilityButtonLabel();
+    }
+  }
+}
+async function calculatePathProbability() {
+  const it = document.getElementById('itemType').value;
+  const out = document.getElementById('pathResult');
+  const quickOut = document.getElementById('probResult');
+  if (!out) return;
+  if (!it) { out.textContent = 'Select item type first.'; return; }
+
+  const pathBatchN = commitPathBatchTrialsInput();
+  const pathRunBtn = document.getElementById('calcPathBtn');
+  const artifactName = document.getElementById('artifactCard').value;
+  const quickRaw = (document.getElementById('path-phase-1')?.value || '').trim();
+  const quickParsedTargets = parseTargetList(quickRaw);
+  const token = ++probabilityRunToken;
+  const quickMonteCarloTrials = pathBatchN * QUICK_ESTIMATE_PATH_MULTIPLIER;
+
+  const quickEstimatePromise = (async () => {
+    if (!quickOut) return;
+    if (!quickParsedTargets.targetNames.length) {
+      quickOut.textContent = 'Type enchant name first.';
+      return;
+    }
+    await runQuickEstimateSimulation({
+      itemType: it,
+      targetNames: quickParsedTargets.targetNames,
+      artifactName,
+      token,
+      out: quickOut,
+      trials: quickMonteCarloTrials
+    });
+  })().catch((err) => {
+    console.warn('[enchant quick-estimate]', 'failed during path run', err);
+    if (token === probabilityRunToken && quickOut) quickOut.textContent = 'Quick estimate failed.';
+  });
+
+  const phaseConfig = buildPathPhasesFromInputs(selectedSlots);
+  if (phaseConfig.error) {
+    out.textContent = phaseConfig.error;
+    return;
+  }
+  const phases = phaseConfig.phases || [];
+  const phaseCount = phases.length;
+
+  const initialSlotSnapshot = getSimulationSlotSnapshot();
+  setProbabilityBusy(true);
+  if (pathRunBtn) pathRunBtn.textContent = 'Simulating...';
+  out.textContent = `Running ${pathBatchN.toLocaleString()} path simulations…`;
+
+  try {
+    const avail = pathBatchWorkerAvailabilityDetails();
+    console.info('[enchant path-batch]', 'run mode decision', {
+      workersOk: avail.ok,
+      availabilityReasons: avail.reasons,
+      protocol: avail.protocol,
+      hardwareConcurrency: avail.hardwareConcurrency,
+      batchTrials: pathBatchN
+    });
+    if (avail.protocol === 'file:') {
+      console.info(
+        '[enchant path-batch]',
+        'file: origin — attempting workers; if they fail to load, serve the page over http(s) for best compatibility.'
+      );
+    }
+
+    let batch;
+    if (pathBatchWorkersAvailable()) {
+      try {
+        batch = await runPathBatchMonteCarloWorkers({
+          itemType: it,
+          artifactName,
+          initialSlotSnapshot,
+          phases,
+          slotCount: selectedSlots,
+          token,
+          trials: pathBatchN,
+          onTrialProgress: (done, total) => {
+            if (token !== probabilityRunToken) return;
+            out.textContent = `Path batch ${done.toLocaleString()} / ${total.toLocaleString()}…`;
+          }
+        });
+      } catch (workerErr) {
+        console.warn('[enchant path-batch]', 'workers failed; falling back to main-thread loop', workerErr);
+        batch = await runPathBatchMonteCarlo({
+          itemType: it,
+          artifactName,
+          initialSlotSnapshot,
+          phases,
+          slotCount: selectedSlots,
+          token,
+          trials: pathBatchN,
+          onTrialProgress: (done, total) => {
+            if (token !== probabilityRunToken) return;
+            out.textContent = `Path batch ${done.toLocaleString()} / ${total.toLocaleString()}…`;
+          }
+        });
+      }
+    } else {
+      console.info('[enchant path-batch]', 'using main-thread loop only', {
+        becauseWorkersUnavailable: !avail.ok
+      });
+      batch = await runPathBatchMonteCarlo({
+        itemType: it,
+        artifactName,
+        initialSlotSnapshot,
+        phases,
+        slotCount: selectedSlots,
+        token,
+        trials: pathBatchN,
+        onTrialProgress: (done, total) => {
+          if (token !== probabilityRunToken) return;
+          out.textContent = `Path batch ${done.toLocaleString()} / ${total.toLocaleString()}…`;
+        }
+      });
+    }
+    if (token !== probabilityRunToken || batch.cancelled) return;
+
+    const phaseLines = phases.map((phase, idx) => {
+      const prefix = phase.requireNewTarget ? 'new: ' : '';
+      const label = phase.autoComplementFromPhase2
+        ? phase.phase3SummaryLine || 'Automatic complement of 2nd target'
+        : getTargetDisplayLabel(phase.targetNames);
+      return `${idx + 1}. ${prefix}${label}`;
+    });
+
+    const summaryLines = [];
+    if (batch.nSuccess > 0) {
+      summaryLines.push(`Average rolls: ${batch.avgRolls.toFixed(2)}`);
+      summaryLines.push(`Average dust: ${batch.avgDust.toFixed(2)}`);
+      summaryLines.push(
+        `Rolls min / max: ${batch.minRolls.toLocaleString()} / ${batch.maxRolls.toLocaleString()}`
+      );
+      summaryLines.push(
+        `Dust min / max: ${batch.minDust.toFixed(2)} / ${batch.maxDust.toFixed(2)}`
+      );
+      summaryLines.push(`Average simulated path time: ${batch.avgPathMs.toFixed(1)} ms`);
+      summaryLines.push('');
+    }
+    summaryLines.push(`<b>Path batch: ${batch.trials.toLocaleString()} trials</b>`);
+    summaryLines.push(`Successful completions: ${batch.nSuccess.toLocaleString()}`);
+    summaryLines.push(`Unreachable (pool / locks): ${batch.nImpossible.toLocaleString()}`);
+    summaryLines.push(`Per-path roll safety cap hit: ${batch.nRolloutLimit.toLocaleString()}`);
+    summaryLines.push(`Phases in path: ${phaseCount} (slots: ${selectedSlots})`);
+    if (batch.nSuccess === 0) {
+      summaryLines.push('');
+      summaryLines.push('<b>No successful completions</b> — check path config, item type, or locks.');
+    }
+    summaryLines.push('');
+    summaryLines.push(`Wall clock: ${(batch.elapsedMs / 1000).toFixed(2)} s`);
+
+    out.innerHTML =
+      summaryLines.join('<br>') + `<pre class="small">${phaseLines.join('\n')}</pre>`;
+  } finally {
+    await quickEstimatePromise;
+    if (pathRunBtn) updatePathBatchRunButtonLabel();
+    if (token === probabilityRunToken) {
+      setProbabilityBusy(false);
     }
   }
 }
@@ -1035,14 +2281,25 @@ function getSelectedAugment() {
 function bindEvents() {
   document.getElementById('rollBtn').onclick = rollEnchantments;
   document.getElementById('resetDust').onclick = () => { totalDustUsed = 0; updateDustDisplay(); };
-  document.getElementById('itemType').onchange = () => { refreshEligibility(); enforceLockValidity(); updateWeightDebug(); };
-  document.getElementById('calcProbBtn').onclick = calculateProbability;
-  document.getElementById('compareCardsMode').onchange = setProbabilityButtonLabel;
+  document.getElementById('itemType').onchange = () => { clearMonteCarloPoolBaseCache(); refreshEligibility(); enforceLockValidity(); updateWeightDebug(); };
+  const compareBtn = document.getElementById('compareCardsBtn');
+  const pathBtn = document.getElementById('calcPathBtn');
+  const pathBatchInput = document.getElementById('pathBatchTrialsInput');
+  if (compareBtn) compareBtn.onclick = compareAllCards;
+  if (pathBtn) {
+    pathBtn.onclick = calculatePathProbability;
+    updatePathBatchRunButtonLabel();
+  }
+  if (pathBatchInput) {
+    pathBatchInput.min = String(PATH_SIM_BATCH_TRIALS_MIN);
+    pathBatchInput.max = String(PATH_SIM_BATCH_TRIALS_MAX);
+    commitPathBatchTrialsInput();
+    pathBatchInput.addEventListener('input', updatePathBatchRunButtonLabel);
+  }
   // Initialize Weight Breakdown collapsed by default
   const det = document.getElementById('weightDetails');
   det.style.display = 'none';
   document.getElementById('toggleWeightBtn').textContent = 'Show';
-  setProbabilityButtonLabel();
 
   // Fix first-click behavior
   document.getElementById('toggleWeightBtn').onclick = () => {
@@ -1053,12 +2310,7 @@ function bindEvents() {
     updateWeightDebug();
   };
 
-  syncRollButtonState();
-}
-function syncRollButtonState() {
-  const roll = document.getElementById('rollBtn');
-  if (!roll) return;
-  roll.disabled = !document.getElementById('itemType').value;
+  renderPathPhaseUI();
 }
 
 function refreshEligibility() {
@@ -1072,5 +2324,5 @@ function refreshEligibility() {
     const p = getCurrentPool(it, false);
     labelEl.textContent = `Eligible Enchantments for ${label}: ${p.length}`;
   }
-  syncRollButtonState();
+  updatePathStatTradeoffPickerUI();
 }
