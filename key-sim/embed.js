@@ -34,6 +34,11 @@
     container.innerHTML = "";
     container.appendChild(sourceShell);
 
+    var creditEl = doc.querySelector(".key-sim__credit");
+    if (creditEl) {
+      container.appendChild(creditEl.cloneNode(true));
+    }
+
     global.__KEY_SIM_DATA_BASE__ = dataBasePath;
 
     var scripts = Array.prototype.slice.call(doc.querySelectorAll("script"));

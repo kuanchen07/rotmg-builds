@@ -581,11 +581,17 @@
 }
 
 .key-sim__credit {
-  margin: 1.25rem 0 0;
+  position: fixed;
+  right: max(0.75rem, env(safe-area-inset-right, 0px));
+  bottom: max(0.75rem, env(safe-area-inset-bottom, 0px));
+  z-index: 20;
+  margin: 0;
+  max-width: min(90vw, 18rem);
   text-align: right;
-  font-size: 10.5px;
-  line-height: 1.5;
+  font-size: 10px;
+  line-height: 1.45;
   color: #7a7a7a;
   font-family: ChronoType, system-ui, sans-serif;
   letter-spacing: 0.02em;
+  pointer-events: none;
 }
