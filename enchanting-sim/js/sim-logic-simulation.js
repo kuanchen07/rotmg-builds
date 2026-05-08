@@ -362,12 +362,14 @@ function buildPathPhasesFromInputs(slotCount) {
 
   /** When phase 3 is auto (multi‑OR complement), `#path-phase-4+` targets are optional. */
   const tailPhasesOptional = slotCount >= 4 && firstManualTailPhaseNum === 4;
+  /** 4-slot, single OR option: manual `#path-phase-3` / `#path-phase-4` may be left blank. */
+  const manualTailOptionalNoAuto = slotCount >= 4 && firstManualTailPhaseNum === 3;
 
   if (slotCount >= 4) {
     for (let phaseNum = firstManualTailPhaseNum; phaseNum <= slotCount; phaseNum++) {
       const parsed = parseTargetList(document.getElementById(`path-phase-${phaseNum}`)?.value || '');
       if (!parsed.targetNames.length) {
-        if (tailPhasesOptional) continue;
+        if (tailPhasesOptional || manualTailOptionalNoAuto) continue;
         return { error: `${formatOrdinal(phaseNum)} target must include at least one enchant.` };
       }
       for (const tName of parsed.targetNames) {
@@ -383,6 +385,24 @@ function buildPathPhasesFromInputs(slotCount) {
         targetNorms: parsed.targetNorms,
         requireNewTarget: false,
         pathArtifactName: domPathArtifactValue(`path-phase-${phaseNum}-artifact`)
+      });
+    }
+  }
+
+  if (slotCount === 3 && firstManualTailPhaseNum === 3) {
+    const parsed = parseTargetList(document.getElementById('path-phase-3')?.value || '');
+    if (parsed.targetNames.length) {
+      for (const tName of parsed.targetNames) {
+        if (isPathSimDisallowedTierName(tName)) {
+          return { error: '3rd target: tier I/II enchants cannot be used in path simulation.' };
+        }
+      }
+      phases.push({
+        phaseIndex: 3,
+        targetNames: parsed.targetNames,
+        targetNorms: parsed.targetNorms,
+        requireNewTarget: false,
+        pathArtifactName: domPathArtifactValue('path-phase-3-artifact')
       });
     }
   }

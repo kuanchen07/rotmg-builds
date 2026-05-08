@@ -608,7 +608,7 @@ function mountStatTradeoffPickerSection(mount) {
 /** Called when anchor or alternates change; re-builds path steps if 4-slot Auto vs manual layout must flip. */
 function onPathPhase2TargetsChanged() {
   syncPathStatTradeoffDisclosure();
-  if (selectedSlots < 4) return;
+  if (selectedSlots < 3) return;
   const mount = document.getElementById('pathPhasesMount');
   if (!mount) return;
   const snap = readPathPhaseValues();
@@ -621,6 +621,8 @@ function renderPathPhaseUI(phaseValuesOverride) {
   const mount = document.getElementById('pathPhasesMount');
   if (!mount) return;
   const prev = phaseValuesOverride !== undefined ? phaseValuesOverride : readPathPhaseValues();
+  const preserveAltsDisclosureOpen =
+    document.getElementById('path-phase-2-alts-disclosure')?.open === true;
   mount.innerHTML = '';
   mount.className = 'path-row path-stepper';
 
@@ -649,7 +651,7 @@ function renderPathPhaseUI(phaseValuesOverride) {
   stepNum++;
 
   if (selectedSlots >= 2) {
-    createPathStep(mount, stepNum, { title: '2nd target (OR pool)' }, body => {
+    createPathStep(mount, stepNum, { title: '2nd target' }, body => {
       const ancBlock = document.createElement('div');
       ancBlock.className = 'path-phase-2-anchor-block';
       const ancLabel = document.createElement('label');
@@ -680,6 +682,7 @@ function renderPathPhaseUI(phaseValuesOverride) {
       const altDetails = document.createElement('details');
       altDetails.id = 'path-phase-2-alts-disclosure';
       altDetails.className = 'path-phase-2-alts-disclosure';
+      if (preserveAltsDisclosureOpen) altDetails.open = true;
 
       const altSummary = document.createElement('summary');
       altSummary.className = 'path-phase-2-alts-summary';
@@ -722,7 +725,7 @@ function renderPathPhaseUI(phaseValuesOverride) {
   }
 
   const p2MultiOr = pathPhase2MultiOrTargets(p2);
-  const showAutoThirdTarget = selectedSlots >= 3;
+  const showAutoThirdTarget = selectedSlots >= 3 && p2MultiOr;
   if (showAutoThirdTarget) {
     createPathStep(mount, stepNum, { title: '3rd target' }, body => {
       const row = document.createElement('div');
@@ -747,17 +750,15 @@ function renderPathPhaseUI(phaseValuesOverride) {
 
   if (selectedSlots >= 4) {
     const startManual = p2MultiOr ? 4 : 3;
-    const optionalManualTail = startManual === 4;
     for (let phase = startManual; phase <= selectedSlots; phase++) {
       const ph = phase;
-      const manualTitle = optionalManualTail
-        ? `${formatOrdinal(phase)} target (optional)`
-        : `${formatOrdinal(phase)} enchant`;
+      const isOptionalFourth = p2MultiOr && ph === 4;
+      const title = isOptionalFourth ? '4th target (optional)' : `${formatOrdinal(ph)} target`;
       createPathStep(
         mount,
         stepNum,
         {
-          title: manualTitle
+          title
         },
         body => {
         const wrap = document.createElement('div');
@@ -768,9 +769,9 @@ function renderPathPhaseUI(phaseValuesOverride) {
         input.type = 'text';
         input.id = `path-phase-${ph}`;
         input.className = 'path-phase-input';
-        input.placeholder = optionalManualTail
-          ? 'Optional — leave blank to end path after phase 3'
-          : 'Type enchantment…';
+        input.placeholder = isOptionalFourth
+          ? 'Optional — leave blank to end path after auto 3rd'
+          : 'Optional — if you use this phase beyond phase 2';
         input.value = prev[`path-phase-${ph}`] || '';
         w.appendChild(input);
         wrap.appendChild(w);
@@ -786,13 +787,34 @@ function renderPathPhaseUI(phaseValuesOverride) {
       });
       stepNum++;
     }
+  } else if (selectedSlots === 3 && !showAutoThirdTarget) {
+    createPathStep(mount, stepNum, { title: '3rd target' }, body => {
+      const wrap = document.createElement('div');
+      wrap.className = 'path-step__field path-step__field--flush path-phase-inline-row';
+      const w = document.createElement('div');
+      w.className = 'target-enchant-wrap';
+      const input = document.createElement('input');
+      input.type = 'text';
+      input.id = 'path-phase-3';
+      input.className = 'path-phase-input';
+      input.placeholder = 'Optional — if you extend the path beyond phase 2';
+      input.value = prev['path-phase-3'] || '';
+      w.appendChild(input);
+      wrap.appendChild(w);
+      appendPathPhaseArtifactSelect(wrap, 'path-phase-3-artifact', prev['path-phase-3-artifact']);
+      body.appendChild(wrap);
+      if (typeof window.initEnchantTargetAutocomplete === 'function') {
+        window.initEnchantTargetAutocomplete(input, { excludePathSimTier12: true });
+      }
+    });
+    stepNum++;
   }
 
   mount.querySelectorAll('.path-step').forEach((el, i, arr) => {
     if (i === arr.length - 1) el.classList.add('path-step--last');
   });
 
-  if (selectedSlots >= 4) {
+  if (selectedSlots >= 3) {
     mount.dataset.pathP2OrMode = p2MultiOr ? 'multi' : 'single';
   } else {
     delete mount.dataset.pathP2OrMode;

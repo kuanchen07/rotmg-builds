@@ -60,8 +60,11 @@ let statTradeoffAltTailHintRe = null;
 function statTradeoffAltTailHintRegex() {
   if (!statTradeoffAltTailHintRe) {
     const esc = s => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    // Require "{Gain} -" plus at least one non-space character after the hyphen. The old
+    // pattern allowed "Wisdom -" alone (hyphen + end of string) to match, which opened the
+    // quick pick on almost every edit while composing tradeoff-style names.
     statTradeoffAltTailHintRe = new RegExp(
-      `^(${STAT_TRADEOFF_STATS.map(esc).join('|')})\\s*-\\s*`,
+      `^(${STAT_TRADEOFF_STATS.map(esc).join('|')})\\s*-\\s*\\S`,
       'i'
     );
   }
@@ -79,6 +82,7 @@ function alternateRowHintsStatTradeoff(raw) {
   if (!tail) return false;
   return statTradeoffAltTailHintRegex().test(tail);
 }
+/** Sync "Quick pick: stat −stat tradeoff" &lt;details&gt; when alternate rows look like a tradeoff name. */
 function syncPathStatTradeoffDisclosure() {
   const disclosure = document.getElementById('path-stat-tradeoff-disclosure');
   if (!disclosure) return;
