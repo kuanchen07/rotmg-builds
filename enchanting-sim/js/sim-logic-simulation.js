@@ -360,10 +360,14 @@ function buildPathPhasesFromInputs(slotCount) {
     }
   }
 
+  /** When phase 3 is auto (multi‑OR complement), `#path-phase-4+` targets are optional. */
+  const tailPhasesOptional = slotCount >= 4 && firstManualTailPhaseNum === 4;
+
   if (slotCount >= 4) {
     for (let phaseNum = firstManualTailPhaseNum; phaseNum <= slotCount; phaseNum++) {
       const parsed = parseTargetList(document.getElementById(`path-phase-${phaseNum}`)?.value || '');
       if (!parsed.targetNames.length) {
+        if (tailPhasesOptional) continue;
         return { error: `${formatOrdinal(phaseNum)} target must include at least one enchant.` };
       }
       for (const tName of parsed.targetNames) {

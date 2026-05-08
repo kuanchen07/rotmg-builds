@@ -10,6 +10,9 @@
   var enchantHref = inClasses
     ? "../index.html?view=enchant-sim"
     : "index.html?view=enchant-sim";
+  var keySimHref = inClasses
+    ? "../index.html?view=key-sim"
+    : "index.html?view=key-sim";
   /* Local UI asset only; item sprites use scripts/lib/icon-cdn-base.cjs (B2). */
   var iconSrc = inClasses ? "../icons/menu.png" : "icons/menu.png";
 
@@ -17,15 +20,18 @@
   var query = new URLSearchParams(location.search || "");
   var requestedView = query.get("view");
   var isEnchantRoute = path.indexOf("/enchanting-sim/") !== -1;
+  var isKeySimRoute = path.indexOf("/key-sim/") !== -1;
   var isEnchantSim = requestedView === "enchant-sim" || isEnchantRoute;
+  var isKeySim = requestedView === "key-sim" || isKeySimRoute;
   var isIntro =
     !inClasses &&
     !isEnchantSim &&
+    !isKeySim &&
     (fileName === "" || fileName === "index.html" || /^\/?$/.test(path));
   var isBuildsHub = /^(builds\.html)$/i.test(fileName);
   var isCredits = /^(credits\.html)$/i.test(fileName);
 
-  var showBrand = isIntro || isBuildsHub;
+  var showBrand = isIntro || isBuildsHub || isEnchantSim || isKeySim;
   if (showBrand) {
     document.body.classList.add("site-nav-show-brand");
   }
@@ -34,6 +40,7 @@
   var buildsAttr = isBuildsHub ? ' aria-current="page"' : "";
   var creditsAttr = isCredits ? ' aria-current="page"' : "";
   var enchantAttr = isEnchantSim ? ' aria-current="page"' : "";
+  var keySimAttr = isKeySim ? ' aria-current="page"' : "";
 
   var aside = document.createElement("aside");
   aside.id = "site-nav";
@@ -62,6 +69,11 @@
     enchantAttr +
     ">Enchant Sim</a>" +
     '<a class="site-nav__link" href="' +
+    keySimHref +
+    '"' +
+    keySimAttr +
+    ">Key Sim</a>" +
+    '<a class="site-nav__link" href="' +
     creditsHref +
     '"' +
     creditsAttr +
@@ -75,7 +87,7 @@
     brandStrip.className = "site-brand-strip";
     brandStrip.setAttribute("aria-label", "ROTMG set checker");
     brandStrip.innerHTML =
-      '<span class="site-brand-strip__text">ROTMG set checker - by evolz</span>';
+      '<span class="site-brand-strip__text">ROTMG tools - by evolz</span>';
   }
 
   var main = document.querySelector("main");

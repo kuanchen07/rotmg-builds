@@ -267,7 +267,8 @@ body.home-intro.has-site-nav .home-intro__main .home-intro__prose > h2 + p {
 .home-intro__main {
   margin: 0;
 }
-main.home-intro__main:has(#enchantView:not([hidden])) {
+main.home-intro__main:has(#enchantView:not([hidden])),
+main.home-intro__main:has(#keyView:not([hidden])) {
   max-width: none;
   width: 100%;
 }
@@ -278,6 +279,15 @@ main.home-intro__main:has(#enchantView:not([hidden])) {
   padding-top: 2.25rem;
 }
 .home-enchant-view[hidden] {
+  display: none !important;
+}
+.home-key-view {
+  width: 100%;
+  max-width: 74rem;
+  margin: 0 auto;
+  padding-top: 2.25rem;
+}
+.home-key-view[hidden] {
   display: none !important;
 }
 .home-intro__list {

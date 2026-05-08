@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Key Sim</title>
+  <link rel="stylesheet" href="../builds.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="has-site-nav key-sim-page">
+  <script src="../site-nav.js"></script>
+  <div class="key-sim-shell">
+    <div class="key-sim__container">
+      <header class="key-sim__header">
+        <div class="key-sim__header-row">
+          <h1 class="key-sim__refine-title">
+            Refine: <span id="keySimRefineTitleName">—</span> Key
+          </h1>
+          <button type="button" class="key-sim__close" id="keySimClose" aria-label="Close" hidden></button>
+        </div>
+        <div class="key-sim__toolbar">
+          <label class="key-sim__toolbar-label" for="keySimDungeon">Key</label>
+          <select id="keySimDungeon" class="key-sim__select key-sim__select--toolbar"></select>
+        </div>
+      </header>
+
+      <div class="key-sim__refine">
+        <div class="key-sim__key-col">
+          <div class="key-sim__key-card">
+            <div class="key-sim__key-hero">
+              <div class="key-sim__key-banner key-sim__key-banner--accent" aria-hidden="true"></div>
+              <div class="key-sim__star-wrap" aria-hidden="true">
+                <div class="key-sim__starburst-ring"></div>
+                <div class="key-sim__starburst-face"></div>
+              </div>
+              <div class="key-sim__key-icon-wrap">
+                <img id="keySimIcon" class="key-sim__key-img" src="" alt="" width="56" height="56" decoding="async" hidden>
+              </div>
+            </div>
+            <div class="key-sim__grade-ribbon">
+              <span id="keySimCardGrade">Grade D</span>
+            </div>
+            <div class="key-sim__pips" id="keySimPips" aria-hidden="true"></div>
+            <button type="button" id="keySimUpgrade" class="key-sim__pill key-sim__pill--gold">
+              <span>Upgrade</span>
+            </button>
+            <p class="key-sim__grade-flow" id="keySimGradeFlow">
+              Grade
+              <span class="key-sim__grade-badge" id="keySimGradeFrom">D</span>
+              <span class="key-sim__grade-arrow" aria-hidden="true">▶</span>
+              Grade
+              <span class="key-sim__grade-badge key-sim__grade-badge--next" id="keySimGradeTo">C</span>
+            </p>
+            <div class="key-sim__corner key-sim__corner--bl" aria-hidden="true"></div>
+            <div class="key-sim__corner key-sim__corner--br" aria-hidden="true"></div>
+          </div>
+        </div>
+
+        <div class="key-sim__mods-col">
+          <div class="key-sim__mods-banner">
+            <span class="key-sim__mods-banner-edge key-sim__mods-banner-edge--left" aria-hidden="true"></span>
+            <span class="key-sim__mods-banner-label">Dungeon Mods</span>
+            <span class="key-sim__mods-banner-edge key-sim__mods-banner-edge--right" aria-hidden="true"></span>
+          </div>
+          <div id="keySimSlots" class="key-sim__slots"></div>
+          <p id="keySimRewards" class="key-sim__rewards-agg muted"></p>
+          <div class="key-sim__mods-footer">
+            <button type="button" id="keySimRoll" class="key-sim__pill key-sim__pill--gold key-sim__pill--reroll">
+              <span>Reroll Mods</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <p id="keySimErr" class="key-sim__err" hidden></p>
+    </div>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>

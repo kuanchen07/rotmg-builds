@@ -3,9 +3,10 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>ROTMG Builds — Introduction</title>
+  <title>ROTMG Tools — Introduction</title>
   <link rel="stylesheet" href="builds.css">
   <link rel="stylesheet" href="enchanting-sim/style.css">
+  <link rel="stylesheet" href="key-sim/style.css">
   <script>
     (function () {
       var map = {
@@ -40,19 +41,29 @@
     <section class="home-enchant-view" id="enchantView" hidden>
       <div id="enchantSimMount"></div>
     </section>
+    <section class="home-key-view" id="keyView" hidden>
+      <div id="keySimMount"></div>
+    </section>
   </main>
   <script src="enchanting-sim/embed.js"></script>
+  <script src="key-sim/embed.js"></script>
   <script>
     (function () {
       var introEl = document.getElementById("introView");
       var enchantView = document.getElementById("enchantView");
       var enchantMount = document.getElementById("enchantSimMount");
-      if (!introEl || !enchantView || !enchantMount) return;
+      var keyView = document.getElementById("keyView");
+      var keyMount = document.getElementById("keySimMount");
+      if (!introEl || !enchantView || !enchantMount || !keyView || !keyMount) return;
 
       var params = new URLSearchParams(window.location.search);
-      var showingEnchant = params.get("view") === "enchant-sim";
+      var view = params.get("view");
+      var showingEnchant = view === "enchant-sim";
+      var showingKey = view === "key-sim";
       var enchantMounted = false;
       var enchantMountPromise = null;
+      var keyMounted = false;
+      var keyMountPromise = null;
 
       function loadIntro() {
         if (introEl.dataset.loaded === "true") return;
@@ -73,16 +84,18 @@
       }
 
       function showIntro() {
-        document.title = "ROTMG Builds — Introduction";
+        document.title = "ROTMG Tools — Introduction";
         introEl.hidden = false;
         enchantView.hidden = true;
+        keyView.hidden = true;
         document.body.classList.add("home-intro");
         loadIntro();
       }
 
       function showEnchantSim() {
-        document.title = "ROTMG Builds — Enchantment Sim";
+        document.title = "ROTMG Tools — Enchantment Sim";
         introEl.hidden = true;
+        keyView.hidden = true;
         enchantView.hidden = false;
         document.body.classList.remove("home-intro");
         if (typeof window.mountEnchantingSim === "function") {
@@ -112,8 +125,43 @@
         }
       }
 
+      function showKeySim() {
+        document.title = "ROTMG Tools — Key sim";
+        introEl.hidden = true;
+        enchantView.hidden = true;
+        keyView.hidden = false;
+        document.body.classList.remove("home-intro");
+        if (typeof window.mountKeySim === "function") {
+          if (keyMounted) return;
+          if (!keyMountPromise) {
+            keyMountPromise = window
+              .mountKeySim(keyMount, {
+                pagePath: "key-sim/main.html",
+                dataBasePath: "key-sim"
+              })
+              .then(function () {
+                keyMounted = true;
+              })
+              .catch(function () {
+                keyMountPromise = null;
+                keyMounted = false;
+                throw new Error("mount failed");
+              });
+          }
+          keyMountPromise.catch(function () {
+            keyMount.innerHTML =
+              '<p class="home-intro__load-error">Could not load the key simulator.</p>';
+          });
+        } else {
+          keyMount.innerHTML =
+            '<p class="home-intro__load-error">Key sim loader is unavailable.</p>';
+        }
+      }
+
       if (showingEnchant) {
         showEnchantSim();
+      } else if (showingKey) {
+        showKeySim();
       } else {
         showIntro();
       }
