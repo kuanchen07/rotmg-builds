@@ -677,6 +677,7 @@ function renderPathPhaseUI(phaseValuesOverride) {
         window.initEnchantTargetAutocomplete(ancInp, { excludePathSimTier12: true });
       }
       ancInp.addEventListener('input', onPathPhase2TargetsChanged);
+      const altDetails = document.createElement('details');
       altDetails.id = 'path-phase-2-alts-disclosure';
       altDetails.className = 'path-phase-2-alts-disclosure';
 
