@@ -28,6 +28,12 @@ function withArtifactCardSelection(tempName, fn) {
 function getPoolForArtifact(itemType, artifactName) {
   return withArtifactCardSelection(artifactName, () => getCurrentPool(itemType, true));
 }
+/** Path phase augment selects (`path-phase-N-artifact`); `'None'` if missing. */
+function domPathArtifactValue(elementId) {
+  const el = document.getElementById(elementId);
+  const v = String(el?.value ?? '').trim();
+  return v && v !== '' ? v : 'None';
+}
 function getMonteCarloPoolBase(itemType, artifactName) {
   const key = `${String(itemType || '')}\0${String(artifactName || '')}`;
   const cached = monteCarloPoolBaseCache.get(key);
@@ -223,6 +229,45 @@ function updatePathSimResultsPresence({ showQuick }) {
   root.classList.toggle('sim-results--batch-only', !showQuick);
   if (quickBlock) quickBlock.hidden = !showQuick;
 }
+/** Reset path-sim targets, equipment-slot rolls/locks, and result panels (original empty state). */
+function resetEnchantSimulation() {
+  probabilityRunToken++;
+
+  for (const slot of currentEnchantments) {
+    slot.enchant = null;
+    setEnchantSlotEmpty(slot.element);
+    slot.lockBtn.classList.remove('locked');
+    syncLockToggleVisual(slot.lockBtn);
+  }
+
+  renderPathPhaseUI({});
+
+  const probEl = document.getElementById('probResult');
+  const pathEl = document.getElementById('pathResult');
+  if (probEl) {
+    probEl.textContent = '';
+    probEl.innerHTML = '';
+  }
+  if (pathEl) {
+    pathEl.textContent = '';
+    pathEl.innerHTML = '';
+  }
+
+  const root = document.getElementById('pathSimResults');
+  if (root) {
+    root.classList.add('sim-results--pending');
+    root.classList.remove('sim-results--batch-only');
+  }
+  const quickBlock = document.getElementById('pathSimQuickResult');
+  if (quickBlock) quickBlock.hidden = false;
+
+  clearMonteCarloPoolBaseCache();
+  setProbabilityBusy(false);
+  updatePathBatchRunButtonLabel();
+  enforceLockValidity();
+  updateWeightDebug();
+  if (typeof updatePathStatTradeoffPickerUI === 'function') updatePathStatTradeoffPickerUI();
+}
 function buildPathPhasesFromInputs(slotCount) {
   const p1r = parsePathPhase1OrError();
   if (p1r.error) return { error: p1r.error };
@@ -234,7 +279,8 @@ function buildPathPhasesFromInputs(slotCount) {
         phaseIndex: 1,
         targetNames: phase1.targetNames,
         targetNorms: phase1.targetNorms,
-        requireNewTarget: false
+        requireNewTarget: false,
+        pathArtifactName: domPathArtifactValue('path-phase-1-artifact')
       }]
     };
   }
@@ -243,8 +289,12 @@ function buildPathPhasesFromInputs(slotCount) {
     phaseIndex: 1,
     targetNames: phase1.targetNames,
     targetNorms: phase1.targetNorms,
-    requireNewTarget: false
+    requireNewTarget: false,
+    pathArtifactName: domPathArtifactValue('path-phase-1-artifact')
   }];
+
+  /** When slotCount >= 4, first path-phase-N id to read as manual tail (3 or 4 if phase 3 is auto-complement). */
+  let firstManualTailPhaseNum = 3;
 
   if (slotCount >= 2) {
     const { anchor, alts } = collectPathPhase2FromDom();
@@ -287,10 +337,12 @@ function buildPathPhasesFromInputs(slotCount) {
       phase2AnchorNorm: anchorNorm,
       phase2AltNorms: altNorms,
       phase2OrNorms: allNormsOrdered,
-      phase2NameByNorm: nameByNorm
+      phase2NameByNorm: nameByNorm,
+      pathArtifactName: domPathArtifactValue('path-phase-2-artifact')
     });
 
-    if (slotCount === 3 && displayNames.length > 1) {
+    const phase3Auto = slotCount >= 3 && displayNames.length > 1;
+    if (phase3Auto) {
       phases.push({
         phaseIndex: 3,
         autoComplementFromPhase2: true,
@@ -301,13 +353,15 @@ function buildPathPhasesFromInputs(slotCount) {
         phase2OrNorms: allNormsOrdered,
         phase2NameByNorm: nameByNorm,
         phase3SummaryLine,
-        targetNames: [phase3SummaryLine]
+        targetNames: [phase3SummaryLine],
+        pathArtifactName: domPathArtifactValue('path-phase-3-artifact')
       });
+      firstManualTailPhaseNum = 4;
     }
   }
 
   if (slotCount >= 4) {
-    for (let phaseNum = 3; phaseNum <= slotCount; phaseNum++) {
+    for (let phaseNum = firstManualTailPhaseNum; phaseNum <= slotCount; phaseNum++) {
       const parsed = parseTargetList(document.getElementById(`path-phase-${phaseNum}`)?.value || '');
       if (!parsed.targetNames.length) {
         return { error: `${formatOrdinal(phaseNum)} target must include at least one enchant.` };
@@ -323,17 +377,40 @@ function buildPathPhasesFromInputs(slotCount) {
         phaseIndex: phaseNum,
         targetNames: parsed.targetNames,
         targetNorms: parsed.targetNorms,
-        requireNewTarget: false
+        requireNewTarget: false,
+        pathArtifactName: domPathArtifactValue(`path-phase-${phaseNum}-artifact`)
       });
     }
   }
 
   return { phases };
 }
+/** Slim pools + costs for every augment used on at least one path phase (workers + batch). */
+function buildPathPoolPayloadForWorker(itemType, phases) {
+  const poolBasesByArtifact = {};
+  const augCostByArtifact = {};
+  const names = new Set();
+  for (const p of phases) {
+    const n =
+      p.pathArtifactName != null && String(p.pathArtifactName).trim() !== ''
+        ? String(p.pathArtifactName).trim()
+        : 'None';
+    names.add(n);
+  }
+  for (const name of names) {
+    poolBasesByArtifact[name] = slimPoolBaseForWorker(getMonteCarloPoolBase(itemType, name));
+    augCostByArtifact[name] = AUGMENTS_BY_NAME[name]?.cost ?? 0;
+  }
+  return {
+    poolBasesByArtifact,
+    augCostByArtifact,
+    defaultArtifactName: 'None'
+  };
+}
 /** Abort extremely long runs (bug or absurd odds) without freezing the tab indefinitely. */
 async function runPathUntilComplete({
   itemType,
-  artifactName,
+  pathPoolPayload,
   initialSlotSnapshot,
   phases,
   slotCount,
@@ -341,14 +418,14 @@ async function runPathUntilComplete({
   onProgress,
   yieldEveryRolls = 2500
 }) {
-  const poolBase = getMonteCarloPoolBase(itemType, artifactName);
-  const augCost = AUGMENTS_BY_NAME[artifactName]?.cost || 0;
+  const payload = pathPoolPayload || buildPathPoolPayloadForWorker(itemType, phases);
   return PathSimCore.runPathUntilCompleteAsync({
-    poolBase,
+    poolBasesByArtifact: payload.poolBasesByArtifact,
+    augCostByArtifact: payload.augCostByArtifact,
+    defaultArtifactName: payload.defaultArtifactName,
     phases,
     initialSlotSnapshot,
     slotCount,
-    augCost,
     checkCancel: () => token !== probabilityRunToken,
     onProgress,
     yieldEveryRolls
@@ -476,7 +553,6 @@ function mergePathWorkerPartialResults(workerResults, trials) {
 
 async function runPathBatchMonteCarloWorkers({
   itemType,
-  artifactName,
   initialSlotSnapshot,
   phases,
   slotCount,
@@ -485,9 +561,7 @@ async function runPathBatchMonteCarloWorkers({
   onTrialProgress
 }) {
   const tWall = performance.now();
-  const poolBase = getMonteCarloPoolBase(itemType, artifactName);
-  const slimPool = slimPoolBaseForWorker(poolBase);
-  const augCost = AUGMENTS_BY_NAME[artifactName]?.cost || 0;
+  const poolPayload = buildPathPoolPayloadForWorker(itemType, phases);
 
   const hc =
     typeof navigator.hardwareConcurrency === 'number' && navigator.hardwareConcurrency >= 1
@@ -510,8 +584,9 @@ async function runPathBatchMonteCarloWorkers({
     pathBatchMaxParallel: PATH_BATCH_MAX_PARALLEL,
     trialsPerWorker: counts,
     workerScriptHref: pathBatchWorkerHref(),
-    slimPoolSize: slimPool && slimPool.size,
-    slimPoolEntryCount: Array.isArray(slimPool.entries) ? slimPool.entries.length : undefined
+    pathArtifactDistinctCount: poolPayload.poolBasesByArtifact
+      ? Object.keys(poolPayload.poolBasesByArtifact).length
+      : undefined
   });
 
   const activeWorkers = [];
@@ -574,11 +649,12 @@ async function runPathBatchMonteCarloWorkers({
         runId: idx,
         clientToken: token,
         trials: count,
-        poolBase: slimPool,
         phases,
+        poolBasesByArtifact: poolPayload.poolBasesByArtifact,
+        augCostByArtifact: poolPayload.augCostByArtifact,
+        defaultArtifactName: poolPayload.defaultArtifactName,
         initialSlotSnapshot,
-        slotCount,
-        augCost
+        slotCount
       });
     });
 
@@ -627,7 +703,6 @@ async function runPathBatchMonteCarloWorkers({
  */
 async function runPathBatchMonteCarlo({
   itemType,
-  artifactName,
   initialSlotSnapshot,
   phases,
   slotCount,
@@ -636,6 +711,7 @@ async function runPathBatchMonteCarlo({
   onTrialProgress
 }) {
   const tWall = performance.now();
+  const pathPoolPayload = buildPathPoolPayloadForWorker(itemType, phases);
   const successRolls = [];
   const successDust = [];
   const successPathMs = [];
@@ -652,7 +728,7 @@ async function runPathBatchMonteCarlo({
     const freshSnap = cloneSlotSnapshot(initialSlotSnapshot);
     const r = await runPathUntilComplete({
       itemType,
-      artifactName,
+      pathPoolPayload,
       initialSlotSnapshot: freshSnap,
       phases,
       slotCount,
@@ -724,6 +800,9 @@ function setProbabilityBusy(isBusy) {
   ids.forEach(id => {
     const el = document.getElementById(id);
     if (el) el.disabled = isBusy;
+  });
+  document.querySelectorAll('select.path-phase-artifact-select').forEach(el => {
+    el.disabled = isBusy;
   });
   const pathFieldset = document.getElementById('pathPhasesFieldset');
   if (pathFieldset) pathFieldset.disabled = isBusy;
@@ -800,7 +879,7 @@ function renderCompareCardsTableRows(results) {
     const expectedRollsText = r.impossible ? 'Unreachable' : r.expectedRolls.toFixed(2);
     const cells = [
       String(idx + 1),
-      r.card,
+      shortArtifactDisplayLabel(r.card),
       probabilityText,
       `${r.hits}/${r.trials}`,
       expectedDustText,
@@ -846,7 +925,7 @@ async function compareAllCards() {
   try {
     for (let i = 0; i < cardNames.length; i++) {
       const card = cardNames[i];
-      if (status) status.textContent = `Comparing cards... ${i + 1}/${cardNames.length} (${card})`;
+      if (status) status.textContent = `Comparing cards... ${i + 1}/${cardNames.length} (${shortArtifactDisplayLabel(card)})`;
       const res = await runMonteCarloForArtifact({
         itemType: it,
         targetNames: parsedTargets.targetNames,
@@ -855,7 +934,7 @@ async function compareAllCards() {
         onProgress: (done, total) => {
           if (token !== probabilityRunToken) return;
           if (done === total) return;
-          if (status) status.textContent = `Comparing cards... ${i + 1}/${cardNames.length} (${card}) ${done}/${total}`;
+          if (status) status.textContent = `Comparing cards... ${i + 1}/${cardNames.length} (${shortArtifactDisplayLabel(card)}) ${done}/${total}`;
         }
       });
       if (token !== probabilityRunToken || res.cancelled) return;
@@ -904,7 +983,7 @@ async function calculatePathProbability() {
 
   const pathBatchN = commitPathBatchTrialsInput();
   const pathRunBtn = document.getElementById('calcPathBtn');
-  const artifactName = document.getElementById('artifactCard').value;
+  const phase1Artifact = domPathArtifactValue('path-phase-1-artifact');
   const quickRaw = (document.getElementById('path-phase-1')?.value || '').trim();
   const quickParsedTargets = parseTargetList(quickRaw);
   const token = ++probabilityRunToken;
@@ -920,7 +999,7 @@ async function calculatePathProbability() {
         await runQuickEstimateSimulation({
           itemType: it,
           targetNames: quickParsedTargets.targetNames,
-          artifactName,
+          artifactName: phase1Artifact,
           token,
           out: quickOut,
           trials: quickMonteCarloTrials
@@ -966,7 +1045,6 @@ async function calculatePathProbability() {
       try {
         batch = await runPathBatchMonteCarloWorkers({
           itemType: it,
-          artifactName,
           initialSlotSnapshot,
           phases,
           slotCount: selectedSlots,
@@ -981,7 +1059,6 @@ async function calculatePathProbability() {
         console.warn('[enchant path-batch]', 'workers failed; falling back to main-thread loop', workerErr);
         batch = await runPathBatchMonteCarlo({
           itemType: it,
-          artifactName,
           initialSlotSnapshot,
           phases,
           slotCount: selectedSlots,
@@ -999,7 +1076,6 @@ async function calculatePathProbability() {
       });
       batch = await runPathBatchMonteCarlo({
         itemType: it,
-        artifactName,
         initialSlotSnapshot,
         phases,
         slotCount: selectedSlots,
@@ -1022,8 +1098,6 @@ async function calculatePathProbability() {
     });
 
     const summaryLines = [];
-    const artifactDisplay =
-      artifactName && artifactName !== 'None' ? artifactName : 'None (no card)';
     if (batch.nSuccess > 0) {
       summaryLines.push(`Average rolls: ${batch.avgRolls.toFixed(2)}`);
       summaryLines.push(`Average dust: ${batch.avgDust.toFixed(2)}`);
@@ -1033,7 +1107,15 @@ async function calculatePathProbability() {
       summaryLines.push(
         `Dust min / max: ${batch.minDust.toFixed(2)} / ${batch.maxDust.toFixed(2)}`
       );
-      summaryLines.push(`Artifact / Card: ${escapeEnchantHtml(artifactDisplay)}`);
+      const phaseCardHtml = phases
+        .map((ph, idx) => {
+          const nm = ph.pathArtifactName || 'None';
+          const disp =
+            nm && nm !== 'None' ? shortArtifactDisplayLabel(nm) : 'None (no card)';
+          return `Phase ${idx + 1} card: ${escapeEnchantHtml(disp)}`;
+        })
+        .join('<br>');
+      summaryLines.push(`Path augment cards:<br>${phaseCardHtml}`);
       summaryLines.push(`Average simulated path time: ${batch.avgPathMs.toFixed(1)} ms`);
       summaryLines.push('');
     }

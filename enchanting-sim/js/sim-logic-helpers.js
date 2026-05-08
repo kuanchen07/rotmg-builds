@@ -41,6 +41,13 @@ function isPathSimDisallowedTierName(name) {
 function getTargetDisplayLabel(targetNames) {
   return (targetNames || []).join(', ');
 }
+/** Short label for enchant-simulation UI only (path-phase selects, compare table, path summaries): strips leading "The " from `The … Tarot Card` names. Main artifact picker keeps full names + dust. */
+function shortArtifactDisplayLabel(name) {
+  const n = String(name || '').trim();
+  if (!n) return n;
+  if (/^the .+tarot card$/i.test(n)) return n.replace(/^the /i, '');
+  return n;
+}
 /** RealmEye-style stat names for `{gain} -{loss} Tradeoff {tier}` (alphabetical). */
 const STAT_TRADEOFF_STATS = ['Attack', 'Defense', 'Dexterity', 'Life', 'Mana', 'Speed', 'Vitality', 'Wisdom'];
 function statTradeoffMinusStatsForGain(gainStat) {
@@ -86,6 +93,17 @@ function syncPathStatTradeoffDisclosure() {
 }
 /** Max alternate rows for path phase 2 (`path-phase-2-alt-*`). */
 const PATH_PHASE_2_ALT_MAX = 12;
+/**
+ * True when phase 2 lists more than one OR target ({@link collectPathPhase2FromDom} / restore state semantics).
+ * Matches `displayNames.length > 1` in `buildPathPhasesFromInputs` before duplicate validation.
+ */
+function pathPhase2MultiOrTargets(p2) {
+  const anchor = ((p2 && p2.anchor) || '').trim();
+  const alts = ((p2 && p2.alts) || []).map(a => String(a).trim()).filter(Boolean);
+  const asymmetric = !!anchor;
+  const displayNames = asymmetric ? [anchor, ...alts] : alts;
+  return displayNames.length > 1;
+}
 const monteCarloPoolBaseCache = new Map();
 function clearMonteCarloPoolBaseCache() {
   monteCarloPoolBaseCache.clear();

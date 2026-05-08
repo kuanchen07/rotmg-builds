@@ -165,12 +165,16 @@ function renderSlots() {
 function readPathPhaseValues() {
   const ids = [
     'path-phase-1',
+    'path-phase-1-artifact',
     'path-phase-2-anchor',
+    'path-phase-2-artifact',
     'path-phase-2-or',
     'path-phase-2a',
     'path-phase-2b',
     'path-phase-3',
-    'path-phase-4'
+    'path-phase-3-artifact',
+    'path-phase-4',
+    'path-phase-4-artifact'
   ];
   const out = {};
   for (const id of ids) {
@@ -270,6 +274,75 @@ function collectPathPhase2FromDom() {
   }
   return { anchor, alts };
 }
+
+/** Fill a &lt;select&gt; with the same artifact/card option groups as the main rolling augment.
+ * @param {{ compactLabels?: boolean }} [opts] — if true (enchant-sim path phases only), omit dust in labels and shorten tarot names.
+ */
+function fillArtifactSelectOptions(selectEl, preferredValue, opts) {
+  if (!selectEl) return;
+  const compact = !!(opts && opts.compactLabels);
+  const preserved =
+    preferredValue != null ? String(preferredValue) : String(selectEl.value || 'None');
+  selectEl.innerHTML = '';
+
+  const none = document.createElement('option');
+  none.value = 'None';
+  none.textContent = compact ? 'None' : 'None (0 Dust)';
+  none.dataset.cost = 0;
+  selectEl.appendChild(none);
+
+  const artifacts = window.__RAW_ARTS || [];
+  const engravings = window.__RAW_ENVS || [];
+  const isTarot = x => /tarot/i.test(x.category || '') || /^the .*tarot card$/i.test(x.name || '');
+  const isPremium = x => /premium/i.test(x.category || '') || /^premium /i.test(x.name || '');
+  const isArtifact = x => !isTarot(x) && !isPremium(x);
+
+  const addGroup = (label, list) => {
+    if (!list.length) return;
+    const g = document.createElement('optgroup');
+    g.label = `— ${label} —`;
+    list.forEach(a => {
+      const o = document.createElement('option');
+      o.value = a.name;
+      const cost = Number(a.cost || 0);
+      o.dataset.cost = cost;
+      o.textContent = compact
+        ? shortArtifactDisplayLabel(a.name)
+        : `${a.name} (${cost} Dust)`;
+      g.appendChild(o);
+    });
+    selectEl.appendChild(g);
+  };
+
+  addGroup('Tarot Cards', artifacts.filter(isTarot));
+  addGroup('Artifacts', artifacts.filter(isArtifact));
+  addGroup('Premium Cards', artifacts.filter(isPremium));
+  if (INCLUDE_ENGRAVINGS_IN_UI) addGroup('Engravings', engravings);
+
+  const vals = [...selectEl.options].map(o => o.value);
+  selectEl.value = vals.includes(preserved) ? preserved : 'None';
+}
+
+/** Appends augment &lt;select&gt; to a flex row (same line as Enchantment input). */
+function appendPathPhaseArtifactSelect(rowEl, selectId, savedValue) {
+  if (!rowEl) return;
+  const sel = document.createElement('select');
+  sel.id = selectId;
+  sel.className = 'path-phase-artifact-select';
+  sel.setAttribute('aria-label', 'Augment card for this path phase');
+  fillArtifactSelectOptions(sel, savedValue != null ? savedValue : 'None', { compactLabels: true });
+  sel.addEventListener('change', () => {
+    clearMonteCarloPoolBaseCache();
+  });
+  rowEl.appendChild(sel);
+}
+
+function refreshPathPhaseArtifactDropdowns() {
+  document.querySelectorAll('select.path-phase-artifact-select').forEach(sel => {
+    fillArtifactSelectOptions(sel, sel.value, { compactLabels: true });
+  });
+}
+
 function createPathStep(stepper, stepNum, { title }, contentFn) {
   const step = document.createElement('div');
   step.className = 'path-step';
@@ -530,10 +603,10 @@ function mountStatTradeoffPickerSection(mount) {
   disclosure.appendChild(wrap);
   mount.appendChild(disclosure);
 }
-function renderPathPhaseUI() {
+function renderPathPhaseUI(phaseValuesOverride) {
   const mount = document.getElementById('pathPhasesMount');
   if (!mount) return;
-  const prev = readPathPhaseValues();
+  const prev = phaseValuesOverride !== undefined ? phaseValuesOverride : readPathPhaseValues();
   mount.innerHTML = '';
   mount.className = 'path-row path-stepper';
 
@@ -542,7 +615,7 @@ function renderPathPhaseUI() {
 
   createPathStep(mount, stepNum, { title: '1st target' }, body => {
     const wrap = document.createElement('div');
-    wrap.className = 'path-step__field path-step__field--flush';
+    wrap.className = 'path-step__field path-step__field--flush path-phase-inline-row';
     const w = document.createElement('div');
     w.className = 'target-enchant-wrap';
     const input = document.createElement('input');
@@ -553,6 +626,7 @@ function renderPathPhaseUI() {
     input.value = prev['path-phase-1'] || '';
     w.appendChild(input);
     wrap.appendChild(w);
+    appendPathPhaseArtifactSelect(wrap, 'path-phase-1-artifact', prev['path-phase-1-artifact']);
     body.appendChild(wrap);
     if (typeof window.initEnchantTargetAutocomplete === 'function') {
       window.initEnchantTargetAutocomplete(input, { excludePathSimTier12: true });
@@ -579,7 +653,11 @@ function renderPathPhaseUI() {
       ancInp.value = p2.anchor || '';
       ancWrap.appendChild(ancInp);
       ancBlock.appendChild(ancLabel);
-      ancBlock.appendChild(ancWrap);
+      const anchorRow = document.createElement('div');
+      anchorRow.className = 'path-phase-inline-row';
+      anchorRow.appendChild(ancWrap);
+      appendPathPhaseArtifactSelect(anchorRow, 'path-phase-2-artifact', prev['path-phase-2-artifact']);
+      ancBlock.appendChild(anchorRow);
       body.appendChild(ancBlock);
       if (typeof window.initEnchantTargetAutocomplete === 'function') {
         window.initEnchantTargetAutocomplete(ancInp, { excludePathSimTier12: true });
@@ -628,10 +706,14 @@ function renderPathPhaseUI() {
     stepNum++;
   }
 
-  if (selectedSlots === 3) {
+  const showAutoThirdTarget =
+    selectedSlots === 3 || (selectedSlots >= 4 && pathPhase2MultiOrTargets(p2));
+  if (showAutoThirdTarget) {
     createPathStep(mount, stepNum, { title: '3rd target' }, body => {
-      const badgeRow = document.createElement('div');
-      badgeRow.className = 'path-step__auto-row';
+      const row = document.createElement('div');
+      row.className = 'path-phase-inline-row path-step__auto-inline';
+      const meta = document.createElement('div');
+      meta.className = 'path-step__auto-row path-step__auto-row--grow';
       const badge = document.createElement('span');
       badge.className = 'path-step__badge-auto';
       badge.textContent = 'Auto';
@@ -639,19 +721,22 @@ function renderPathPhaseUI() {
       desc.className = 'path-hint path-step__auto-desc';
       desc.textContent =
         'After phase 2: either OR the remaining alternates, or anchor-only, depending on what locked first.';
-      badgeRow.appendChild(badge);
-      badgeRow.appendChild(desc);
-      body.appendChild(badgeRow);
+      meta.appendChild(badge);
+      meta.appendChild(desc);
+      row.appendChild(meta);
+      appendPathPhaseArtifactSelect(row, 'path-phase-3-artifact', prev['path-phase-3-artifact']);
+      body.appendChild(row);
     });
     stepNum++;
   }
 
   if (selectedSlots >= 4) {
-    for (let phase = 3; phase <= selectedSlots; phase++) {
+    const startManual = pathPhase2MultiOrTargets(p2) ? 4 : 3;
+    for (let phase = startManual; phase <= selectedSlots; phase++) {
       const ph = phase;
       createPathStep(mount, stepNum, { title: `${formatOrdinal(phase)} target` }, body => {
         const wrap = document.createElement('div');
-        wrap.className = 'path-step__field path-step__field--flush';
+        wrap.className = 'path-step__field path-step__field--flush path-phase-inline-row';
         const w = document.createElement('div');
         w.className = 'target-enchant-wrap';
         const input = document.createElement('input');
@@ -662,6 +747,11 @@ function renderPathPhaseUI() {
         input.value = prev[`path-phase-${ph}`] || '';
         w.appendChild(input);
         wrap.appendChild(w);
+        appendPathPhaseArtifactSelect(
+          wrap,
+          `path-phase-${ph}-artifact`,
+          prev[`path-phase-${ph}-artifact`]
+        );
         body.appendChild(wrap);
         if (typeof window.initEnchantTargetAutocomplete === 'function') {
           window.initEnchantTargetAutocomplete(input, { excludePathSimTier12: true });
@@ -677,37 +767,13 @@ function renderPathPhaseUI() {
 }
 /* ========================== UI: Augment dropdown + info ========================== */
 function populateAugmentDropdown() {
-  const sel = document.getElementById('artifactCard'); sel.innerHTML = '';
-  const none = document.createElement('option');
-  none.value = 'None'; none.textContent = 'None (0 Dust)'; none.dataset.cost = 0; sel.appendChild(none);
-
-  const artifacts = window.__RAW_ARTS || [];
-  const engravings = window.__RAW_ENVS || [];
-  const isTarot = x => /tarot/i.test(x.category || '') || /^the .*tarot card$/i.test(x.name || '');
-  const isPremium = x => /premium/i.test(x.category || '') || /^premium /i.test(x.name || '');
-  const isArtifact = x => (!isTarot(x) && !isPremium(x));
-
-  const addGroup = (label, list) => {
-    if (!list.length) return;
-    const g = document.createElement('optgroup'); g.label = `— ${label} —`;
-    list.forEach(a => {
-      const o = document.createElement('option');
-      o.value = a.name;
-      const cost = Number(a.cost || 0);
-      o.dataset.cost = cost;
-      o.textContent = `${a.name} (${cost} Dust)`;
-      g.appendChild(o);
-    });
-    sel.appendChild(g);
-  };
-  addGroup('Tarot Cards', artifacts.filter(isTarot));
-  addGroup('Artifacts', artifacts.filter(isArtifact));
-  addGroup('Premium Cards', artifacts.filter(isPremium));
-  if (INCLUDE_ENGRAVINGS_IN_UI) addGroup('Engravings', engravings);
+  const sel = document.getElementById('artifactCard');
+  fillArtifactSelectOptions(sel, sel?.value || 'None');
 
   sel.onchange = () => { updateAugmentInfo(); refreshEligibility(); enforceLockValidity(); updateWeightDebug(); };
   sel.addEventListener('change', () => clearMonteCarloPoolBaseCache());
   updateAugmentInfo();
+  refreshPathPhaseArtifactDropdowns();
 }
 function updateAugmentInfo() {
   const selName = document.getElementById('artifactCard').value;

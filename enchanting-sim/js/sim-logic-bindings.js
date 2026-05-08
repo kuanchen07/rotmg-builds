@@ -90,6 +90,8 @@ function bindEvents() {
     commitPathBatchTrialsInput();
     pathBatchInput.addEventListener('input', updatePathBatchRunButtonLabel);
   }
+  const clearSimBtn = document.getElementById('clearEnchantSimulationBtn');
+  if (clearSimBtn) clearSimBtn.onclick = resetEnchantSimulation;
   // Initialize Weight Breakdown collapsed by default
   const det = document.getElementById('weightDetails');
   det.style.display = 'none';

@@ -274,8 +274,44 @@
     return { min: lo, max: hi };
   }
 
+  function usesPerArtifactPathPools(fullParams) {
+    const map = fullParams.poolBasesByArtifact;
+    return map && typeof map === "object" && Object.keys(map).length > 0;
+  }
+
+  /** Pick augment pool/cost for this path phase ({ pathArtifactName } comes from orchestration). */
+  function pickPoolForPhaseRoll(phase, fullParams) {
+    if (!usesPerArtifactPathPools(fullParams)) {
+      if (!fullParams.poolBase) {
+        return { missing: true };
+      }
+      ensurePoolCompatibilityMatrix(fullParams.poolBase);
+      return { poolBase: fullParams.poolBase, augCost: Number(fullParams.augCost) || 0 };
+    }
+    const defaultName =
+      fullParams.defaultArtifactName != null && String(fullParams.defaultArtifactName).trim() !== ""
+        ? String(fullParams.defaultArtifactName).trim()
+        : "None";
+    const raw = phase.pathArtifactName;
+    const name =
+      raw != null && String(raw).trim() !== "" ? String(raw).trim() : defaultName;
+    const poolBase = fullParams.poolBasesByArtifact[name];
+    let augCost = 0;
+    if (
+      fullParams.augCostByArtifact &&
+      fullParams.augCostByArtifact[name] != null
+    ) {
+      augCost = fullParams.augCostByArtifact[name];
+    }
+    if (!poolBase) {
+      return { missing: true };
+    }
+    ensurePoolCompatibilityMatrix(poolBase);
+    return { poolBase, augCost };
+  }
+
   /**
-   * @param {object} params
+   * @param {object} params — legacy: poolBase + augCost; preferred: poolBasesByArtifact + augCostByArtifact + defaultArtifactName
    * @param {() => boolean} [params.shouldCancel] - if true, return cancelled (checked between rolls / phases)
    */
   function runPathUntilCompleteSync({
@@ -284,9 +320,24 @@
     initialSlotSnapshot,
     slotCount,
     augCost,
+    poolBasesByArtifact,
+    augCostByArtifact,
+    defaultArtifactName,
     shouldCancel
   }) {
-    ensurePoolCompatibilityMatrix(poolBase);
+    const fullParams = {
+      poolBase,
+      phases,
+      initialSlotSnapshot,
+      slotCount,
+      augCost,
+      poolBasesByArtifact,
+      augCostByArtifact,
+      defaultArtifactName
+    };
+    if (!usesPerArtifactPathPools(fullParams)) {
+      if (poolBase) ensurePoolCompatibilityMatrix(poolBase);
+    }
     const start = performance.now();
     let snapshot = cloneSlotSnapshot(initialSlotSnapshot);
     let totalRolls = 0;
@@ -342,13 +393,18 @@
         return { impossible: true, totalRolls, totalDust, elapsedMs: performance.now() - start };
       }
 
+      const rolled = pickPoolForPhaseRoll(phase, fullParams);
+      if (rolled.missing) {
+        return { impossible: true, totalRolls, totalDust, elapsedMs: performance.now() - start };
+      }
+
       let phaseSolved = false;
-      const pathPhaseCtx = buildMonteCarloContextFromBase(poolBase, {
+      const pathPhaseCtx = buildMonteCarloContextFromBase(rolled.poolBase, {
         targetNorms: activePhase.targetNorms,
         slotSnapshot: snapshot,
         requireNewTarget: !!activePhase.requireNewTarget,
         slotCount,
-        augCost
+        augCost: rolled.augCost
       });
 
       if (pathPhaseCtx.hasLockedAnyTarget) {
@@ -371,6 +427,10 @@
         }
 
         pathPhaseCtx.slotSnapshot = snapshot;
+
+        const lockedBeforeRoll = snapshot.filter(s => s.locked && s.enchant).length;
+        pathPhaseCtx.perRollDust =
+          ((BASE_DUST[slotCount] || 0) + rolled.augCost) * Math.pow(2, lockedBeforeRoll);
 
         const rollResult = simulateOneRollAndCapture(pathPhaseCtx);
         pathPhaseCtx.validSetCache.clear();
@@ -400,11 +460,26 @@
     initialSlotSnapshot,
     slotCount,
     augCost,
+    poolBasesByArtifact,
+    augCostByArtifact,
+    defaultArtifactName,
     checkCancel,
     onProgress,
     yieldEveryRolls = 2500
   }) {
-    ensurePoolCompatibilityMatrix(poolBase);
+    const fullParams = {
+      poolBase,
+      phases,
+      initialSlotSnapshot,
+      slotCount,
+      augCost,
+      poolBasesByArtifact,
+      augCostByArtifact,
+      defaultArtifactName
+    };
+    if (!usesPerArtifactPathPools(fullParams)) {
+      if (poolBase) ensurePoolCompatibilityMatrix(poolBase);
+    }
     const start = performance.now();
     let snapshot = cloneSlotSnapshot(initialSlotSnapshot);
     let totalRolls = 0;
@@ -460,13 +535,18 @@
         return { impossible: true, totalRolls, totalDust, elapsedMs: performance.now() - start };
       }
 
+      const rolledAsync = pickPoolForPhaseRoll(phase, fullParams);
+      if (rolledAsync.missing) {
+        return { impossible: true, totalRolls, totalDust, elapsedMs: performance.now() - start };
+      }
+
       let phaseSolved = false;
-      const pathPhaseCtx = buildMonteCarloContextFromBase(poolBase, {
+      const pathPhaseCtx = buildMonteCarloContextFromBase(rolledAsync.poolBase, {
         targetNorms: activePhase.targetNorms,
         slotSnapshot: snapshot,
         requireNewTarget: !!activePhase.requireNewTarget,
         slotCount,
-        augCost
+        augCost: rolledAsync.augCost
       });
 
       if (pathPhaseCtx.hasLockedAnyTarget) {
@@ -489,6 +569,10 @@
         }
 
         pathPhaseCtx.slotSnapshot = snapshot;
+
+        const lockedBeforeRoll = snapshot.filter(s => s.locked && s.enchant).length;
+        pathPhaseCtx.perRollDust =
+          ((BASE_DUST[slotCount] || 0) + rolledAsync.augCost) * Math.pow(2, lockedBeforeRoll);
 
         const rollResult = simulateOneRollAndCapture(pathPhaseCtx);
         pathPhaseCtx.validSetCache.clear();
@@ -523,6 +607,9 @@
     initialSlotSnapshot,
     slotCount,
     augCost,
+    poolBasesByArtifact,
+    augCostByArtifact,
+    defaultArtifactName,
     trials,
     shouldCancel
   }) {
@@ -544,6 +631,9 @@
         initialSlotSnapshot: freshSnap,
         slotCount,
         augCost,
+        poolBasesByArtifact,
+        augCostByArtifact,
+        defaultArtifactName,
         shouldCancel
       });
       if (r.cancelled) {

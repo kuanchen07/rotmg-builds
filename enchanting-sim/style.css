@@ -237,6 +237,23 @@
   background: var(--sim-danger-hover);
 }
 
+.enchant-sim-shell button.enchant-sim-clear-btn {
+  flex-shrink: 0;
+  align-self: center;
+  margin: 0;
+  padding: 0.29rem 0.43rem;
+  border-radius: 7px;
+  font-size: calc(0.82rem * 0.7);
+  background: var(--sim-danger);
+  border-color: #bd5d71;
+  color: #ffe6eb;
+  font-weight: 600;
+}
+
+.enchant-sim-shell button.enchant-sim-clear-btn:hover {
+  background: var(--sim-danger-hover);
+}
+
 .enchant-sim-shell .slot-btn {
   position: relative;
   display: inline-flex;
@@ -721,6 +738,33 @@
 
 .enchant-sim-shell .path-phase-sublabel--spaced {
   margin-top: 0.55rem;
+}
+
+.enchant-sim-shell .path-phase-inline-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 0.75rem;
+}
+
+.enchant-sim-shell .path-phase-inline-row > .target-enchant-wrap {
+  flex: 1 1 12rem;
+  min-width: 0;
+}
+
+.enchant-sim-shell .path-phase-inline-row > .path-phase-artifact-select {
+  flex: 0 1 16rem;
+  min-width: 10rem;
+  max-width: 22rem;
+}
+
+.enchant-sim-shell .path-step__auto-row--grow {
+  flex: 1 1 12rem;
+  min-width: 0;
+}
+
+.enchant-sim-shell .path-step__auto-inline {
+  align-items: flex-start;
 }
 
 .enchant-sim-shell .path-phase-2-anchor-block {

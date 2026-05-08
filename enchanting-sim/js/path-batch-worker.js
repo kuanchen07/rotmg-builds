@@ -16,6 +16,9 @@ onmessage = function (e) {
     runId,
     trials,
     poolBase,
+    poolBasesByArtifact,
+    augCostByArtifact,
+    defaultArtifactName,
     phases,
     initialSlotSnapshot,
     slotCount,
@@ -24,6 +27,9 @@ onmessage = function (e) {
 
   const result = PathSimCore.runPathBatchChunk({
     poolBase,
+    poolBasesByArtifact,
+    augCostByArtifact,
+    defaultArtifactName,
     phases,
     initialSlotSnapshot,
     slotCount,
