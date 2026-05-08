@@ -336,6 +336,11 @@
   flex-wrap: wrap;
 }
 
+/* Author `display: flex` wins over UA `[hidden]` otherwise; hide at max grade. */
+.key-sim__grade-flow[hidden] {
+  display: none;
+}
+
 .key-sim__grade-badge {
   display: inline-flex;
   align-items: center;
