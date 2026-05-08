@@ -795,7 +795,11 @@ function updateAugmentInfo() {
   }
   if (a.uniqueMultiplier) lines.push(`Unique ×${a.uniqueMultiplier}`);
   if (a.awakenedMultiplier) lines.push(`Awakened ×${a.awakenedMultiplier}`);
-  if (a.minTier != null) lines.push(`Min Tier: ${a.minTier}`);
+  if (a.minTier != null) {
+    lines.push(`Min Tier: ${a.minTier}`);
+    const floorMult = MIN_TIER_FLOOR_MULT[a.minTier];
+    if (floorMult != null) lines.push(`Floor tier weight: ×${floorMult}`);
+  }
   if (a.guaranteedMods && a.guaranteedMods.length) lines.push(`Guarantees: ${a.guaranteedMods.join(', ')} (when eligible)`);
   lines.push(`Affected Enchants: ${countAffectedEnchants(a)}`);
   box.textContent = lines.join('\n');
@@ -859,6 +863,10 @@ function getTierFromLabels(labs) {
   }
   return null;
 }
+
+/** Extra weight on the floor tier row for augment minTier (matches in-game silver/gold floor). */
+const MIN_TIER_FLOOR_MULT = { 2: 2.166, 3: 4.25 };
+
 function applyAugmentMultipliers(pool) {
   const sel = document.getElementById('artifactCard')?.value || 'None';
   const aug = AUGMENTS_BY_NAME?.[sel];
@@ -874,19 +882,15 @@ function applyAugmentMultipliers(pool) {
   return pool.map(e => {
     const labels = e.labels || [];
     let base = e.weight;
+    const tierNum = getTierFromLabels(labels);
 
     // Min tier filter (if present)
-    if (aug.minTier && aug.minTier > 1) {
-      // Find a TIERN label (e.g., TIER1, TIER2)
-      const tierTag = labels.find(l => /^TIER(\d+)$/.test(l));
-      if (tierTag) {
-        const t = parseInt(tierTag.match(/^TIER(\d+)$/)[1], 10);
-        if (t < aug.minTier) {
-          // Exclude by tier
-          return { ...e, weight: 0, _excludedByTier: true };
-        }
-      }
+    if (aug.minTier && aug.minTier > 1 && tierNum != null && tierNum < aug.minTier) {
+      return { ...e, weight: 0, _excludedByTier: true };
     }
+
+    const minTierFloorMult =
+      aug.minTier && tierNum === aug.minTier ? (MIN_TIER_FLOOR_MULT[aug.minTier] ?? 1) : 1;
 
     // Multipliers from label keys
     let bestStatMult = 1;     // take the max among stat-family keys
@@ -924,7 +928,7 @@ function applyAugmentMultipliers(pool) {
       stackedMult *= aug.awakened[e.name];
     }
 
-    const finalWeight = Math.max(0, Math.floor(base * bestStatMult * stackedMult));
+    const finalWeight = Math.max(0, Math.floor(base * minTierFloorMult * bestStatMult * stackedMult));
     return { ...e, weight: finalWeight };
   });
 }
