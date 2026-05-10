@@ -16,6 +16,9 @@
     if (path === "keys/xp.png" || path === "keys/dust.png" || path === "keys/loot.png") {
       return keyIconAssetPrefix() + path;
     }
+    if (path.indexOf("keys/grade/") === 0) {
+      return keyIconAssetPrefix() + path;
+    }
     if (path.indexOf("keys/") === 0) {
       return KEYS_CDN_BASE + path;
     }
@@ -28,6 +31,24 @@
 
   var GRADE_ORDER = ["D", "C", "B", "A", "S"];
   var SLOTS_BY_GRADE = { D: 1, C: 1, B: 2, A: 3, S: 4 };
+  var GRADE_GREY_ICON_REL = "keys/grade/grey-grade.jpg";
+  var GRADE_PIP_ICON_BY_LETTER = {
+    D: "keys/grade/green-grade.jpg",
+    C: "keys/grade/blue-grade.jpg",
+    B: "keys/grade/purple-grade.jpg",
+    A: "keys/grade/gold-grade.jpg",
+    S: "keys/grade/red-grade.jpg"
+  };
+
+  /** @returns {string} relative path under icons/ for keyIconUrl */
+  function gradePipIconRel(grade, slotIndex) {
+    if (grade == null) return GRADE_GREY_ICON_REL;
+    var n = GRADE_ORDER.indexOf(grade) + 1;
+    if (n <= 0 || slotIndex < 0) return GRADE_GREY_ICON_REL;
+    var colorRel = GRADE_PIP_ICON_BY_LETTER[grade];
+    if (!colorRel) return GRADE_GREY_ICON_REL;
+    return slotIndex < n ? colorRel : GRADE_GREY_ICON_REL;
+  }
 
   function isCompatible(candidate, chosenArray) {
     var cLabels = new Set(candidate.labels || []);
@@ -301,7 +322,10 @@
     var prefixEl = document.getElementById("keySimGradeFlowPrefix");
     var diamondEl = document.getElementById("keySimGradeDiamond");
     if (prefixEl) prefixEl.hidden = g == null;
-    if (diamondEl) diamondEl.hidden = g != null;
+    if (diamondEl) {
+      diamondEl.hidden = g != null;
+      diamondEl.src = keyIconUrl(GRADE_GREY_ICON_REL);
+    }
 
     var gFrom = document.getElementById("keySimGradeFrom");
     var gTo = document.getElementById("keySimGradeTo");
@@ -323,11 +347,14 @@
     var pipsRoot = document.getElementById("keySimPips");
     if (pipsRoot) {
       pipsRoot.innerHTML = "";
-      var filled = g == null ? 0 : GRADE_ORDER.indexOf(g) + 1;
-      if (filled < 0) filled = 0;
       for (var p = 0; p < 5; p += 1) {
-        var pip = document.createElement("span");
-        pip.className = "key-sim__pip" + (p < filled ? " key-sim__pip--on" : "");
+        var pip = document.createElement("img");
+        pip.className = "key-sim__pip";
+        pip.src = keyIconUrl(gradePipIconRel(g, p));
+        pip.alt = "";
+        pip.width = 12;
+        pip.height = 12;
+        pip.decoding = "async";
         pipsRoot.appendChild(pip);
       }
     }
@@ -466,39 +493,58 @@
     }
 
     var rollBtn = document.getElementById("keySimRoll");
-    function doRoll() {
+    function tryRollForGrade(grade) {
       var d = currentDungeon();
       if (!d || !state.mods.length) {
         setError("Select a dungeon.");
-        return;
+        return false;
       }
+      var pool = buildBasePool(state.mods, d, grade);
+      if (!pool.length) {
+        setError("No rollable mods match this dungeon and grade (check filters).");
+        renderSlots();
+        return false;
+      }
+      setError("");
+      rollUnlockedSlots(state, pool);
+      renderSlots();
+      return true;
+    }
+    function doRoll() {
       if (state.grade == null) {
         setError("Upgrade to Grade D to roll mods.");
         return;
       }
-      setError("");
-      var pool = buildBasePool(state.mods, d, state.grade);
-      if (!pool.length) {
-        setError("No rollable mods match this dungeon and grade (check filters).");
-        renderSlots();
-        return;
-      }
-      rollUnlockedSlots(state, pool);
-      renderSlots();
+      tryRollForGrade(state.grade);
     }
     if (rollBtn) rollBtn.addEventListener("click", doRoll);
 
     var up = document.getElementById("keySimUpgrade");
     if (up) {
       up.addEventListener("click", function () {
+        var d = currentDungeon();
+        if (!d || !state.mods.length) {
+          setError("Select a dungeon.");
+          return;
+        }
+        var nextGrade;
         if (state.grade == null) {
-          state.grade = "D";
+          nextGrade = "D";
         } else {
           var ix = GRADE_ORDER.indexOf(state.grade);
           if (ix < 0 || ix >= GRADE_ORDER.length - 1) return;
-          state.grade = GRADE_ORDER[ix + 1];
+          nextGrade = GRADE_ORDER[ix + 1];
         }
+        var pool = buildBasePool(state.mods, d, nextGrade);
+        if (!pool.length) {
+          setError("No rollable mods match this dungeon and grade (check filters).");
+          renderSlots();
+          return;
+        }
+        state.grade = nextGrade;
         syncSlotCount(state);
+        setError("");
+        rollUnlockedSlots(state, pool);
         renderKeyChrome();
         renderSlots();
         renderUpgradeDisabled();
