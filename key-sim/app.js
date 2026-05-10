@@ -74,6 +74,7 @@
   }
 
   function tierAllowedSet(grade) {
+    if (grade == null) return new Set();
     if (grade === "D") return new Set([1]);
     if (grade === "C") return new Set([1, 2]);
     if (grade === "B" || grade === "A") return new Set([1, 2, 3, 4]);
@@ -147,7 +148,8 @@
   }
 
   function syncSlotCount(state) {
-    var n = SLOTS_BY_GRADE[state.grade];
+    var n = state.grade == null ? 0 : SLOTS_BY_GRADE[state.grade];
+    if (n == null || isNaN(n)) n = 0;
     while (state.slots.length < n) {
       state.slots.push({ mod: null, locked: false });
     }
@@ -254,8 +256,8 @@
     dungeons: [],
     visibleDungeonIndices: [],
     dungeonIndex: 0,
-    grade: "D",
-    slots: [{ mod: null, locked: false }]
+    grade: null,
+    slots: []
   };
 
   function currentDungeon() {
@@ -284,29 +286,45 @@
   function renderKeyChrome() {
     var g = state.grade;
     var cardG = document.getElementById("keySimCardGrade");
-    if (cardG) cardG.textContent = "Grade " + g;
+    if (cardG) cardG.textContent = g == null ? "No Grade" : "Grade " + g;
 
     var gradeFlow = document.getElementById("keySimGradeFlow");
-    if (gradeFlow) gradeFlow.hidden = g === "S";
+    if (gradeFlow) {
+      gradeFlow.hidden = g === "S";
+      if (g == null) {
+        gradeFlow.setAttribute("aria-label", "No grade. Upgrade to reach Grade D.");
+      } else {
+        gradeFlow.removeAttribute("aria-label");
+      }
+    }
+
+    var prefixEl = document.getElementById("keySimGradeFlowPrefix");
+    var diamondEl = document.getElementById("keySimGradeDiamond");
+    if (prefixEl) prefixEl.hidden = g == null;
+    if (diamondEl) diamondEl.hidden = g != null;
 
     var gFrom = document.getElementById("keySimGradeFrom");
     var gTo = document.getElementById("keySimGradeTo");
-    if (gFrom) gFrom.textContent = g;
+    if (gFrom && g != null) gFrom.textContent = g;
     if (gTo) {
-      var ix = GRADE_ORDER.indexOf(g);
-      if (ix < 0 || ix >= GRADE_ORDER.length - 1) {
-        gTo.textContent = "—";
+      if (g == null) {
+        gTo.textContent = "D";
       } else {
-        gTo.textContent = GRADE_ORDER[ix + 1];
+        var ix = GRADE_ORDER.indexOf(g);
+        if (ix < 0 || ix >= GRADE_ORDER.length - 1) {
+          gTo.textContent = "—";
+        } else {
+          gTo.textContent = GRADE_ORDER[ix + 1];
+        }
       }
+      gTo.classList.toggle("key-sim__grade-badge--tier-d", g == null);
     }
 
     var pipsRoot = document.getElementById("keySimPips");
     if (pipsRoot) {
       pipsRoot.innerHTML = "";
-      var filled = GRADE_ORDER.indexOf(g);
+      var filled = g == null ? 0 : GRADE_ORDER.indexOf(g) + 1;
       if (filled < 0) filled = 0;
-      filled += 1;
       for (var p = 0; p < 5; p += 1) {
         var pip = document.createElement("span");
         pip.className = "key-sim__pip" + (p < filled ? " key-sim__pip--on" : "");
@@ -438,13 +456,12 @@
         if (isNaN(visPick) || visPick < 0) visPick = 0;
         var vis = state.visibleDungeonIndices || [];
         state.dungeonIndex = vis.length && vis[visPick] != null ? vis[visPick] : 0;
-        for (var j = 0; j < state.slots.length; j += 1) {
-          state.slots[j].mod = null;
-          state.slots[j].locked = false;
-        }
+        state.grade = null;
+        syncSlotCount(state);
         renderKeyIcon();
         renderKeyChrome();
         renderSlots();
+        renderUpgradeDisabled();
       });
     }
 
@@ -453,6 +470,10 @@
       var d = currentDungeon();
       if (!d || !state.mods.length) {
         setError("Select a dungeon.");
+        return;
+      }
+      if (state.grade == null) {
+        setError("Upgrade to Grade D to roll mods.");
         return;
       }
       setError("");
@@ -470,9 +491,13 @@
     var up = document.getElementById("keySimUpgrade");
     if (up) {
       up.addEventListener("click", function () {
-        var ix = GRADE_ORDER.indexOf(state.grade);
-        if (ix < 0 || ix >= GRADE_ORDER.length - 1) return;
-        state.grade = GRADE_ORDER[ix + 1];
+        if (state.grade == null) {
+          state.grade = "D";
+        } else {
+          var ix = GRADE_ORDER.indexOf(state.grade);
+          if (ix < 0 || ix >= GRADE_ORDER.length - 1) return;
+          state.grade = GRADE_ORDER[ix + 1];
+        }
         syncSlotCount(state);
         renderKeyChrome();
         renderSlots();

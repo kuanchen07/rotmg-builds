@@ -38,18 +38,21 @@
               </div>
             </div>
             <div class="key-sim__grade-ribbon">
-              <span id="keySimCardGrade">Grade D</span>
+              <span id="keySimCardGrade">No Grade</span>
             </div>
             <div class="key-sim__pips" id="keySimPips" aria-hidden="true"></div>
             <button type="button" id="keySimUpgrade" class="key-sim__pill key-sim__pill--gold">
               <span>Upgrade</span>
             </button>
-            <p class="key-sim__grade-flow" id="keySimGradeFlow">
-              Grade
-              <span class="key-sim__grade-badge" id="keySimGradeFrom">D</span>
+            <p class="key-sim__grade-flow" id="keySimGradeFlow" aria-label="No grade. Upgrade to reach Grade D.">
+              <span class="key-sim__grade-flow-prefix" id="keySimGradeFlowPrefix" hidden>
+                <span class="key-sim__grade-flow-prefix-label">Grade</span>
+                <span class="key-sim__grade-badge" id="keySimGradeFrom">D</span>
+              </span>
+              <span class="key-sim__grade-diamond" id="keySimGradeDiamond" aria-hidden="true"></span>
               <span class="key-sim__grade-arrow" aria-hidden="true">▶</span>
-              Grade
-              <span class="key-sim__grade-badge key-sim__grade-badge--next" id="keySimGradeTo">C</span>
+              <span id="keySimGradeMidLabel">Grade</span>
+              <span class="key-sim__grade-badge key-sim__grade-badge--next key-sim__grade-badge--tier-d" id="keySimGradeTo">D</span>
             </p>
             <div class="key-sim__corner key-sim__corner--bl" aria-hidden="true"></div>
             <div class="key-sim__corner key-sim__corner--br" aria-hidden="true"></div>
