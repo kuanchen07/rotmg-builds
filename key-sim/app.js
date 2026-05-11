@@ -40,6 +40,15 @@
     S: "keys/grade/red-grade.jpg"
   };
 
+  /** Base accent hex per grade — keep in sync with --ks-key-accent on .key-sim__key-card--grade-* in style.css */
+  var GRADE_BANNER_BASE = {
+    D: "#2a7f44",
+    C: "#4661c8",
+    B: "#783fa0",
+    A: "#e1b61a",
+    S: "#99104d"
+  };
+
   /** @returns {string} relative path under icons/ for keyIconUrl */
   function gradePipIconRel(grade, slotIndex) {
     if (grade == null) return GRADE_GREY_ICON_REL;
@@ -306,6 +315,22 @@
 
   function renderKeyChrome() {
     var g = state.grade;
+    var keyCard = document.querySelector(".key-sim__key-card");
+    if (keyCard) {
+      keyCard.classList.remove(
+        "key-sim__key-card--grade-d",
+        "key-sim__key-card--grade-c",
+        "key-sim__key-card--grade-b",
+        "key-sim__key-card--grade-a",
+        "key-sim__key-card--grade-s"
+      );
+      if (g === "D") keyCard.classList.add("key-sim__key-card--grade-d");
+      else if (g === "C") keyCard.classList.add("key-sim__key-card--grade-c");
+      else if (g === "B") keyCard.classList.add("key-sim__key-card--grade-b");
+      else if (g === "A") keyCard.classList.add("key-sim__key-card--grade-a");
+      else if (g === "S") keyCard.classList.add("key-sim__key-card--grade-s");
+    }
+
     var cardG = document.getElementById("keySimCardGrade");
     if (cardG) cardG.textContent = g == null ? "No Grade" : "Grade " + g;
 
@@ -519,9 +544,23 @@
     }
     if (rollBtn) rollBtn.addEventListener("click", doRoll);
 
+    function applyGradeUpgrade(pool, nextGrade) {
+      state.grade = nextGrade;
+      syncSlotCount(state);
+      setError("");
+      rollUnlockedSlots(state, pool);
+      renderKeyChrome();
+      renderSlots();
+      renderUpgradeDisabled();
+    }
+
     var up = document.getElementById("keySimUpgrade");
+    var starWrap = document.getElementById("keySimStarWrap");
+    var tracePath = document.getElementById("keySimUpgradeTracePath");
+    var upgradeAnimating = false;
     if (up) {
       up.addEventListener("click", function () {
+        if (upgradeAnimating) return;
         var d = currentDungeon();
         if (!d || !state.mods.length) {
           setError("Select a dungeon.");
@@ -541,13 +580,91 @@
           renderSlots();
           return;
         }
-        state.grade = nextGrade;
-        syncSlotCount(state);
-        setError("");
-        rollUnlockedSlots(state, pool);
-        renderKeyChrome();
-        renderSlots();
-        renderUpgradeDisabled();
+        if (!starWrap || !tracePath) {
+          applyGradeUpgrade(pool, nextGrade);
+          return;
+        }
+        var baseHex = GRADE_BANNER_BASE[nextGrade];
+        if (!baseHex) {
+          applyGradeUpgrade(pool, nextGrade);
+          return;
+        }
+        var finished = false;
+        var fallbackTimerId = 0;
+        var animRafId = 0;
+
+        /** @param {SVGGeometryElement} el */
+        function tracePathLengthPx(el) {
+          try {
+            var n = typeof el.getTotalLength === "function" ? Number(el.getTotalLength()) : 0;
+            return n > 0 && !isNaN(n) ? n : 280;
+          } catch (e2) {
+            return 280;
+          }
+        }
+
+        function clearTracePresentation() {
+          tracePath.style.removeProperty("stroke-dasharray");
+          tracePath.style.removeProperty("stroke-dashoffset");
+        }
+
+        function cancelTraceLoops() {
+          if (animRafId) {
+            cancelAnimationFrame(animRafId);
+            animRafId = 0;
+          }
+          if (fallbackTimerId) {
+            window.clearTimeout(fallbackTimerId);
+            fallbackTimerId = 0;
+          }
+        }
+
+        function finishOnce() {
+          if (finished) return;
+          finished = true;
+          cancelTraceLoops();
+          applyGradeUpgrade(pool, nextGrade);
+          starWrap.classList.remove("key-sim__star-wrap--tracing");
+          starWrap.style.removeProperty("--ks-trace-base");
+          clearTracePresentation();
+          up.removeAttribute("aria-busy");
+          upgradeAnimating = false;
+        }
+        upgradeAnimating = true;
+        up.disabled = true;
+        up.setAttribute("aria-busy", "true");
+        starWrap.style.setProperty("--ks-trace-base", baseHex);
+
+        starWrap.classList.remove("key-sim__star-wrap--tracing");
+
+        fallbackTimerId = window.setTimeout(finishOnce, 600);
+
+        function startTraceAfterLayout() {
+          var Lpx = tracePathLengthPx(tracePath);
+          tracePath.style.strokeDasharray = String(Lpx) + " " + String(Lpx);
+          tracePath.style.strokeDashoffset = String(Lpx);
+          starWrap.classList.add("key-sim__star-wrap--tracing");
+          var t0 = typeof performance !== "undefined" ? performance.now() : Date.now();
+          var durationMs = 500;
+
+          function step(now) {
+            if (finished) return;
+            var t = typeof now === "number" ? now : (typeof performance !== "undefined" ? performance.now() : Date.now());
+            var u = Math.min(1, (t - t0) / durationMs);
+            tracePath.style.strokeDashoffset = String(Lpx * (1 - u));
+            if (u < 1) animRafId = requestAnimationFrame(step);
+            else {
+              animRafId = 0;
+              finishOnce();
+            }
+          }
+
+          animRafId = requestAnimationFrame(step);
+        }
+
+        requestAnimationFrame(function () {
+          requestAnimationFrame(startTraceAfterLayout);
+        });
       });
     }
 

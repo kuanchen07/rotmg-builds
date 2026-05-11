@@ -7,14 +7,15 @@
   --ks-border: #3a3a3a;
   --ks-banner: #4a4a4a; /* Canonical key-card / hero banner hue; ring + stripes read this — set on shell (JS may override later). */
   /*
-   * 8-point starburst (16 verts); inner verts at ~68% of outer (~65–70% target).
-   * Geometry rotated +22.5° so cardinals land on sharp outer tips (not flat/valley-led).
-   * Shared by .key-sim__starburst-ring and .key-sim__starburst-face — edit once.
+   * Octagram clipped via SVG #key-sim-starburst-clip (rounded outer spikes, ~15.5% Q inset).
+   * Source polygon percentages (polygon() equivalent, +22.5deg cardinals → outer tips):
+   *   69.1342% 3.8060%, 74.0416% 25.9584%, 96.1940% 30.8658%, 84% 50%,
+   *   96.1940% 69.1342%, 74.0416% 74.0416%, 69.1342% 96.1940%, 50% 84%,
+   *   30.8658% 96.1940%, 25.9584% 74.0416%, 3.8060% 69.1342%, 16% 50%,
+   *   3.8060% 30.8658%, 25.9584% 25.9584%, 30.8658% 3.8060%, 50% 16%;
    */
-  --ks-starburst-poly: 69.1342% 3.8060%, 74.0416% 25.9584%, 96.1940% 30.8658%, 84.0000% 50.0000%,
-    96.1940% 69.1342%, 74.0416% 74.0416%, 69.1342% 96.1940%, 50.0000% 84.0000%, 30.8658% 96.1940%,
-    25.9584% 74.0416%, 3.8060% 69.1342%, 16.0000% 50.0000%, 3.8060% 30.8658%, 25.9584% 25.9584%,
-    30.8658% 3.8060%, 50.0000% 16.0000%;
+
+  --ks-starburst-clip-path: url(#key-sim-starburst-clip);
   --ks-gold1: #d4a017;
   --ks-gold2: #8a5a10;
   --ks-font-pixel: "Press Start 2P", ui-monospace, monospace;
@@ -137,6 +138,45 @@
   flex-direction: column;
   align-items: center;
   gap: 0.65rem;
+  /* Hero strip, grade ribbon, starburst ring — per-grade via .key-sim__key-card--grade-* */
+  --ks-key-accent: #4a4a4a;
+  --ks-starburst-rim-primary: color-mix(in srgb, var(--ks-key-accent), #ffffff 16%);
+  --ks-starburst-rim-outer: color-mix(in srgb, var(--ks-key-accent), #000000 38%);
+  --ks-starburst-rim-gap: color-mix(
+    in srgb,
+    var(--ks-key-accent) 8%,
+    color-mix(in srgb, transparent 32%, #000000 68%)
+  );
+  /*
+   * Inset double border (reference): same 118px outer silhouette; thick outer accent,
+   * dark gap, thin inner accent — space comes from inside, key stays centered.
+   */
+  --ks-starburst-core: 118px;
+  --ks-starburst-inset-gap: 101px;
+  /* Wider dark groove between outer rim and inner accent (was 97/94/91). */
+  --ks-starburst-inset-mid: 89px;
+  --ks-starburst-inset-body: 86px;
+  --ks-starburst-inset-face: 83px;
+}
+
+.key-sim__key-card--grade-d {
+  --ks-key-accent: #2a7f44;
+}
+
+.key-sim__key-card--grade-c {
+  --ks-key-accent: #4661c8;
+}
+
+.key-sim__key-card--grade-b {
+  --ks-key-accent: #783fa0;
+}
+
+.key-sim__key-card--grade-a {
+  --ks-key-accent: #e1b61a;
+}
+
+.key-sim__key-card--grade-s {
+  --ks-key-accent: #99104d;
 }
 
 .key-sim__corner--bl,
@@ -180,10 +220,10 @@
   height: 28px;
   background: linear-gradient(
     180deg,
-    color-mix(in srgb, var(--ks-banner), #ffffff 10%),
-    color-mix(in srgb, var(--ks-banner), #000000 24%)
+    color-mix(in srgb, var(--ks-key-accent), #ffffff 10%),
+    color-mix(in srgb, var(--ks-key-accent), #000000 24%)
   );
-  border: 1px solid color-mix(in srgb, var(--ks-banner), #ffffff 16%);
+  border: 1px solid color-mix(in srgb, var(--ks-key-accent), #ffffff 16%);
   box-shadow: 0 3px 4px rgba(0, 0, 0, 0.38);
   z-index: 0;
 }
@@ -193,42 +233,93 @@
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
-  width: 118px;
-  height: 118px;
+  width: var(--ks-starburst-core);
+  height: var(--ks-starburst-core);
   z-index: 1;
   display: grid;
   place-items: center;
 }
 
+.key-sim__starburst-trace-svg {
+  grid-area: 1 / 1;
+  place-self: center;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: visible;
+  display: none;
+}
+
+.key-sim__star-wrap--tracing .key-sim__starburst-trace-svg {
+  display: block;
+}
+
+.key-sim__starburst-trace-path {
+  fill: none;
+  stroke-width: 6px;
+  vector-effect: non-scaling-stroke;
+  stroke: color-mix(in srgb, var(--ks-trace-base, #888888), #ffffff 10%);
+  /* Dash drawing is driven in JS — CSS transitions on svg stroke-dashoffset are flaky. */
+}
+
 .key-sim__starburst-ring,
+.key-sim__starburst-rim,
 .key-sim__starburst-face {
   grid-area: 1 / 1;
-  clip-path: polygon(var(--ks-starburst-poly));
+  place-self: center;
+  clip-path: var(--ks-starburst-clip-path);
+}
+
+.key-sim__defs-svg {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+}
+
+/* Backing plate: full silhouette; annulus below reveals thick outer accent. */
+.key-sim__starburst-rim--outer {
+  width: 100%;
+  height: 100%;
+  background: var(--ks-starburst-rim-outer);
+}
+
+.key-sim__starburst-rim--gap {
+  width: var(--ks-starburst-inset-gap);
+  height: var(--ks-starburst-inset-gap);
+  background: var(--ks-starburst-rim-gap);
+}
+
+/* Inner accent line between gap and main fill. */
+.key-sim__starburst-rim--primary {
+  width: var(--ks-starburst-inset-mid);
+  height: var(--ks-starburst-inset-mid);
+  background: var(--ks-starburst-rim-primary);
 }
 
 .key-sim__starburst-ring {
-  width: 118px;
-  height: 118px;
+  width: var(--ks-starburst-inset-body);
+  height: var(--ks-starburst-inset-body);
   background: linear-gradient(
     180deg,
-    color-mix(in srgb, var(--ks-banner), #ffffff 12%),
-    color-mix(in srgb, var(--ks-banner), #000000 18%)
+    color-mix(in srgb, var(--ks-key-accent), #ffffff 12%),
+    color-mix(in srgb, var(--ks-key-accent), #000000 18%)
   );
 }
 
 .key-sim__starburst-face {
-  width: 90%;
-  height: 90%;
+  width: var(--ks-starburst-inset-face);
+  height: var(--ks-starburst-inset-face);
   background:
     radial-gradient(
       ellipse 72% 64% at 50% 44%,
-      color-mix(in srgb, var(--ks-banner) 34%, transparent) 0%,
+      color-mix(in srgb, var(--ks-key-accent) 34%, transparent) 0%,
       transparent 58%
     ),
     var(--ks-bg);
   box-shadow:
     inset 0 0 28px rgba(0, 0, 0, 0.55),
-    inset 0 0 18px color-mix(in srgb, var(--ks-banner) 22%, transparent);
+    inset 0 0 18px color-mix(in srgb, var(--ks-key-accent) 22%, transparent);
 }
 
 .key-sim__key-icon-wrap {
@@ -248,8 +339,12 @@
   width: 100%;
   text-align: center;
   padding: 0.45rem 0.5rem;
-  background: linear-gradient(180deg, #4a4a4a 0%, #353535 100%);
-  border: 1px solid #666;
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--ks-key-accent), #ffffff 10%),
+    color-mix(in srgb, var(--ks-key-accent), #000000 24%)
+  );
+  border: 1px solid color-mix(in srgb, var(--ks-key-accent), #ffffff 16%);
   border-radius: 2px;
   font-size: 9px;
   letter-spacing: 0.06em;
