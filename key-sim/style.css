@@ -7,15 +7,14 @@
   --ks-border: #3a3a3a;
   --ks-banner: #4a4a4a; /* Canonical key-card / hero banner hue; ring + stripes read this — set on shell (JS may override later). */
   /*
-   * Octagram clipped via SVG #key-sim-starburst-clip (rounded outer spikes, ~15.5% Q inset).
-   * Source polygon percentages (polygon() equivalent, +22.5deg cardinals → outer tips):
-   *   69.1342% 3.8060%, 74.0416% 25.9584%, 96.1940% 30.8658%, 84% 50%,
-   *   96.1940% 69.1342%, 74.0416% 74.0416%, 69.1342% 96.1940%, 50% 84%,
-   *   30.8658% 96.1940%, 25.9584% 74.0416%, 3.8060% 69.1342%, 16% 50%,
-   *   3.8060% 30.8658%, 25.9584% 25.9584%, 30.8658% 3.8060%, 50% 16%;
+   * 8-point starburst (16 verts); inner verts at ~68% of outer (~65–70% target).
+   * Geometry rotated +22.5deg so cardinals land on sharp outer tips.
+   * Shared by starburst rim/ring/face clip-path; edit once.
    */
-
-  --ks-starburst-clip-path: url(#key-sim-starburst-clip);
+  --ks-starburst-poly: 69.1342% 3.8060%, 74.0416% 25.9584%, 96.1940% 30.8658%, 84.0000% 50.0000%,
+    96.1940% 69.1342%, 74.0416% 74.0416%, 69.1342% 96.1940%, 50.0000% 84.0000%, 30.8658% 96.1940%,
+    25.9584% 74.0416%, 3.8060% 69.1342%, 16.0000% 50.0000%, 3.8060% 30.8658%, 25.9584% 25.9584%,
+    30.8658% 3.8060%, 50.0000% 16.0000%;
   --ks-gold1: #d4a017;
   --ks-gold2: #8a5a10;
   --ks-font-pixel: "Press Start 2P", ui-monospace, monospace;
@@ -267,14 +266,7 @@
 .key-sim__starburst-face {
   grid-area: 1 / 1;
   place-self: center;
-  clip-path: var(--ks-starburst-clip-path);
-}
-
-.key-sim__defs-svg {
-  position: absolute;
-  width: 0;
-  height: 0;
-  overflow: hidden;
+  clip-path: polygon(var(--ks-starburst-poly));
 }
 
 /* Backing plate: full silhouette; annulus below reveals thick outer accent. */
