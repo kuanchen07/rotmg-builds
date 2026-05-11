@@ -40,15 +40,6 @@
     S: "keys/grade/red-grade.jpg"
   };
 
-  /** Base accent hex per grade — keep in sync with --ks-key-accent on .key-sim__key-card--grade-* in style.css */
-  var GRADE_BANNER_BASE = {
-    D: "#2a7f44",
-    C: "#4661c8",
-    B: "#783fa0",
-    A: "#e1b61a",
-    S: "#99104d"
-  };
-
   /** @returns {string} relative path under icons/ for keyIconUrl */
   function gradePipIconRel(grade, slotIndex) {
     if (grade == null) return GRADE_GREY_ICON_REL;
@@ -57,6 +48,19 @@
     var colorRel = GRADE_PIP_ICON_BY_LETTER[grade];
     if (!colorRel) return GRADE_GREY_ICON_REL;
     return slotIndex < n ? colorRel : GRADE_GREY_ICON_REL;
+  }
+
+  function gradeFlowBadgeIconRel(displayLetter) {
+    var c = String(displayLetter || "").trim();
+    if (c === "\u2014" || c === "-" || c === "") return GRADE_GREY_ICON_REL;
+    var rel = GRADE_PIP_ICON_BY_LETTER[c];
+    return rel || GRADE_GREY_ICON_REL;
+  }
+
+  function setGradeFlowBadgeBackground(el, displayLetter) {
+    if (!el) return;
+    var url = keyIconUrl(gradeFlowBadgeIconRel(displayLetter));
+    el.style.backgroundImage = "url(" + JSON.stringify(url) + ")";
   }
 
   function isCompatible(candidate, chosenArray) {
@@ -354,19 +358,27 @@
 
     var gFrom = document.getElementById("keySimGradeFrom");
     var gTo = document.getElementById("keySimGradeTo");
-    if (gFrom && g != null) gFrom.textContent = g;
+    if (gFrom) {
+      if (g != null) {
+        gFrom.textContent = g;
+        setGradeFlowBadgeBackground(gFrom, g);
+      } else {
+        gFrom.style.backgroundImage = "";
+      }
+    }
     if (gTo) {
       if (g == null) {
         gTo.textContent = "D";
       } else {
         var ix = GRADE_ORDER.indexOf(g);
         if (ix < 0 || ix >= GRADE_ORDER.length - 1) {
-          gTo.textContent = "—";
+          gTo.textContent = "\u2014";
         } else {
           gTo.textContent = GRADE_ORDER[ix + 1];
         }
       }
       gTo.classList.toggle("key-sim__grade-badge--tier-d", g == null);
+      setGradeFlowBadgeBackground(gTo, gTo.textContent);
     }
 
     var pipsRoot = document.getElementById("keySimPips");
@@ -555,12 +567,8 @@
     }
 
     var up = document.getElementById("keySimUpgrade");
-    var starWrap = document.getElementById("keySimStarWrap");
-    var tracePath = document.getElementById("keySimUpgradeTracePath");
-    var upgradeAnimating = false;
     if (up) {
       up.addEventListener("click", function () {
-        if (upgradeAnimating) return;
         var d = currentDungeon();
         if (!d || !state.mods.length) {
           setError("Select a dungeon.");
@@ -580,91 +588,7 @@
           renderSlots();
           return;
         }
-        if (!starWrap || !tracePath) {
-          applyGradeUpgrade(pool, nextGrade);
-          return;
-        }
-        var baseHex = GRADE_BANNER_BASE[nextGrade];
-        if (!baseHex) {
-          applyGradeUpgrade(pool, nextGrade);
-          return;
-        }
-        var finished = false;
-        var fallbackTimerId = 0;
-        var animRafId = 0;
-
-        /** @param {SVGGeometryElement} el */
-        function tracePathLengthPx(el) {
-          try {
-            var n = typeof el.getTotalLength === "function" ? Number(el.getTotalLength()) : 0;
-            return n > 0 && !isNaN(n) ? n : 280;
-          } catch (e2) {
-            return 280;
-          }
-        }
-
-        function clearTracePresentation() {
-          tracePath.style.removeProperty("stroke-dasharray");
-          tracePath.style.removeProperty("stroke-dashoffset");
-        }
-
-        function cancelTraceLoops() {
-          if (animRafId) {
-            cancelAnimationFrame(animRafId);
-            animRafId = 0;
-          }
-          if (fallbackTimerId) {
-            window.clearTimeout(fallbackTimerId);
-            fallbackTimerId = 0;
-          }
-        }
-
-        function finishOnce() {
-          if (finished) return;
-          finished = true;
-          cancelTraceLoops();
-          applyGradeUpgrade(pool, nextGrade);
-          starWrap.classList.remove("key-sim__star-wrap--tracing");
-          starWrap.style.removeProperty("--ks-trace-base");
-          clearTracePresentation();
-          up.removeAttribute("aria-busy");
-          upgradeAnimating = false;
-        }
-        upgradeAnimating = true;
-        up.disabled = true;
-        up.setAttribute("aria-busy", "true");
-        starWrap.style.setProperty("--ks-trace-base", baseHex);
-
-        starWrap.classList.remove("key-sim__star-wrap--tracing");
-
-        fallbackTimerId = window.setTimeout(finishOnce, 600);
-
-        function startTraceAfterLayout() {
-          var Lpx = tracePathLengthPx(tracePath);
-          tracePath.style.strokeDasharray = String(Lpx) + " " + String(Lpx);
-          tracePath.style.strokeDashoffset = String(Lpx);
-          starWrap.classList.add("key-sim__star-wrap--tracing");
-          var t0 = typeof performance !== "undefined" ? performance.now() : Date.now();
-          var durationMs = 500;
-
-          function step(now) {
-            if (finished) return;
-            var t = typeof now === "number" ? now : (typeof performance !== "undefined" ? performance.now() : Date.now());
-            var u = Math.min(1, (t - t0) / durationMs);
-            tracePath.style.strokeDashoffset = String(Lpx * (1 - u));
-            if (u < 1) animRafId = requestAnimationFrame(step);
-            else {
-              animRafId = 0;
-              finishOnce();
-            }
-          }
-
-          animRafId = requestAnimationFrame(step);
-        }
-
-        requestAnimationFrame(function () {
-          requestAnimationFrame(startTraceAfterLayout);
-        });
+        applyGradeUpgrade(pool, nextGrade);
       });
     }
 

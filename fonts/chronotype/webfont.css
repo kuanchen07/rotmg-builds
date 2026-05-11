@@ -3,7 +3,8 @@
 @font-face {
 	font-family: "ChronoType";
 	src: url("ChronoType.woff") format("woff"),
+		url("ChronoType.otf") format("opentype"),
 		url("ChronoType.ttf") format("truetype");
-	font-weight: normal;
+	font-weight: 400;
 	font-style: normal;
 }
