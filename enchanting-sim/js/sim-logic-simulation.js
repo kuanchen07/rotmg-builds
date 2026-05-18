@@ -192,10 +192,22 @@ function runMonteCarloForArtifact({ itemType, targetName, targetNames, artifactN
     step();
   });
 }
-/** Parses #path-phase-1; returns `{ phase1 }` or `{ error }`. */
+/** Parses #path-phase-1 + phase 1 alternates; returns `{ phase1 }` or `{ error }`. */
 function parsePathPhase1OrError() {
   const phase1Raw = document.getElementById('path-phase-1')?.value || '';
   const phase1 = parseTargetList(phase1Raw);
+  /* Merge in phase 1 alternates (OR rows) */
+  const p1Alts = collectPathPhase1AltsFromDom();
+  for (const alt of p1Alts) {
+    const altParsed = parseTargetList(alt);
+    for (const tName of altParsed.targetNames) {
+      const norm = normalizeName(tName);
+      if (!phase1.targetNorms.has(norm)) {
+        phase1.targetNames.push(tName);
+        phase1.targetNorms.add(norm);
+      }
+    }
+  }
   if (phase1.targetNames.length < 1) {
     return { error: '1st target must contain at least one enchant.' };
   }
@@ -208,6 +220,7 @@ function parsePathPhase1OrError() {
 }
 function isPathConfiguredFirstTargetOnly(slotCount) {
   if (slotCount < 2) return false;
+  if (collectPathPhase1AltsFromDom().length > 0) return false;
   const { anchor, alts } = collectPathPhase2FromDom();
   if (anchor || alts.length > 0) return false;
   for (let phaseNum = 3; phaseNum <= slotCount; phaseNum++) {
@@ -217,6 +230,7 @@ function isPathConfiguredFirstTargetOnly(slotCount) {
   return true;
 }
 function quickEstimateMatchesPathSemantics(slotCount) {
+  if (collectPathPhase1AltsFromDom().length > 0) return false;
   if (slotCount === 1) return true;
   if (slotCount < 2) return false;
   return isPathConfiguredFirstTargetOnly(slotCount);
@@ -297,66 +311,109 @@ function buildPathPhasesFromInputs(slotCount) {
   let firstManualTailPhaseNum = 3;
 
   if (slotCount >= 2) {
-    const { anchor, alts } = collectPathPhase2FromDom();
-    const asymmetric = !!anchor;
-    const displayNames = asymmetric ? [anchor, ...alts] : [...alts];
-    if (displayNames.length < 1) {
-      return { error: '2nd phase: add at least one enchant (anchor and/or alternate row).' };
-    }
-    const seen = new Set();
-    const nameByNorm = {};
-    for (const raw of displayNames) {
-      if (isPathSimDisallowedTierName(raw)) {
-        return { error: '2nd phase: tier I/II enchants cannot be used in path simulation.' };
-      }
-      const n = normalizeName(raw);
-      if (!n) {
-        return { error: '2nd phase: every OR target needs a non-empty enchant name.' };
-      }
-      if (seen.has(n)) {
-        return { error: '2nd phase: all OR targets must be different enchants.' };
-      }
-      seen.add(n);
-      nameByNorm[n] = raw.trim();
-    }
-    const anchorNorm = asymmetric ? normalizeName(anchor) : null;
-    const altNorms = alts.map(a => normalizeName(a));
-    const allNormsOrdered = asymmetric ? [anchorNorm, ...altNorms] : altNorms;
-    const phase2TargetNorms = new Set(allNormsOrdered);
-    const requireNewTarget = displayNames.some(name => phase1.targetNorms.has(normalizeName(name)));
-    const phase3SummaryLine = asymmetric
-      ? 'Auto: OR alternates if anchor locked in phase 2; anchor if an alternate locked first'
-      : 'Auto: OR of remaining alternates after phase 2';
+    const p1Main = (document.getElementById('path-phase-1')?.value || '').trim();
+    const p1Alts = collectPathPhase1AltsFromDom();
+    const p1MultiOr = pathPhase1MultiOrTargets({ main: p1Main, alts: p1Alts });
 
-    phases.push({
-      phaseIndex: 2,
-      targetNames: displayNames,
-      targetNorms: phase2TargetNorms,
-      requireNewTarget,
-      phase2Symmetric: !asymmetric,
-      phase2AnchorNorm: anchorNorm,
-      phase2AltNorms: altNorms,
-      phase2OrNorms: allNormsOrdered,
-      phase2NameByNorm: nameByNorm,
-      pathArtifactName: domPathArtifactValue('path-phase-2-artifact')
-    });
+    if (p1MultiOr) {
+      const displayNames = [p1Main, ...p1Alts];
+      const seen = new Set();
+      const nameByNorm = {};
+      for (const raw of displayNames) {
+        if (isPathSimDisallowedTierName(raw)) {
+          return { error: '1st target: tier I/II enchants cannot be used in path simulation.' };
+        }
+        const n = normalizeName(raw);
+        if (!n) {
+          return { error: '1st target: every OR target needs a non-empty enchant name.' };
+        }
+        if (seen.has(n)) {
+          return { error: '1st target: all OR targets must be different enchants.' };
+        }
+        seen.add(n);
+        nameByNorm[n] = raw.trim();
+      }
+      const anchorNorm = normalizeName(p1Main);
+      const altNorms = p1Alts.map(a => normalizeName(a));
+      const allNormsOrdered = [anchorNorm, ...altNorms];
+      const phase2SummaryLine =
+        'Auto: OR alternates if main locked in phase 1; main if an alternate locked first';
 
-    const phase3Auto = slotCount >= 3 && displayNames.length > 1;
-    if (phase3Auto) {
       phases.push({
-        phaseIndex: 3,
-        autoComplementFromPhase2: true,
+        phaseIndex: 2,
+        autoComplementFromPhase1: true,
+        phase1AnchorNorm: anchorNorm,
+        phase1AltNorms: altNorms,
+        phase1OrNorms: allNormsOrdered,
+        phase1NameByNorm: nameByNorm,
+        phase2SummaryLine,
+        targetNames: [phase2SummaryLine],
         requireNewTarget: false,
+        pathArtifactName: domPathArtifactValue('path-phase-2-artifact')
+      });
+      firstManualTailPhaseNum = 3;
+    } else {
+      const { anchor, alts } = collectPathPhase2FromDom();
+      const asymmetric = !!anchor;
+      const displayNames = asymmetric ? [anchor, ...alts] : [...alts];
+      if (displayNames.length < 1) {
+        return { error: '2nd phase: add at least one enchant (anchor and/or alternate row).' };
+      }
+      const seen = new Set();
+      const nameByNorm = {};
+      for (const raw of displayNames) {
+        if (isPathSimDisallowedTierName(raw)) {
+          return { error: '2nd phase: tier I/II enchants cannot be used in path simulation.' };
+        }
+        const n = normalizeName(raw);
+        if (!n) {
+          return { error: '2nd phase: every OR target needs a non-empty enchant name.' };
+        }
+        if (seen.has(n)) {
+          return { error: '2nd phase: all OR targets must be different enchants.' };
+        }
+        seen.add(n);
+        nameByNorm[n] = raw.trim();
+      }
+      const anchorNorm = asymmetric ? normalizeName(anchor) : null;
+      const altNorms = alts.map(a => normalizeName(a));
+      const allNormsOrdered = asymmetric ? [anchorNorm, ...altNorms] : altNorms;
+      const phase2TargetNorms = new Set(allNormsOrdered);
+      const requireNewTarget = displayNames.some(name => phase1.targetNorms.has(normalizeName(name)));
+      const phase3SummaryLine = asymmetric
+        ? 'Auto: OR alternates if anchor locked in phase 2; anchor if an alternate locked first'
+        : 'Auto: OR of remaining alternates after phase 2';
+
+      phases.push({
+        phaseIndex: 2,
+        targetNames: displayNames,
+        targetNorms: phase2TargetNorms,
+        requireNewTarget,
         phase2Symmetric: !asymmetric,
         phase2AnchorNorm: anchorNorm,
         phase2AltNorms: altNorms,
         phase2OrNorms: allNormsOrdered,
         phase2NameByNorm: nameByNorm,
-        phase3SummaryLine,
-        targetNames: [phase3SummaryLine],
-        pathArtifactName: domPathArtifactValue('path-phase-3-artifact')
+        pathArtifactName: domPathArtifactValue('path-phase-2-artifact')
       });
-      firstManualTailPhaseNum = 4;
+
+      const phase3Auto = slotCount >= 3 && displayNames.length > 1;
+      if (phase3Auto) {
+        phases.push({
+          phaseIndex: 3,
+          autoComplementFromPhase2: true,
+          requireNewTarget: false,
+          phase2Symmetric: !asymmetric,
+          phase2AnchorNorm: anchorNorm,
+          phase2AltNorms: altNorms,
+          phase2OrNorms: allNormsOrdered,
+          phase2NameByNorm: nameByNorm,
+          phase3SummaryLine,
+          targetNames: [phase3SummaryLine],
+          pathArtifactName: domPathArtifactValue('path-phase-3-artifact')
+        });
+        firstManualTailPhaseNum = 4;
+      }
     }
   }
 
@@ -1115,9 +1172,11 @@ async function calculatePathProbability() {
 
     const phaseLines = phases.map((phase, idx) => {
       const prefix = phase.requireNewTarget ? 'new: ' : '';
-      const label = phase.autoComplementFromPhase2
-        ? phase.phase3SummaryLine || 'Automatic complement of 2nd target'
-        : getTargetDisplayLabel(phase.targetNames);
+      const label = phase.autoComplementFromPhase1
+        ? phase.phase2SummaryLine || 'Automatic complement of 1st target'
+        : phase.autoComplementFromPhase2
+          ? phase.phase3SummaryLine || 'Automatic complement of 2nd target'
+          : getTargetDisplayLabel(phase.targetNames);
       return `${idx + 1}. ${prefix}${label}`;
     });
 

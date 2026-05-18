@@ -5,7 +5,8 @@
   --ks-bg: var(--site-canvas-bg, #0a0a0a);
   --ks-panel: #0e0e0e;
   --ks-border: #3a3a3a;
-  --ks-banner: #4a4a4a; /* Canonical key-card / hero banner hue; ring + stripes read this — set on shell (JS may override later). */
+  /* Default key accent (no grade); synced with .key-sim__key-card; shell gets .key-sim-shell--grade-* for mods column */
+  --ks-key-accent: #4a4a4a;
   /*
    * 8-point starburst (16 verts); inner verts at ~68% of outer (~65–70% target).
    * Geometry rotated +22.5deg so cardinals land on sharp outer tips.
@@ -158,23 +159,28 @@
   --ks-starburst-inset-face: 83px;
 }
 
-.key-sim__key-card--grade-d {
+.key-sim__key-card--grade-d,
+.key-sim-shell--grade-d {
   --ks-key-accent: #2a7f44;
 }
 
-.key-sim__key-card--grade-c {
+.key-sim__key-card--grade-c,
+.key-sim-shell--grade-c {
   --ks-key-accent: #4661c8;
 }
 
-.key-sim__key-card--grade-b {
+.key-sim__key-card--grade-b,
+.key-sim-shell--grade-b {
   --ks-key-accent: #783fa0;
 }
 
-.key-sim__key-card--grade-a {
+.key-sim__key-card--grade-a,
+.key-sim-shell--grade-a {
   --ks-key-accent: #e1b61a;
 }
 
-.key-sim__key-card--grade-s {
+.key-sim__key-card--grade-s,
+.key-sim-shell--grade-s {
   --ks-key-accent: #99104d;
 }
 
@@ -474,37 +480,369 @@
 .key-sim__mods-banner {
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 0.35rem;
+  gap: 0;
+  width: 100%;
+  box-sizing: border-box;
   margin-bottom: 0.65rem;
+  padding: 0;
+  overflow: hidden;
+  border-radius: 2px;
+  border: 1px solid color-mix(in srgb, var(--ks-key-accent), #ffffff 16%);
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--ks-key-accent), #ffffff 10%),
+    color-mix(in srgb, var(--ks-key-accent), #000000 24%)
+  );
 }
 
 .key-sim__mods-banner-label {
-  flex: 0 1 auto;
-  text-align: center;
-  padding: 0.4rem 0.75rem;
-  font-size: 8px;
-  color: #eee;
-  background: linear-gradient(180deg, #555 0%, var(--ks-banner) 100%);
-  border: 1px solid #6a6a6a;
-}
-
-.key-sim__mods-banner-edge {
   flex: 1;
-  min-width: 1rem;
-  height: 10px;
-  max-width: 3.5rem;
-  opacity: 0.9;
-  background-image: repeating-linear-gradient(
-    90deg,
-    #666 0 2px,
-    transparent 2px 5px
-  );
-  mask-image: linear-gradient(90deg, transparent, #000 30%, #000 70%, transparent);
+  min-width: 0;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.45rem 0.5rem;
+  text-align: center;
+  font-size: 8px;
+  line-height: 1;
+  letter-spacing: 0.06em;
+  color: #f0f0f0;
 }
 
-.key-sim__mods-banner-edge--left {
-  transform: scaleX(-1);
+.key-sim__mods-undo {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.65rem;
+  padding: 0.45rem 0.4rem;
+  margin: 0;
+  box-sizing: border-box;
+  font: inherit;
+  line-height: 0;
+  cursor: pointer;
+  color: inherit;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  border-right: 1px solid color-mix(in srgb, var(--ks-key-accent), #000000 42%);
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.key-sim__mods-undo:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--ks-key-accent), #ffffff 14%);
+}
+
+.key-sim__mods-undo:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.key-sim__mods-undo-icon {
+  display: block;
+  width: 14px;
+  height: 14px;
+  margin: 0;
+  object-fit: contain;
+  /* Caps + tight line-height make title sit high in box; nudge icon up to match optical center */
+  transform: translateY(-2px);
+}
+
+.key-sim__mods-dice {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.65rem;
+  padding: 0.45rem 0.4rem;
+  margin: 0;
+  box-sizing: border-box;
+  font: inherit;
+  line-height: 0;
+  cursor: pointer;
+  color: inherit;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  border-left: 1px solid color-mix(in srgb, var(--ks-key-accent), #000000 42%);
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.key-sim__mods-dice:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--ks-key-accent), #ffffff 14%);
+}
+
+.key-sim__mods-dice:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.key-sim__mods-dice-icon {
+  display: block;
+  width: 14px;
+  height: 14px;
+  margin: 0;
+  object-fit: contain;
+  transform: translateY(-2px);
+}
+
+/* Roll simulator sidebar */
+.key-sim-sim__backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(2px);
+}
+
+.key-sim-sim {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 50;
+  width: min(100vw, 17.5rem);
+  max-width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  padding: 0.65rem 0.75rem calc(0.75rem + env(safe-area-inset-bottom, 0px));
+  padding-left: calc(0.75rem + env(safe-area-inset-left, 0px));
+  padding-right: calc(0.75rem + env(safe-area-inset-right, 0px));
+  padding-top: calc(0.65rem + env(safe-area-inset-top, 0px));
+  background: #111;
+  border-left: 1px solid #333;
+  box-shadow: -8px 0 24px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+  transform: translateX(100%);
+  transition: transform 0.2s ease-out;
+}
+
+.key-sim-sim:not([hidden]).key-sim-sim--open {
+  transform: translateX(0);
+}
+
+.key-sim-sim__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.key-sim-sim__title {
+  margin: 0;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #e8e8e8;
+}
+
+.key-sim-sim__close {
+  flex-shrink: 0;
+  width: 1.5rem;
+  height: 1.5rem;
+  padding: 0;
+  margin: 0;
+  border: 1px solid #444;
+  border-radius: 2px;
+  background: #1a1a1a;
+  color: #aaa;
+  font-size: 14px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.key-sim-sim__close:hover {
+  color: #eee;
+  border-color: #555;
+}
+
+.key-sim-sim__hint {
+  margin: 0;
+  font-size: 8px;
+  line-height: 1.35;
+  font-family: system-ui, sans-serif;
+}
+
+.key-sim-sim__fields {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  flex-shrink: 0;
+}
+
+.key-sim-sim__field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.key-sim-sim__label-text-block {
+  font-size: 8px;
+  letter-spacing: 0.04em;
+  color: #b8b8b8;
+  font-family: system-ui, sans-serif;
+}
+
+.key-sim-sim__slider-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.45rem;
+  width: 100%;
+}
+
+.key-sim-sim__slider-row .key-sim-sim__slider {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.key-sim-sim__slider {
+  box-sizing: border-box;
+  height: 20px;
+  margin: 0;
+  accent-color: color-mix(in srgb, var(--ks-key-accent), #cfcfcf 55%);
+}
+
+.key-sim-sim__slider:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.key-sim-sim__pct-input {
+  flex: 0 0 3rem;
+  width: 3rem;
+  padding: 0.25rem 0.35rem;
+  font-size: 10px;
+  text-align: right;
+  appearance: textfield;
+  -moz-appearance: textfield;
+}
+
+.key-sim-sim__pct-input::-webkit-outer-spin-button,
+.key-sim-sim__pct-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.key-sim-sim__pct-input:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.key-sim-sim__input {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 0.35rem 0.45rem;
+  font-size: 10px;
+  font-family: inherit;
+  color: #f0f0f0;
+  background: #1c1c1c;
+  border: 1px solid #404040;
+  border-radius: 3px;
+}
+
+.key-sim-sim__input::placeholder {
+  color: #555;
+}
+
+.key-sim-sim__input:focus {
+  outline: none;
+  border-color: color-mix(in srgb, var(--ks-key-accent), #888888 40%);
+}
+
+.key-sim-sim__mods-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  min-height: 0;
+  flex: 1;
+}
+
+.key-sim-sim__mods-heading {
+  font-size: 8px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #999;
+}
+
+.key-sim-sim__mods-list {
+  flex: 1;
+  min-height: 4rem;
+  max-height: 12rem;
+  overflow: auto;
+  padding: 0.35rem;
+  border: 1px solid #333;
+  border-radius: 3px;
+  background: #161616;
+}
+
+.key-sim-sim__mods-empty {
+  margin: 0;
+  font-size: 8px;
+  line-height: 1.35;
+}
+
+.key-sim-sim__result-line {
+  margin: 0 0 0.25rem;
+  font-size: 8px;
+  line-height: 1.35;
+}
+
+.key-sim-sim__mod-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.35rem;
+  padding: 0.2rem 0;
+  font-size: 8px;
+  line-height: 1.25;
+  color: #ccc;
+  font-family: system-ui, sans-serif;
+}
+
+.key-sim-sim__mod-row input {
+  margin-top: 0.1rem;
+  flex-shrink: 0;
+}
+
+.key-sim-sim__progress {
+  margin: 0;
+  font-size: 8px;
+  font-family: system-ui, sans-serif;
+  min-height: 1em;
+}
+
+.key-sim-sim__result {
+  font-size: 8px;
+  line-height: 1.4;
+  font-family: system-ui, sans-serif;
+  color: #ddd;
+}
+
+.key-sim-sim__result-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-top: 0.35rem;
+}
+
+.key-sim-sim__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  flex-shrink: 0;
+  margin-top: auto;
+}
+
+.key-sim-sim__actions .key-sim__pill {
+  flex: 1;
+  min-width: 5rem;
 }
 
 .key-sim__slots {
@@ -576,10 +914,11 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: center;
   gap: 0.25rem 0.45rem;
   width: 100%;
   flex: 0 0 auto;
+  text-align: center;
 }
 
 .key-sim__rewards-agg .key-sim__reward-chip-icon {

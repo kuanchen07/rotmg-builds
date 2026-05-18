@@ -349,7 +349,37 @@
         return { cancelled: true, totalRolls, totalDust, elapsedMs: performance.now() - start };
       }
       let activePhase = phase;
-      if (phase.autoComplementFromPhase2) {
+      if (phase.autoComplementFromPhase1) {
+        const lockedNorms = new Set(
+          snapshot.filter(s => s.locked && s.enchant).map(s => normalizeName(s.enchant?.name))
+        );
+        const poolOr = phase.phase1OrNorms || [];
+        const present = poolOr.filter(n => lockedNorms.has(n));
+        if (present.length !== 1) {
+          return { impossible: true, totalRolls, totalDust, elapsedMs: performance.now() - start };
+        }
+        const hitOr = present[0];
+        const an = phase.phase1AnchorNorm;
+        const alts = phase.phase1AltNorms || [];
+        let targetNormSet;
+        let targetNamesArr;
+        if (hitOr === an) {
+          if (!alts.length) {
+            return { impossible: true, totalRolls, totalDust, elapsedMs: performance.now() - start };
+          }
+          targetNormSet = new Set(alts);
+          targetNamesArr = alts.map(n => phase.phase1NameByNorm[n]);
+        } else {
+          targetNormSet = new Set([an]);
+          targetNamesArr = [phase.phase1NameByNorm[an]];
+        }
+        activePhase = {
+          phaseIndex: phase.phaseIndex,
+          targetNames: targetNamesArr,
+          targetNorms: targetNormSet,
+          requireNewTarget: false
+        };
+      } else if (phase.autoComplementFromPhase2) {
         const lockedNorms = new Set(
           snapshot.filter(s => s.locked && s.enchant).map(s => normalizeName(s.enchant?.name))
         );
@@ -491,7 +521,37 @@
         return { cancelled: true, totalRolls, totalDust, elapsedMs: performance.now() - start };
       }
       let activePhase = phase;
-      if (phase.autoComplementFromPhase2) {
+      if (phase.autoComplementFromPhase1) {
+        const lockedNorms = new Set(
+          snapshot.filter(s => s.locked && s.enchant).map(s => normalizeName(s.enchant?.name))
+        );
+        const poolOr = phase.phase1OrNorms || [];
+        const present = poolOr.filter(n => lockedNorms.has(n));
+        if (present.length !== 1) {
+          return { impossible: true, totalRolls, totalDust, elapsedMs: performance.now() - start };
+        }
+        const hitOr = present[0];
+        const an = phase.phase1AnchorNorm;
+        const alts = phase.phase1AltNorms || [];
+        let targetNormSet;
+        let targetNamesArr;
+        if (hitOr === an) {
+          if (!alts.length) {
+            return { impossible: true, totalRolls, totalDust, elapsedMs: performance.now() - start };
+          }
+          targetNormSet = new Set(alts);
+          targetNamesArr = alts.map(n => phase.phase1NameByNorm[n]);
+        } else {
+          targetNormSet = new Set([an]);
+          targetNamesArr = [phase.phase1NameByNorm[an]];
+        }
+        activePhase = {
+          phaseIndex: phase.phaseIndex,
+          targetNames: targetNamesArr,
+          targetNorms: targetNormSet,
+          requireNewTarget: false
+        };
+      } else if (phase.autoComplementFromPhase2) {
         const lockedNorms = new Set(
           snapshot.filter(s => s.locked && s.enchant).map(s => normalizeName(s.enchant?.name))
         );

@@ -229,6 +229,33 @@
     return parts.join(" ");
   }
 
+  /** Additive XP / Dust / Loot totals (percent points); skips falsy mods. */
+  function rewardTotalsPctFromMods(modArr) {
+    var tx = 0;
+    var td = 0;
+    var tl = 0;
+    for (var i = 0; i < modArr.length; i += 1) {
+      var m = modArr[i];
+      if (!m) continue;
+      var x = pctFromMultiplier(m.xpBonus);
+      var d = pctFromMultiplier(m.dustBonus);
+      var l = pctFromMultiplier(m.lootBonus);
+      if (x != null) tx += x;
+      if (d != null) td += d;
+      if (l != null) tl += l;
+    }
+    return { xp: tx, dust: td, loot: tl };
+  }
+
+  /** Additive XP / Dust / Loot totals (percent points), including zeros omitted from rewardSummarySegments. */
+  function rewardTotalsPct(slots) {
+    var arr = [];
+    for (var i = 0; i < slots.length; i += 1) {
+      arr.push(slots[i].mod);
+    }
+    return rewardTotalsPctFromMods(arr);
+  }
+
   /** Additive totals across slots (nonzero only, same order as single-mod). */
   function rewardSummarySegments(slots) {
     var tx = 0;
@@ -294,6 +321,62 @@
     slots: []
   };
 
+  /** Snapshots of { grade, slots } before each reroll / upgrade (dungeon change clears). */
+  var undoStack = [];
+
+  var simRunning = false;
+  var simSidebarOpen = false;
+  var simCancelRequested = false;
+  /** Refreshes mod checks + simulator min widgets when sidebar is open. */
+  var refreshSimSidebarIfOpen = function () {};
+  var SIM_MAX_ROLLS = 8000000;
+  var SIM_CHUNK = 5000;
+  /** Hard cap for simulator minimum +% sliders and number boxes. */
+  var SIM_MIN_BONUS_CAP_PCT = 100;
+
+  function pushUndoSnapshot() {
+    undoStack.push({
+      grade: state.grade,
+      slots: state.slots.map(function (s) {
+        return { mod: s.mod, locked: !!s.locked };
+      })
+    });
+    renderUndoControl();
+  }
+
+  function clearUndoStack() {
+    undoStack.length = 0;
+    renderUndoControl();
+  }
+
+  function renderUndoControl() {
+    var undoBtn = document.getElementById("keySimUndo");
+    if (undoBtn) {
+      undoBtn.hidden = state.grade == null;
+      undoBtn.disabled = undoStack.length === 0;
+    }
+    var diceBtn = document.getElementById("keySimDice");
+    if (diceBtn) {
+      diceBtn.hidden = state.grade == null;
+      diceBtn.disabled = state.grade == null || simRunning;
+    }
+  }
+
+  function popUndo() {
+    if (!undoStack.length) return;
+    var snap = undoStack.pop();
+    state.grade = snap.grade;
+    state.slots = snap.slots.map(function (s) {
+      return { mod: s.mod, locked: !!s.locked };
+    });
+    syncSlotCount(state);
+    setError("");
+    renderKeyChrome();
+    renderSlots();
+    renderUpgradeDisabled();
+    refreshSimSidebarIfOpen();
+  }
+
   function currentDungeon() {
     return state.dungeons[state.dungeonIndex] || state.dungeons[0];
   }
@@ -333,6 +416,22 @@
       else if (g === "B") keyCard.classList.add("key-sim__key-card--grade-b");
       else if (g === "A") keyCard.classList.add("key-sim__key-card--grade-a");
       else if (g === "S") keyCard.classList.add("key-sim__key-card--grade-s");
+    }
+
+    var shell = document.querySelector(".key-sim-shell");
+    if (shell) {
+      shell.classList.remove(
+        "key-sim-shell--grade-d",
+        "key-sim-shell--grade-c",
+        "key-sim-shell--grade-b",
+        "key-sim-shell--grade-a",
+        "key-sim-shell--grade-s"
+      );
+      if (g === "D") shell.classList.add("key-sim-shell--grade-d");
+      else if (g === "C") shell.classList.add("key-sim-shell--grade-c");
+      else if (g === "B") shell.classList.add("key-sim-shell--grade-b");
+      else if (g === "A") shell.classList.add("key-sim-shell--grade-a");
+      else if (g === "S") shell.classList.add("key-sim-shell--grade-s");
     }
 
     var cardG = document.getElementById("keySimCardGrade");
@@ -397,6 +496,7 @@
     }
 
     renderRefineTitle();
+    renderUndoControl();
   }
 
   function renderSlots() {
@@ -483,6 +583,132 @@
     if (btn) btn.disabled = state.grade === "S";
   }
 
+  function cloneSlotsDeep(slots) {
+    return slots.map(function (s) {
+      return { mod: s.mod, locked: !!s.locked };
+    });
+  }
+
+  function clampSimMinBonusPct(raw) {
+    var n = Math.floor(Number(raw));
+    if (isNaN(n) || n < 0) return 0;
+    if (n > SIM_MIN_BONUS_CAP_PCT) return SIM_MIN_BONUS_CAP_PCT;
+    return n;
+  }
+
+  /** Canonical value lives on the range input (kept in sync with the number box). */
+  function parseSimRewardMin(rangeId) {
+    var el = document.getElementById(rangeId);
+    if (!el || el.disabled) return null;
+    var n = clampSimMinBonusPct(el.value);
+    if (n < 1) return null;
+    return n;
+  }
+
+  function simParseMins() {
+    return {
+      xp: parseSimRewardMin("keySimSimMinXp"),
+      dust: parseSimRewardMin("keySimSimMinDust"),
+      loot: parseSimRewardMin("keySimSimMinLoot")
+    };
+  }
+
+  function simThresholdsMet(slots, mins) {
+    var hasAny = mins.xp != null || mins.dust != null || mins.loot != null;
+    if (!hasAny) return false;
+    var t = rewardTotalsPct(slots);
+    if (mins.xp != null && t.xp < mins.xp) return false;
+    if (mins.dust != null && t.dust < mins.dust) return false;
+    if (mins.loot != null && t.loot < mins.loot) return false;
+    return true;
+  }
+
+  function simStopModsMet(slots, nameSet) {
+    if (!nameSet || !nameSet.size) return false;
+    for (var i = 0; i < slots.length; i += 1) {
+      var m = slots[i].mod;
+      if (m && m.name && nameSet.has(m.name)) return true;
+    }
+    return false;
+  }
+
+  function simCriteriaMet(slots, mins, nameSet) {
+    return simThresholdsMet(slots, mins) || simStopModsMet(slots, nameSet);
+  }
+
+  function simCollectCheckedNames(modsRootEl) {
+    var set = new Set();
+    if (!modsRootEl) return set;
+    var boxes = modsRootEl.querySelectorAll("input[type=\"checkbox\"][data-key-sim-stop-mod]");
+    for (var i = 0; i < boxes.length; i += 1) {
+      var b = boxes[i];
+      if (b.checked && b.getAttribute("data-key-sim-stop-mod")) {
+        set.add(b.getAttribute("data-key-sim-stop-mod"));
+      }
+    }
+    return set;
+  }
+
+  function simHasStopCriteria(mins, nameSet) {
+    var hasMin = mins.xp != null || mins.dust != null || mins.loot != null;
+    return hasMin || (nameSet && nameSet.size > 0);
+  }
+
+  function populateSimModCheckboxes() {
+    var root = document.getElementById("keySimSimMods");
+    if (!root) return;
+    root.textContent = "";
+    var d = currentDungeon();
+    if (!d || state.grade == null) {
+      var hint = document.createElement("p");
+      hint.className = "key-sim-sim__mods-empty muted";
+      hint.textContent = "Upgrade to roll mods to see the mod list.";
+      root.appendChild(hint);
+      return;
+    }
+    var pool = buildBasePool(state.mods, d, state.grade);
+    if (!pool.length) {
+      var empty = document.createElement("p");
+      empty.className = "key-sim-sim__mods-empty muted";
+      empty.textContent = "No rollable mods for this key and grade.";
+      root.appendChild(empty);
+      return;
+    }
+    var names = [];
+    var seen = new Set();
+    for (var i = 0; i < pool.length; i += 1) {
+      var nm = pool[i].name;
+      if (!nm || seen.has(nm)) continue;
+      var nmLower = nm.toLowerCase();
+      if (!nmLower.includes("generous") && !nmLower.includes("exalted banner")) continue;
+      seen.add(nm);
+      names.push(nm);
+    }
+    names.sort(function (a, b) {
+      return String(a).localeCompare(String(b));
+    });
+    for (var j = 0; j < names.length; j += 1) {
+      var lab = document.createElement("label");
+      lab.className = "key-sim-sim__mod-row";
+      var cb = document.createElement("input");
+      cb.type = "checkbox";
+      cb.setAttribute("data-key-sim-stop-mod", names[j]);
+      lab.appendChild(cb);
+      var sp = document.createElement("span");
+      sp.textContent = names[j];
+      lab.appendChild(sp);
+      root.appendChild(lab);
+    }
+  }
+
+  function yieldToBrowser() {
+    return new Promise(function (resolve) {
+      requestAnimationFrame(function () {
+        resolve();
+      });
+    });
+  }
+
   async function init() {
     var base = String(global.__KEY_SIM_DATA_BASE__ || "key-sim").replace(/\/+$/, "");
     setError("");
@@ -521,11 +747,13 @@
         var vis = state.visibleDungeonIndices || [];
         state.dungeonIndex = vis.length && vis[visPick] != null ? vis[visPick] : 0;
         state.grade = null;
+        clearUndoStack();
         syncSlotCount(state);
         renderKeyIcon();
         renderKeyChrome();
         renderSlots();
         renderUpgradeDisabled();
+        refreshSimSidebarIfOpen();
       });
     }
 
@@ -542,6 +770,7 @@
         renderSlots();
         return false;
       }
+      pushUndoSnapshot();
       setError("");
       rollUnlockedSlots(state, pool);
       renderSlots();
@@ -553,10 +782,297 @@
         return;
       }
       tryRollForGrade(state.grade);
+      refreshSimSidebarIfOpen();
     }
     if (rollBtn) rollBtn.addEventListener("click", doRoll);
 
+    var undoBtn = document.getElementById("keySimUndo");
+    var undoIcon = document.getElementById("keySimUndoIcon");
+    if (undoIcon) undoIcon.src = keyIconUrl("undo.png");
+    if (undoBtn) undoBtn.addEventListener("click", popUndo);
+
+    var diceIcon = document.getElementById("keySimDiceIcon");
+    if (diceIcon) diceIcon.src = keyIconUrl("dice.png");
+
+    var simBackdrop = document.getElementById("keySimSimBackdrop");
+    var simPanel = document.getElementById("keySimSimPanel");
+    var simClose = document.getElementById("keySimSimClose");
+    var simRun = document.getElementById("keySimSimRun");
+    var simCancel = document.getElementById("keySimSimCancel");
+    var simProgress = document.getElementById("keySimSimProgress");
+    var simResult = document.getElementById("keySimSimResult");
+    var simModsRoot = document.getElementById("keySimSimMods");
+
+    var simRewardPairs = [
+      { range: "keySimSimMinXp", text: "keySimSimMinXpTxt" },
+      { range: "keySimSimMinDust", text: "keySimSimMinDustTxt" },
+      { range: "keySimSimMinLoot", text: "keySimSimMinLootTxt" }
+    ];
+
+    function syncRewardPairFromRange(rangeEl, textEl) {
+      if (!rangeEl || !textEl) return;
+      var c = clampSimMinBonusPct(rangeEl.value);
+      rangeEl.value = String(c);
+      textEl.value = String(c);
+      rangeEl.setAttribute("aria-valuenow", String(c));
+      rangeEl.setAttribute("aria-valuemax", String(SIM_MIN_BONUS_CAP_PCT));
+    }
+
+    function syncRewardPairFromText(textEl, rangeEl) {
+      if (!rangeEl || !textEl) return;
+      var c = clampSimMinBonusPct(textEl.value);
+      rangeEl.value = String(c);
+      textEl.value = String(c);
+      rangeEl.setAttribute("aria-valuenow", String(c));
+      rangeEl.setAttribute("aria-valuemax", String(SIM_MIN_BONUS_CAP_PCT));
+    }
+
+    function configureSimRewardMinControls() {
+      var d = currentDungeon();
+      var poolOk =
+        d &&
+        state.grade != null &&
+        state.mods.length > 0 &&
+        buildBasePool(state.mods, d, state.grade).length > 0;
+      var dis = !poolOk;
+      for (var pi = 0; pi < simRewardPairs.length; pi += 1) {
+        var pair = simRewardPairs[pi];
+        var rEl = document.getElementById(pair.range);
+        var tEl = document.getElementById(pair.text);
+        if (!rEl || !tEl) continue;
+        rEl.min = "0";
+        rEl.max = String(SIM_MIN_BONUS_CAP_PCT);
+        rEl.step = "1";
+        tEl.min = "0";
+        tEl.max = String(SIM_MIN_BONUS_CAP_PCT);
+        tEl.step = "1";
+        rEl.disabled = dis;
+        tEl.disabled = dis;
+        var cur = dis ? 0 : clampSimMinBonusPct(rEl.value);
+        rEl.value = String(cur);
+        tEl.value = String(cur);
+        syncRewardPairFromRange(rEl, tEl);
+      }
+    }
+
+    function updateSimRunDisabled() {
+      if (!simRun) return;
+      if (simRunning) {
+        simRun.disabled = true;
+        return;
+      }
+      var d = currentDungeon();
+      var poolOk =
+        d &&
+        state.grade != null &&
+        buildBasePool(state.mods, d, state.grade).length > 0;
+      var mins = simParseMins();
+      var names = simCollectCheckedNames(simModsRoot);
+      simRun.disabled = !poolOk || state.grade == null || !simHasStopCriteria(mins, names);
+    }
+
+    function clearSimProgress() {
+      if (simProgress) simProgress.textContent = "";
+    }
+
+    function renderSimSuccess(rolls, slots) {
+      if (!simResult) return;
+      simResult.textContent = "";
+      var summary = document.createElement("p");
+      summary.className = "key-sim-sim__result-line";
+      summary.textContent = "Stopped after " + rolls.toLocaleString() + " roll(s).";
+      simResult.appendChild(summary);
+      var bonusLabel = document.createElement("p");
+      bonusLabel.className = "key-sim-sim__result-line muted";
+      bonusLabel.textContent = "Bonus totals:";
+      simResult.appendChild(bonusLabel);
+      var chips = document.createElement("div");
+      chips.className = "key-sim-sim__result-chips";
+      fillRewardChips(chips, rewardSummarySegments(slots), "None.");
+      simResult.appendChild(chips);
+      var modsLabel = document.createElement("p");
+      modsLabel.className = "key-sim-sim__result-line muted";
+      modsLabel.style.marginTop = "0.35rem";
+      modsLabel.textContent = "Mods:";
+      simResult.appendChild(modsLabel);
+      var modLine = document.createElement("p");
+      modLine.className = "key-sim-sim__result-line";
+      var parts = [];
+      for (var si = 0; si < slots.length; si += 1) {
+        parts.push(slots[si].mod ? slots[si].mod.name : "(empty)");
+      }
+      modLine.textContent = parts.join(", ");
+      simResult.appendChild(modLine);
+    }
+
+    function closeSimSidebar() {
+      if (!simPanel || !simBackdrop) return;
+      simCancelRequested = true;
+      simSidebarOpen = false;
+      simPanel.classList.remove("key-sim-sim--open");
+      simBackdrop.setAttribute("aria-hidden", "true");
+      document.body.classList.remove("key-sim-sim-active");
+      window.setTimeout(function () {
+        simPanel.hidden = true;
+        simBackdrop.hidden = true;
+      }, 200);
+    }
+
+    function openSimSidebar() {
+      if (!simPanel || !simBackdrop || state.grade == null) return;
+      simSidebarOpen = true;
+      if (simResult) simResult.textContent = "";
+      clearSimProgress();
+      populateSimModCheckboxes();
+      configureSimRewardMinControls();
+      updateSimRunDisabled();
+      simBackdrop.hidden = false;
+      simPanel.hidden = false;
+      simBackdrop.setAttribute("aria-hidden", "false");
+      document.body.classList.add("key-sim-sim-active");
+      requestAnimationFrame(function () {
+        simPanel.classList.add("key-sim-sim--open");
+      });
+    }
+
+    refreshSimSidebarIfOpen = function () {
+      if (!simSidebarOpen) return;
+      populateSimModCheckboxes();
+      configureSimRewardMinControls();
+      updateSimRunDisabled();
+    };
+
+    async function runSimulation() {
+      var d = currentDungeon();
+      if (!d || state.grade == null) return;
+      var pool = buildBasePool(state.mods, d, state.grade);
+      if (!pool.length) {
+        if (simProgress) simProgress.textContent = "No rollable mods for this key and grade.";
+        return;
+      }
+      var mins = simParseMins();
+      var nameSet = simCollectCheckedNames(simModsRoot);
+      if (!simHasStopCriteria(mins, nameSet)) {
+        if (simProgress) simProgress.textContent = "Set min above 0 (slider or %) or check a mod.";
+        updateSimRunDisabled();
+        return;
+      }
+      simRunning = true;
+      simCancelRequested = false;
+      renderUndoControl();
+      if (simResult) simResult.textContent = "";
+      if (simProgress) simProgress.textContent = "Rolling…";
+      if (simRun) simRun.hidden = true;
+      if (simCancel) simCancel.hidden = false;
+
+      var work = { slots: cloneSlotsDeep(state.slots) };
+      var rolls = 0;
+
+      try {
+        while (rolls < SIM_MAX_ROLLS && !simCancelRequested) {
+          var chunkTarget = Math.min(SIM_CHUNK, SIM_MAX_ROLLS - rolls);
+          for (var c = 0; c < chunkTarget; c += 1) {
+            rollUnlockedSlots(work, pool);
+            rolls += 1;
+            if (simCriteriaMet(work.slots, mins, nameSet)) {
+              pushUndoSnapshot();
+              state.slots = cloneSlotsDeep(work.slots);
+              setError("");
+              renderSlots();
+              renderUndoControl();
+              clearSimProgress();
+              renderSimSuccess(rolls, state.slots);
+              refreshSimSidebarIfOpen();
+              return;
+            }
+          }
+          if (simProgress) simProgress.textContent = rolls.toLocaleString() + " rolls…";
+          await yieldToBrowser();
+        }
+
+        if (simCancelRequested) {
+          if (simProgress) simProgress.textContent = "Canceled.";
+        } else if (simProgress) {
+          simProgress.textContent =
+            "No match within " + SIM_MAX_ROLLS.toLocaleString() + " rolls. Try looser criteria.";
+        }
+      } finally {
+        simRunning = false;
+        if (simRun) simRun.hidden = false;
+        if (simCancel) simCancel.hidden = true;
+        renderUndoControl();
+        updateSimRunDisabled();
+      }
+    }
+
+    var diceBtn = document.getElementById("keySimDice");
+    if (diceBtn) {
+      diceBtn.addEventListener("click", function () {
+        if (simSidebarOpen) closeSimSidebar();
+        else openSimSidebar();
+      });
+    }
+
+    if (simBackdrop) {
+      simBackdrop.addEventListener("click", function () {
+        closeSimSidebar();
+      });
+    }
+    if (simClose) {
+      simClose.addEventListener("click", function () {
+        closeSimSidebar();
+      });
+    }
+    if (simCancel) {
+      simCancel.addEventListener("click", function () {
+        simCancelRequested = true;
+      });
+    }
+    if (simRun) {
+      simRun.addEventListener("click", function () {
+        runSimulation();
+      });
+    }
+
+    document.addEventListener("keydown", function (ev) {
+      if (ev.key !== "Escape") return;
+      if (!simSidebarOpen) return;
+      closeSimSidebar();
+    });
+
+    simRewardPairs.forEach(function (pair) {
+      var rangeEl = document.getElementById(pair.range);
+      var textEl = document.getElementById(pair.text);
+      if (!rangeEl || !textEl) return;
+      rangeEl.addEventListener("input", function () {
+        syncRewardPairFromRange(rangeEl, textEl);
+        updateSimRunDisabled();
+      });
+      textEl.addEventListener("input", function () {
+        syncRewardPairFromText(textEl, rangeEl);
+        updateSimRunDisabled();
+      });
+      textEl.addEventListener("change", function () {
+        syncRewardPairFromText(textEl, rangeEl);
+        updateSimRunDisabled();
+      });
+      textEl.addEventListener("keydown", function (ev) {
+        if (ev.key === "Enter") {
+          syncRewardPairFromText(textEl, rangeEl);
+          updateSimRunDisabled();
+        }
+      });
+    });
+
+    if (simModsRoot) {
+      simModsRoot.addEventListener("change", function (ev) {
+        var t = ev.target;
+        if (t && t.matches && t.matches("input[type=\"checkbox\"]")) updateSimRunDisabled();
+      });
+    }
+
     function applyGradeUpgrade(pool, nextGrade) {
+      pushUndoSnapshot();
       state.grade = nextGrade;
       syncSlotCount(state);
       setError("");
@@ -564,6 +1080,7 @@
       renderKeyChrome();
       renderSlots();
       renderUpgradeDisabled();
+      refreshSimSidebarIfOpen();
     }
 
     var up = document.getElementById("keySimUpgrade");
@@ -597,6 +1114,8 @@
     renderKeyIcon();
     renderSlots();
     renderUpgradeDisabled();
+    renderUndoControl();
+    configureSimRewardMinControls();
   }
 
   global.KeySim = { init: init };

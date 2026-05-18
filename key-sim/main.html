@@ -64,9 +64,45 @@
 
         <div class="key-sim__mods-col">
           <div class="key-sim__mods-banner">
-            <span class="key-sim__mods-banner-edge key-sim__mods-banner-edge--left" aria-hidden="true"></span>
+            <button
+              type="button"
+              id="keySimUndo"
+              class="key-sim__mods-undo"
+              aria-label="Undo last reroll or upgrade"
+              title="Undo last reroll or upgrade"
+              hidden
+              disabled
+            >
+              <img
+                id="keySimUndoIcon"
+                class="key-sim__mods-undo-icon"
+                src=""
+                alt=""
+                width="16"
+                height="16"
+                decoding="async"
+              >
+            </button>
             <span class="key-sim__mods-banner-label">Dungeon Mods</span>
-            <span class="key-sim__mods-banner-edge key-sim__mods-banner-edge--right" aria-hidden="true"></span>
+            <button
+              type="button"
+              id="keySimDice"
+              class="key-sim__mods-dice"
+              aria-label="Open roll simulator"
+              title="Roll simulator"
+              hidden
+              disabled
+            >
+              <img
+                id="keySimDiceIcon"
+                class="key-sim__mods-dice-icon"
+                src=""
+                alt=""
+                width="16"
+                height="16"
+                decoding="async"
+              >
+            </button>
           </div>
           <div id="keySimSlots" class="key-sim__slots"></div>
           <p id="keySimRewards" class="key-sim__rewards-agg muted"></p>
@@ -80,6 +116,128 @@
 
       <p id="keySimErr" class="key-sim__err" hidden></p>
     </div>
+
+    <div
+      id="keySimSimBackdrop"
+      class="key-sim-sim__backdrop"
+      hidden
+      aria-hidden="true"
+    ></div>
+    <aside
+      id="keySimSimPanel"
+      class="key-sim-sim"
+      hidden
+      aria-labelledby="keySimSimTitle"
+    >
+      <div class="key-sim-sim__head">
+        <h2 class="key-sim-sim__title" id="keySimSimTitle">Roll simulator</h2>
+        <button type="button" class="key-sim-sim__close" id="keySimSimClose" aria-label="Close simulator">
+          ×
+        </button>
+      </div>
+      <p class="key-sim-sim__hint muted">
+        Stops when your minimum XP / Dust / Loot +% totals (below) are met or a checked mod appears. Slider and number stay in sync; use either. 0–100%; 0 skips that bonus.
+      </p>
+      <div class="key-sim-sim__fields">
+        <div class="key-sim-sim__field-group">
+          <span class="key-sim-sim__label-text-block" id="keySimSimMinXpLbl">Minimum XP bonus</span>
+          <div class="key-sim-sim__slider-row">
+            <input
+              type="range"
+              id="keySimSimMinXp"
+              class="key-sim-sim__slider"
+              min="0"
+              max="100"
+              value="0"
+              step="1"
+              aria-labelledby="keySimSimMinXpLbl"
+              aria-valuemin="0"
+              aria-valuemax="100"
+              aria-valuenow="0"
+            >
+            <input
+              type="number"
+              id="keySimSimMinXpTxt"
+              class="key-sim-sim__input key-sim-sim__pct-input"
+              inputmode="numeric"
+              min="0"
+              max="100"
+              step="1"
+              value="0"
+              aria-label="Minimum XP bonus percent"
+            >
+          </div>
+        </div>
+        <div class="key-sim-sim__field-group">
+          <span class="key-sim-sim__label-text-block" id="keySimSimMinDustLbl">Minimum Dust bonus</span>
+          <div class="key-sim-sim__slider-row">
+            <input
+              type="range"
+              id="keySimSimMinDust"
+              class="key-sim-sim__slider"
+              min="0"
+              max="100"
+              value="0"
+              step="1"
+              aria-labelledby="keySimSimMinDustLbl"
+              aria-valuemin="0"
+              aria-valuemax="100"
+              aria-valuenow="0"
+            >
+            <input
+              type="number"
+              id="keySimSimMinDustTxt"
+              class="key-sim-sim__input key-sim-sim__pct-input"
+              inputmode="numeric"
+              min="0"
+              max="100"
+              step="1"
+              value="0"
+              aria-label="Minimum Dust bonus percent"
+            >
+          </div>
+        </div>
+        <div class="key-sim-sim__field-group">
+          <span class="key-sim-sim__label-text-block" id="keySimSimMinLootLbl">Minimum Loot bonus</span>
+          <div class="key-sim-sim__slider-row">
+            <input
+              type="range"
+              id="keySimSimMinLoot"
+              class="key-sim-sim__slider"
+              min="0"
+              max="100"
+              value="0"
+              step="1"
+              aria-labelledby="keySimSimMinLootLbl"
+              aria-valuemin="0"
+              aria-valuemax="100"
+              aria-valuenow="0"
+            >
+            <input
+              type="number"
+              id="keySimSimMinLootTxt"
+              class="key-sim-sim__input key-sim-sim__pct-input"
+              inputmode="numeric"
+              min="0"
+              max="100"
+              step="1"
+              value="0"
+              aria-label="Minimum Loot bonus percent"
+            >
+          </div>
+        </div>
+      </div>
+      <div class="key-sim-sim__mods-section">
+        <span class="key-sim-sim__mods-heading">Stop if any mod appears</span>
+        <div id="keySimSimMods" class="key-sim-sim__mods-list" role="group" aria-label="Mods that stop the simulator"></div>
+      </div>
+      <p id="keySimSimProgress" class="key-sim-sim__progress muted" aria-live="polite"></p>
+      <div id="keySimSimResult" class="key-sim-sim__result" aria-live="polite"></div>
+      <div class="key-sim-sim__actions">
+        <button type="button" id="keySimSimRun" class="key-sim__pill key-sim__pill--gold">Run</button>
+        <button type="button" id="keySimSimCancel" class="key-sim__pill" hidden>Cancel</button>
+      </div>
+    </aside>
   </div>
   <p class="key-sim__credit">credit to Ammmar for all stats and help</p>
   <script src="app.js"></script>

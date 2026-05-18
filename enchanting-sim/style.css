@@ -833,6 +833,69 @@
   font-size: 0.78rem;
 }
 
+/* ── Phase 1 alternates (OR) ── */
+.enchant-sim-shell .path-phase-1-alts-disclosure {
+  margin-top: 0.55rem;
+  border: 1px solid var(--sim-card-border);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.02);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.enchant-sim-shell .path-phase-1-alts-summary {
+  cursor: pointer;
+  display: list-item;
+  font-size: 0.8rem;
+  color: var(--sim-muted);
+  letter-spacing: 0.03em;
+  padding: 0.5rem 0.65rem;
+  margin: 0;
+  user-select: none;
+  list-style-position: outside;
+}
+
+.enchant-sim-shell .path-phase-1-alts-summary::-webkit-details-marker {
+  color: var(--sim-gold-strong);
+}
+
+.enchant-sim-shell .path-phase-1-alts-inner {
+  padding: 0 0.65rem 0.6rem;
+}
+
+.enchant-sim-shell .path-phase-1-alts {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin-bottom: 0.35rem;
+}
+
+.enchant-sim-shell .path-phase-1-alt-row {
+  display: grid;
+  grid-template-columns: 5.5rem minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.4rem 0.5rem;
+}
+
+.enchant-sim-shell .path-phase-1-alt-label {
+  font-size: 0.78rem;
+  color: var(--sim-muted);
+  margin: 0;
+}
+
+.enchant-sim-shell .path-phase-1-alt-wrap {
+  min-width: 0;
+}
+
+.enchant-sim-shell .path-phase-1-add-alt {
+  margin-top: 0.2rem;
+  align-self: flex-start;
+}
+
+.enchant-sim-shell .path-phase-1-alt-remove {
+  padding: 0.35rem 0.5rem;
+  font-size: 0.78rem;
+}
+
 .enchant-sim-shell #pathPhasesFieldset {
   border: 0;
   margin: 0;

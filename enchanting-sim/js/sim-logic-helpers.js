@@ -84,19 +84,33 @@ function alternateRowHintsStatTradeoff(raw) {
 }
 /** Sync "Quick pick: stat −stat tradeoff" &lt;details&gt; when alternate rows look like a tradeoff name. */
 function syncPathStatTradeoffDisclosure() {
-  const disclosure = document.getElementById('path-stat-tradeoff-disclosure');
-  if (!disclosure) return;
-  const container = document.getElementById('path-phase-2-alts');
-  let expand = false;
-  if (container) {
-    container.querySelectorAll('.path-phase-2-alt-input').forEach(inp => {
-      if (alternateRowHintsStatTradeoff(inp.value)) expand = true;
-    });
-  }
-  disclosure.open = expand;
+  const syncOne = ({ disclosureId, containerId, inputSelector }) => {
+    const disclosure = document.getElementById(disclosureId);
+    if (!disclosure) return;
+    const container = document.getElementById(containerId);
+    let expand = false;
+    if (container) {
+      container.querySelectorAll(inputSelector).forEach(inp => {
+        if (alternateRowHintsStatTradeoff(inp.value)) expand = true;
+      });
+    }
+    disclosure.open = expand;
+  };
+  syncOne({
+    disclosureId: 'path-stat-tradeoff-disclosure',
+    containerId: 'path-phase-2-alts',
+    inputSelector: '.path-phase-2-alt-input'
+  });
+  syncOne({
+    disclosureId: 'path-stat-tradeoff-disclosure-p1',
+    containerId: 'path-phase-1-alts',
+    inputSelector: '.path-phase-1-alt-input'
+  });
 }
 /** Max alternate rows for path phase 2 (`path-phase-2-alt-*`). */
 const PATH_PHASE_2_ALT_MAX = 12;
+/** Max alternate rows for path phase 1 (`path-phase-1-alt-*`). */
+const PATH_PHASE_1_ALT_MAX = 12;
 /**
  * True when phase 2 lists more than one OR target ({@link collectPathPhase2FromDom} / restore state semantics).
  * Matches `displayNames.length > 1` in `buildPathPhasesFromInputs` before duplicate validation.
@@ -107,6 +121,15 @@ function pathPhase2MultiOrTargets(p2) {
   const asymmetric = !!anchor;
   const displayNames = asymmetric ? [anchor, ...alts] : alts;
   return displayNames.length > 1;
+}
+/**
+ * True when phase 1 has a main anchor plus at least one alternate OR row.
+ * Matches anchor + alternates semantics before auto phase 2 in `buildPathPhasesFromInputs`.
+ */
+function pathPhase1MultiOrTargets(p1) {
+  const main = ((p1 && p1.main) || '').trim();
+  const alts = ((p1 && p1.alts) || []).map(a => String(a).trim()).filter(Boolean);
+  return !!main && alts.length > 0;
 }
 const monteCarloPoolBaseCache = new Map();
 function clearMonteCarloPoolBaseCache() {

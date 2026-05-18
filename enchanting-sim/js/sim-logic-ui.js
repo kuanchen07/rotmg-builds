@@ -181,6 +181,10 @@ function readPathPhaseValues() {
     const el = document.getElementById(id);
     if (el) out[id] = el.value;
   }
+  for (let i = 0; i < PATH_PHASE_1_ALT_MAX; i++) {
+    const el = document.getElementById(`path-phase-1-alt-${i}`);
+    if (el) out[`path-phase-1-alt-${i}`] = el.value;
+  }
   for (let i = 0; i < PATH_PHASE_2_ALT_MAX; i++) {
     const el = document.getElementById(`path-phase-2-alt-${i}`);
     if (el) out[`path-phase-2-alt-${i}`] = el.value;
@@ -217,6 +221,72 @@ function getPhase2RestoreState(prev) {
     if (a && b) return { anchor: '', alts: [a, b] };
   }
   return { anchor, alts };
+}
+/** Restore phase 1 alternates from saved values. */
+function getPhase1RestoreState(prev) {
+  const main = (prev['path-phase-1'] || '').trim();
+  const alts = [];
+  for (let i = 0; i < PATH_PHASE_1_ALT_MAX; i++) {
+    const v = (prev[`path-phase-1-alt-${i}`] || '').trim();
+    if (v) alts.push(v);
+  }
+  return { main, alts };
+}
+function renderPathPhase1AltRowsContent(container, values) {
+  const n = Math.max(1, values.length);
+  container.innerHTML = '';
+  for (let i = 0; i < n; i++) {
+    const row = document.createElement('div');
+    row.className = 'path-phase-1-alt-row';
+    const lbl = document.createElement('label');
+    lbl.className = 'path-phase-1-alt-label';
+    lbl.setAttribute('for', `path-phase-1-alt-${i}`);
+    lbl.textContent = i === 0 ? 'OR option' : `OR option ${i + 1}`;
+    const inpWrap = document.createElement('div');
+    inpWrap.className = 'target-enchant-wrap path-phase-1-alt-wrap';
+    const inp = document.createElement('input');
+    inp.type = 'text';
+    inp.id = `path-phase-1-alt-${i}`;
+    inp.className = 'path-phase-input path-phase-1-alt-input';
+    inp.placeholder = 'e.g. Wisdom -Attack Tradeoff IV';
+    inp.value = values[i] || '';
+    inpWrap.appendChild(inp);
+    row.appendChild(lbl);
+    row.appendChild(inpWrap);
+    if (n > 1) {
+      const rm = document.createElement('button');
+      rm.type = 'button';
+      rm.className = 'small path-phase-1-alt-remove';
+      rm.textContent = 'Remove';
+      const removeIndex = i;
+      rm.onclick = () => {
+        const c = document.getElementById('path-phase-1-alts');
+        if (!c) return;
+        const v = [...c.querySelectorAll('.path-phase-1-alt-input')].map(x => x.value.trim());
+        v.splice(removeIndex, 1);
+        renderPathPhase1AltRowsContent(c, v.length ? v : ['']);
+        onPathPhase1TargetsChanged();
+      };
+      row.appendChild(rm);
+    }
+    container.appendChild(row);
+    if (typeof window.initEnchantTargetAutocomplete === 'function') {
+      window.initEnchantTargetAutocomplete(inp, { excludePathSimTier12: true });
+    }
+  }
+  syncPathStatTradeoffDisclosure();
+  updatePathStatTradeoffPickerUI();
+}
+function collectPathPhase1AltsFromDom() {
+  const alts = [];
+  const container = document.getElementById('path-phase-1-alts');
+  if (container) {
+    container.querySelectorAll('.path-phase-1-alt-input').forEach(inp => {
+      const t = inp.value.trim();
+      if (t) alts.push(t);
+    });
+  }
+  return alts;
 }
 function renderPathPhase2AltRowsContent(container, values) {
   const n = Math.max(1, values.length);
@@ -373,10 +443,22 @@ function formatOrdinal(n) {
   if (n % 10 === 3) return `${n}rd`;
   return `${n}th`;
 }
-function rebuildStatTradeoffMinusCheckboxGrid(cbWrapEl, gainStat) {
+function statTradeoffPickerIds(idSuffix = '') {
+  return {
+    disclosure: `path-stat-tradeoff-disclosure${idSuffix}`,
+    picker: `path-stat-tradeoff-picker${idSuffix}`,
+    tier: `path-stat-tradeoff-tier${idSuffix}`,
+    plus: `path-stat-tradeoff-plus${idSuffix}`,
+    append: `path-stat-tradeoff-append${idSuffix}`,
+    apply: `path-stat-tradeoff-apply${idSuffix}`,
+    hint: `path-stat-tradeoff-picker-hint${idSuffix}`,
+    feedback: `path-stat-tradeoff-apply-feedback${idSuffix}`
+  };
+}
+function rebuildStatTradeoffMinusCheckboxGrid(cbWrapEl, gainStat, { feedbackId = '' } = {}) {
   cbWrapEl.innerHTML = '';
   const onCbChange = () => {
-    const feedbackEl = document.getElementById('path-stat-tradeoff-apply-feedback');
+    const feedbackEl = feedbackId ? document.getElementById(feedbackId) : null;
     if (feedbackEl) feedbackEl.textContent = '';
     updatePathStatTradeoffPickerUI();
   };
@@ -392,16 +474,14 @@ function rebuildStatTradeoffMinusCheckboxGrid(cbWrapEl, gainStat) {
     cbWrapEl.appendChild(lab);
   }
 }
-function computeStatTradeoffPickerSelectionForTier(tierRoman) {
+function computeStatTradeoffPickerSelectionForTier(tierRoman, { mountEl = null, gainStat = '' } = {}) {
   const it = document.getElementById('itemType')?.value;
-  const mount = document.getElementById('path-stat-tradeoff-picker');
-  const gainStat = document.getElementById('path-stat-tradeoff-plus')?.value;
-  if (!it || !mount || !gainStat) {
+  if (!it || !mountEl || !gainStat) {
     return { appliedNames: [], skippedParts: [], checkedStats: [] };
   }
   const pool = eligiblePool(it);
   const poolNorms = new Set(pool.map(e => normalizeName(e.name)));
-  const checkboxes = mount.querySelectorAll('input[type="checkbox"][data-tradeoff-minus]');
+  const checkboxes = mountEl.querySelectorAll('input[type="checkbox"][data-tradeoff-minus]');
   const checkedStats = [];
   checkboxes.forEach(cb => {
     if (cb.checked) checkedStats.push(cb.dataset.tradeoffMinus);
@@ -422,19 +502,24 @@ function computeStatTradeoffPickerSelectionForTier(tierRoman) {
   }
   return { appliedNames, skippedParts, checkedStats };
 }
-function updatePathStatTradeoffPickerUI() {
-  const mount = document.getElementById('path-stat-tradeoff-picker');
+function updateSinglePathStatTradeoffPickerUI(idSuffix = '') {
+  const ids = statTradeoffPickerIds(idSuffix);
+  const mount = document.getElementById(ids.picker);
   if (!mount) return;
-  const hintEl = document.getElementById('path-stat-tradeoff-picker-hint');
-  const applyBtn = document.getElementById('path-stat-tradeoff-apply');
+  const hintEl = document.getElementById(ids.hint);
+  const applyBtn = document.getElementById(ids.apply);
   const it = document.getElementById('itemType')?.value;
-  const tier = document.getElementById('path-stat-tradeoff-tier')?.value || 'IV';
+  const tier = document.getElementById(ids.tier)?.value || 'IV';
+  const gainStat = document.getElementById(ids.plus)?.value || '';
   if (!it) {
     if (applyBtn) applyBtn.disabled = true;
     if (hintEl) hintEl.textContent = 'Select an item type to use the quick picker.';
     return;
   }
-  const { appliedNames, skippedParts, checkedStats } = computeStatTradeoffPickerSelectionForTier(tier);
+  const { appliedNames, skippedParts, checkedStats } = computeStatTradeoffPickerSelectionForTier(tier, {
+    mountEl: mount,
+    gainStat
+  });
   if (!checkedStats.length) {
     if (applyBtn) applyBtn.disabled = true;
     if (hintEl) hintEl.textContent = 'Check loss stats to preview; Apply fills alternate OR rows.';
@@ -456,17 +541,33 @@ function updatePathStatTradeoffPickerUI() {
     }
   }
 }
-function mountStatTradeoffPickerSection(mount) {
+function updatePathStatTradeoffPickerUI() {
+  updateSinglePathStatTradeoffPickerUI();
+  updateSinglePathStatTradeoffPickerUI('-p1');
+}
+function mountStatTradeoffPickerSection(mount, options = {}) {
+  const {
+    idSuffix = '',
+    targetAltsContainerId = 'path-phase-2-alts',
+    altDisclosureId = 'path-phase-2-alts-disclosure',
+    altInputSelector = '.path-phase-2-alt-input',
+    renderAltRowsContent = renderPathPhase2AltRowsContent,
+    onAfterApply = null,
+    appendValidationMessage = null,
+    preserveOpen = false
+  } = options;
+  const ids = statTradeoffPickerIds(idSuffix);
   const disclosure = document.createElement('details');
-  disclosure.id = 'path-stat-tradeoff-disclosure';
+  disclosure.id = ids.disclosure;
   disclosure.className = 'path-stat-tradeoff-disclosure';
+  disclosure.open = preserveOpen;
 
   const disclosureSummary = document.createElement('summary');
   disclosureSummary.className = 'path-stat-tradeoff-picker__summary';
   disclosureSummary.textContent = 'Quick pick: stat −stat tradeoff';
 
   const wrap = document.createElement('div');
-  wrap.id = 'path-stat-tradeoff-picker';
+  wrap.id = ids.picker;
   wrap.className = 'path-stat-tradeoff-picker';
 
   const tierRow = document.createElement('div');
@@ -474,7 +575,7 @@ function mountStatTradeoffPickerSection(mount) {
   const tierLab = document.createElement('span');
   tierLab.textContent = 'Tier';
   const tierSel = document.createElement('select');
-  tierSel.id = 'path-stat-tradeoff-tier';
+  tierSel.id = ids.tier;
   tierSel.className = 'path-stat-tradeoff-tier-select';
   for (const r of ['III', 'IV']) {
     const o = document.createElement('option');
@@ -489,7 +590,7 @@ function mountStatTradeoffPickerSection(mount) {
   const gainLab = document.createElement('span');
   gainLab.textContent = 'Gain';
   const gainSel = document.createElement('select');
-  gainSel.id = 'path-stat-tradeoff-plus';
+  gainSel.id = ids.plus;
   gainSel.className = 'path-stat-tradeoff-plus-select';
   for (const s of STAT_TRADEOFF_STATS) {
     const o = document.createElement('option');
@@ -505,16 +606,16 @@ function mountStatTradeoffPickerSection(mount) {
 
   const cbWrap = document.createElement('div');
   cbWrap.className = 'path-stat-tradeoff-stats';
-  rebuildStatTradeoffMinusCheckboxGrid(cbWrap, gainSel.value);
+  rebuildStatTradeoffMinusCheckboxGrid(cbWrap, gainSel.value, { feedbackId: ids.feedback });
 
   const clearStatTradeoffFeedback = () => {
-    const feedbackEl = document.getElementById('path-stat-tradeoff-apply-feedback');
+    const feedbackEl = document.getElementById(ids.feedback);
     if (feedbackEl) feedbackEl.textContent = '';
   };
 
   gainSel.addEventListener('change', () => {
     clearStatTradeoffFeedback();
-    rebuildStatTradeoffMinusCheckboxGrid(cbWrap, gainSel.value);
+    rebuildStatTradeoffMinusCheckboxGrid(cbWrap, gainSel.value, { feedbackId: ids.feedback });
     updatePathStatTradeoffPickerUI();
   });
 
@@ -530,7 +631,7 @@ function mountStatTradeoffPickerSection(mount) {
   appendRow.className = 'path-stat-tradeoff-append';
   const appendCb = document.createElement('input');
   appendCb.type = 'checkbox';
-  appendCb.id = 'path-stat-tradeoff-append';
+  appendCb.id = ids.append;
   appendRow.appendChild(appendCb);
   appendRow.appendChild(document.createTextNode(' Append to alternates (keep existing rows; dedupe)'));
 
@@ -538,21 +639,24 @@ function mountStatTradeoffPickerSection(mount) {
   applyRow.className = 'path-stat-tradeoff-apply-row';
   const applyBtn = document.createElement('button');
   applyBtn.type = 'button';
-  applyBtn.id = 'path-stat-tradeoff-apply';
+  applyBtn.id = ids.apply;
   applyBtn.className = 'path-stat-tradeoff-apply-btn';
   applyBtn.textContent = 'Apply to alternates';
   applyBtn.onclick = () => {
-    const altDetailsEl = document.getElementById('path-phase-2-alts-disclosure');
+    const altDetailsEl = document.getElementById(altDisclosureId);
     if (altDetailsEl) altDetailsEl.open = true;
-    const tierNow = document.getElementById('path-stat-tradeoff-tier')?.value || 'IV';
-    const { appliedNames, skippedParts, checkedStats } = computeStatTradeoffPickerSelectionForTier(tierNow);
-    const container = document.getElementById('path-phase-2-alts');
-    const feedbackEl = document.getElementById('path-stat-tradeoff-apply-feedback');
-    const append = document.getElementById('path-stat-tradeoff-append')?.checked;
+    const tierNow = document.getElementById(ids.tier)?.value || 'IV';
+    const { appliedNames, skippedParts, checkedStats } = computeStatTradeoffPickerSelectionForTier(tierNow, {
+      mountEl: wrap,
+      gainStat: gainSel.value
+    });
+    const container = document.getElementById(targetAltsContainerId);
+    const feedbackEl = document.getElementById(ids.feedback);
+    const append = document.getElementById(ids.append)?.checked;
     if (!container || !appliedNames.length) return;
     let rows = [...appliedNames];
     if (append) {
-      const existing = [...container.querySelectorAll('.path-phase-2-alt-input')]
+      const existing = [...container.querySelectorAll(altInputSelector)]
         .map(x => x.value.trim())
         .filter(Boolean);
       const seen = new Set(existing.map(n => normalizeName(n)));
@@ -565,28 +669,28 @@ function mountStatTradeoffPickerSection(mount) {
       }
       rows = existing.length ? existing : [''];
     }
-    renderPathPhase2AltRowsContent(container, rows);
+    renderAltRowsContent(container, rows);
     updatePathStatTradeoffPickerUI();
-    onPathPhase2TargetsChanged();
+    if (typeof onAfterApply === 'function') onAfterApply();
     let msg = '';
     if (skippedParts.length) {
       msg = `Applied ${appliedNames.length} of ${checkedStats.length} to alternates: skipped ${skippedParts.join(', ')}.`;
     } else {
       msg = `Applied ${appliedNames.length} enchant(s) to alternate rows.`;
     }
-    const { anchor, alts } = collectPathPhase2FromDom();
-    if (!anchor && !alts.length) {
-      msg += ' Add at least one anchor or alternate for 2nd phase.';
+    if (typeof appendValidationMessage === 'function') {
+      const extra = appendValidationMessage();
+      if (extra) msg += ` ${extra}`;
     }
     if (feedbackEl) feedbackEl.textContent = msg;
   };
 
   const feedback = document.createElement('div');
-  feedback.id = 'path-stat-tradeoff-apply-feedback';
+  feedback.id = ids.feedback;
   feedback.className = 'path-stat-tradeoff-apply-feedback';
 
   const hint = document.createElement('div');
-  hint.id = 'path-stat-tradeoff-picker-hint';
+  hint.id = ids.hint;
   hint.className = 'path-stat-tradeoff-picker-hint';
 
   tierRow.appendChild(tierLab);
@@ -604,6 +708,18 @@ function mountStatTradeoffPickerSection(mount) {
   disclosure.appendChild(disclosureSummary);
   disclosure.appendChild(wrap);
   mount.appendChild(disclosure);
+}
+/** Called when main or alternates change; re-builds path steps if Auto vs manual 2nd target must flip. */
+function onPathPhase1TargetsChanged() {
+  syncPathStatTradeoffDisclosure();
+  if (selectedSlots < 2) return;
+  const mount = document.getElementById('pathPhasesMount');
+  if (!mount) return;
+  const snap = readPathPhaseValues();
+  const multi = pathPhase1MultiOrTargets(getPhase1RestoreState(snap));
+  const key = multi ? 'multi' : 'single';
+  if (mount.dataset.pathP1OrMode === key) return;
+  renderPathPhaseUI(snap);
 }
 /** Called when anchor or alternates change; re-builds path steps if 4-slot Auto vs manual layout must flip. */
 function onPathPhase2TargetsChanged() {
@@ -623,11 +739,19 @@ function renderPathPhaseUI(phaseValuesOverride) {
   const prev = phaseValuesOverride !== undefined ? phaseValuesOverride : readPathPhaseValues();
   const preserveAltsDisclosureOpen =
     document.getElementById('path-phase-2-alts-disclosure')?.open === true;
+  const preservePhase2TradeoffOpen =
+    document.getElementById('path-stat-tradeoff-disclosure')?.open === true;
+  const preservePhase1TradeoffOpen =
+    document.getElementById('path-stat-tradeoff-disclosure-p1')?.open === true;
   mount.innerHTML = '';
   mount.className = 'path-row path-stepper';
 
   const p2 = getPhase2RestoreState(prev);
   let stepNum = 1;
+
+  const p1 = getPhase1RestoreState(prev);
+  const preservePhase1AltsOpen =
+    document.getElementById('path-phase-1-alts-disclosure')?.open === true;
 
   createPathStep(mount, stepNum, { title: '1st target' }, body => {
     const wrap = document.createElement('div');
@@ -647,17 +771,95 @@ function renderPathPhaseUI(phaseValuesOverride) {
     if (typeof window.initEnchantTargetAutocomplete === 'function') {
       window.initEnchantTargetAutocomplete(input, { excludePathSimTier12: true });
     }
+    input.addEventListener('input', onPathPhase1TargetsChanged);
+
+    /* ── Alternates (OR) disclosure for phase 1 ── */
+    const altDetails = document.createElement('details');
+    altDetails.id = 'path-phase-1-alts-disclosure';
+    altDetails.className = 'path-phase-1-alts-disclosure';
+    if (preservePhase1AltsOpen || p1.alts.length > 0) altDetails.open = true;
+
+    const altSummary = document.createElement('summary');
+    altSummary.className = 'path-phase-1-alts-summary';
+    altSummary.textContent = 'Alternates (OR)';
+    altDetails.appendChild(altSummary);
+
+    const altInner = document.createElement('div');
+    altInner.className = 'path-phase-1-alts-inner';
+
+    const altContainer = document.createElement('div');
+    altContainer.id = 'path-phase-1-alts';
+    altContainer.className = 'path-phase-1-alts';
+    const altVals = p1.alts.length ? p1.alts : [''];
+    renderPathPhase1AltRowsContent(altContainer, altVals);
+    altContainer.addEventListener('input', () => {
+      syncPathStatTradeoffDisclosure();
+      updatePathStatTradeoffPickerUI();
+      onPathPhase1TargetsChanged();
+    });
+    altInner.appendChild(altContainer);
+
+    const addBtn = document.createElement('button');
+    addBtn.type = 'button';
+    addBtn.className = 'small path-phase-1-add-alt';
+    addBtn.textContent = '+ Add alternate';
+    addBtn.onclick = () => {
+      const c = document.getElementById('path-phase-1-alts');
+      if (!c) return;
+      const v = [...c.querySelectorAll('.path-phase-1-alt-input')].map(x => x.value.trim());
+      if (v.length >= PATH_PHASE_1_ALT_MAX) return;
+      v.push('');
+      renderPathPhase1AltRowsContent(c, v);
+      onPathPhase1TargetsChanged();
+    };
+    altInner.appendChild(addBtn);
+    altDetails.appendChild(altInner);
+    body.appendChild(altDetails);
+
+    mountStatTradeoffPickerSection(body, {
+      idSuffix: '-p1',
+      targetAltsContainerId: 'path-phase-1-alts',
+      altDisclosureId: 'path-phase-1-alts-disclosure',
+      altInputSelector: '.path-phase-1-alt-input',
+      renderAltRowsContent: renderPathPhase1AltRowsContent,
+      preserveOpen: preservePhase1TradeoffOpen,
+      onAfterApply: onPathPhase1TargetsChanged
+    });
+    updatePathStatTradeoffPickerUI();
   });
   stepNum++;
 
+  const p1MultiOr = pathPhase1MultiOrTargets(p1);
+  const showAutoSecondTarget = selectedSlots >= 2 && p1MultiOr;
+
   if (selectedSlots >= 2) {
-    createPathStep(mount, stepNum, { title: '2nd target' }, body => {
+    if (showAutoSecondTarget) {
+      createPathStep(mount, stepNum, { title: '2nd target' }, body => {
+        const row = document.createElement('div');
+        row.className = 'path-phase-inline-row path-step__auto-inline';
+        const meta = document.createElement('div');
+        meta.className = 'path-step__auto-row path-step__auto-row--grow';
+        const badge = document.createElement('span');
+        badge.className = 'path-step__badge-auto';
+        badge.textContent = 'Auto';
+        const desc = document.createElement('span');
+        desc.className = 'path-hint path-step__auto-desc';
+        desc.textContent =
+          'After phase 1: OR alternates if main locked first; main only if an alternate locked first.';
+        meta.appendChild(badge);
+        meta.appendChild(desc);
+        row.appendChild(meta);
+        appendPathPhaseArtifactSelect(row, 'path-phase-2-artifact', prev['path-phase-2-artifact']);
+        body.appendChild(row);
+      });
+    } else {
+      createPathStep(mount, stepNum, { title: '2nd target' }, body => {
       const ancBlock = document.createElement('div');
       ancBlock.className = 'path-phase-2-anchor-block';
       const ancLabel = document.createElement('label');
       ancLabel.className = 'path-phase-sublabel';
       ancLabel.setAttribute('for', 'path-phase-2-anchor');
-      ancLabel.textContent = 'Anchor (optional)';
+      ancLabel.textContent = 'Anchor';
       const ancWrap = document.createElement('div');
       ancWrap.className = 'target-enchant-wrap';
       const ancInp = document.createElement('input');
@@ -718,13 +920,24 @@ function renderPathPhaseUI(phaseValuesOverride) {
       altDetails.appendChild(altInner);
       body.appendChild(altDetails);
 
-      mountStatTradeoffPickerSection(body);
+      mountStatTradeoffPickerSection(body, {
+        preserveOpen: preservePhase2TradeoffOpen,
+        appendValidationMessage: () => {
+          const { anchor, alts } = collectPathPhase2FromDom();
+          if (!anchor && !alts.length) {
+            return 'Add at least one anchor or alternate for 2nd phase.';
+          }
+          return '';
+        },
+        onAfterApply: onPathPhase2TargetsChanged
+      });
       updatePathStatTradeoffPickerUI();
     });
+    }
     stepNum++;
   }
 
-  const p2MultiOr = pathPhase2MultiOrTargets(p2);
+  const p2MultiOr = showAutoSecondTarget ? false : pathPhase2MultiOrTargets(p2);
   const showAutoThirdTarget = selectedSlots >= 3 && p2MultiOr;
   if (showAutoThirdTarget) {
     createPathStep(mount, stepNum, { title: '3rd target' }, body => {
@@ -749,7 +962,7 @@ function renderPathPhaseUI(phaseValuesOverride) {
   }
 
   if (selectedSlots >= 4) {
-    const startManual = p2MultiOr ? 4 : 3;
+    const startManual = showAutoSecondTarget ? 3 : p2MultiOr ? 4 : 3;
     for (let phase = startManual; phase <= selectedSlots; phase++) {
       const ph = phase;
       const isOptionalFourth = p2MultiOr && ph === 4;
@@ -814,6 +1027,11 @@ function renderPathPhaseUI(phaseValuesOverride) {
     if (i === arr.length - 1) el.classList.add('path-step--last');
   });
 
+  if (selectedSlots >= 2) {
+    mount.dataset.pathP1OrMode = p1MultiOr ? 'multi' : 'single';
+  } else {
+    delete mount.dataset.pathP1OrMode;
+  }
   if (selectedSlots >= 3) {
     mount.dataset.pathP2OrMode = p2MultiOr ? 'multi' : 'single';
   } else {
