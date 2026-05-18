@@ -6,7 +6,6 @@
 
   var introHref = inClasses ? "../index.html" : "index.html";
   var buildsHref = inClasses ? "builds.html" : "classes/builds.html";
-  var creditsHref = inClasses ? "credits.html" : "classes/credits.html";
   var enchantHref = inClasses
     ? "../index.html?view=enchant-sim"
     : "index.html?view=enchant-sim";
@@ -38,7 +37,6 @@
 
   var introAttr = isIntro ? ' aria-current="page"' : "";
   var buildsAttr = isBuildsHub ? ' aria-current="page"' : "";
-  var creditsAttr = isCredits ? ' aria-current="page"' : "";
   var enchantAttr = isEnchantSim ? ' aria-current="page"' : "";
   var keySimAttr = isKeySim ? ' aria-current="page"' : "";
 
@@ -73,11 +71,6 @@
     '"' +
     keySimAttr +
     ">Key Sim</a>" +
-    '<a class="site-nav__link" href="' +
-    creditsHref +
-    '"' +
-    creditsAttr +
-    ">Credits</a>" +
     "</nav>" +
     "</details>";
 
@@ -150,5 +143,17 @@
     } else {
       attachBrandStripScroll();
     }
+  }
+
+  if (inClasses && !document.getElementById("builds-credits-anchor")) {
+    var creditsAnchor = document.createElement("a");
+    creditsAnchor.id = "builds-credits-anchor";
+    creditsAnchor.className = "builds-credits-anchor";
+    creditsAnchor.href = "credits.html";
+    creditsAnchor.textContent = "Credits";
+    if (isCredits) {
+      creditsAnchor.setAttribute("aria-current", "page");
+    }
+    document.body.appendChild(creditsAnchor);
   }
 })();

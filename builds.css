@@ -52,7 +52,7 @@ body.has-build-variant-nav:not(.set-checker-sidebar-open) {
   padding-right: calc(clamp(1rem, 4vw, 2rem) + var(--build-variant-nav-chip-width));
 }
 
-/* Slim left sidebar: Intro / Builds / Credits (injected via site-nav.js) */
+/* Slim left sidebar: Intro / Builds / tools (injected via site-nav.js) */
 .site-nav {
   position: fixed;
   z-index: 45;
@@ -301,6 +301,34 @@ main.home-intro__main:has(#keyView:not([hidden])) {
   margin-bottom: 0;
 }
 
+/* Builds section: viewport-fixed Credits entry (injected via site-nav.js on /classes/) */
+.builds-credits-anchor {
+  position: fixed;
+  right: max(0.75rem, env(safe-area-inset-right, 0px));
+  bottom: max(0.75rem, env(safe-area-inset-bottom, 0px));
+  z-index: 35;
+  font-size: 1.1375rem;
+  line-height: 1.35;
+  color: #7a7a7a;
+  text-decoration: none;
+  font-family: ChronoType, system-ui, sans-serif;
+  letter-spacing: 0.02em;
+}
+.builds-credits-anchor:hover,
+.builds-credits-anchor[aria-current="page"] {
+  color: #9ec7ff;
+  text-decoration: underline;
+  text-underline-offset: 0.12em;
+}
+.builds-credits-anchor:focus {
+  outline: none;
+}
+.builds-credits-anchor:focus-visible {
+  outline: 2px solid #6ab0ff;
+  outline-offset: 3px;
+  border-radius: 0.15rem;
+}
+
 /* Credits page (classes/credits.html) */
 .credits-page__main {
   max-width: 42rem;
@@ -316,11 +344,8 @@ main.home-intro__main:has(#keyView:not([hidden])) {
   border-radius: 0.35rem;
   border: 1px solid #333;
 }
-.credits-page__list-label {
-  margin: 1.5rem 0 0.35rem;
-}
 .credits-page__list {
-  margin: 0 0 1.25rem;
+  margin: 1.5rem 0 1.25rem;
   padding-left: 1.35rem;
 }
 .credits-page__list li {
