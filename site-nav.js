@@ -4,7 +4,7 @@
   var path = (location.pathname || "").replace(/\\/g, "/");
   var inClasses = path.indexOf("/classes/") !== -1;
 
-  var introHref = inClasses ? "../index.html" : "index.html";
+  var introHref = inClasses ? "../introduction.html" : "introduction.html";
   var buildsHref = inClasses ? "builds.html" : "classes/builds.html";
   var enchantHref = inClasses
     ? "../index.html?view=enchant-sim"
@@ -22,11 +22,7 @@
   var isKeySimRoute = path.indexOf("/key-sim/") !== -1;
   var isEnchantSim = requestedView === "enchant-sim" || isEnchantRoute;
   var isKeySim = requestedView === "key-sim" || isKeySimRoute;
-  var isIntro =
-    !inClasses &&
-    !isEnchantSim &&
-    !isKeySim &&
-    (fileName === "" || fileName === "index.html" || /^\/?$/.test(path));
+  var isIntro = /^(introduction\.html)$/i.test(fileName);
   var isBuildsHub = /^(builds\.html)$/i.test(fileName);
   var isCredits = /^(credits\.html)$/i.test(fileName);
 
@@ -35,7 +31,6 @@
     document.body.classList.add("site-nav-show-brand");
   }
 
-  var introAttr = isIntro ? ' aria-current="page"' : "";
   var buildsAttr = isBuildsHub ? ' aria-current="page"' : "";
   var enchantAttr = isEnchantSim ? ' aria-current="page"' : "";
   var keySimAttr = isKeySim ? ' aria-current="page"' : "";
@@ -51,11 +46,6 @@
     '" alt="" width="36" height="36" decoding="async">' +
     "</summary>" +
     '<nav class="site-nav__links" aria-label="Site">' +
-    '<a class="site-nav__link" href="' +
-    introHref +
-    '"' +
-    introAttr +
-    ">Intro</a>" +
     '<a class="site-nav__link" href="' +
     buildsHref +
     '"' +
@@ -143,6 +133,15 @@
     } else {
       attachBrandStripScroll();
     }
+  }
+
+  if (isBuildsHub && !document.getElementById("builds-intro-anchor")) {
+    var introAnchor = document.createElement("a");
+    introAnchor.id = "builds-intro-anchor";
+    introAnchor.className = "builds-intro-anchor";
+    introAnchor.href = introHref;
+    introAnchor.textContent = "Intro";
+    document.body.appendChild(introAnchor);
   }
 
   if (inClasses && !document.getElementById("builds-credits-anchor")) {

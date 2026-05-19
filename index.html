@@ -27,9 +27,18 @@
         bard: 'classes/bard.html',
         druid: 'classes/druid.html'
       };
-      var p = new URLSearchParams(window.location.search).get('class');
+      var params = new URLSearchParams(window.location.search);
+      var p = params.get("class");
       if (p && map[p]) {
         window.location.replace(map[p]);
+        return;
+      }
+      if (params.get("view") === "intro") {
+        window.location.replace("introduction.html");
+        return;
+      }
+      if (!params.get("view")) {
+        window.location.replace("classes/builds.html");
       }
     })();
   </script>
@@ -37,7 +46,6 @@
 <body class="home-intro has-site-nav">
   <script src="site-nav.js"></script>
   <main class="home-intro__main">
-    <div class="home-intro__prose" id="introView"></div>
     <section class="home-enchant-view" id="enchantView" hidden>
       <div id="enchantSimMount"></div>
     </section>
@@ -49,12 +57,11 @@
   <script src="key-sim/embed.js"></script>
   <script>
     (function () {
-      var introEl = document.getElementById("introView");
       var enchantView = document.getElementById("enchantView");
       var enchantMount = document.getElementById("enchantSimMount");
       var keyView = document.getElementById("keyView");
       var keyMount = document.getElementById("keySimMount");
-      if (!introEl || !enchantView || !enchantMount || !keyView || !keyMount) return;
+      if (!enchantView || !enchantMount || !keyView || !keyMount) return;
 
       var params = new URLSearchParams(window.location.search);
       var view = params.get("view");
@@ -65,36 +72,8 @@
       var keyMounted = false;
       var keyMountPromise = null;
 
-      function loadIntro() {
-        if (introEl.dataset.loaded === "true") return;
-        fetch("intro.html", { cache: "no-cache" })
-          .then(function (r) {
-            if (!r.ok) throw new Error(String(r.status));
-            return r.text();
-          })
-          .then(function (html) {
-            introEl.innerHTML = html;
-            introEl.dataset.loaded = "true";
-          })
-          .catch(function () {
-            introEl.innerHTML =
-              '<p class="home-intro__load-error">Could not load the introduction. Try refreshing, or open <a class="home-intro__tool-link" href="intro.html">intro.html</a> directly.</p>';
-            introEl.dataset.loaded = "true";
-          });
-      }
-
-      function showIntro() {
-        document.title = "ROTMG Tools — Introduction";
-        introEl.hidden = false;
-        enchantView.hidden = true;
-        keyView.hidden = true;
-        document.body.classList.add("home-intro");
-        loadIntro();
-      }
-
       function showEnchantSim() {
         document.title = "ROTMG Tools — Enchantment Sim";
-        introEl.hidden = true;
         keyView.hidden = true;
         enchantView.hidden = false;
         document.body.classList.remove("home-intro");
@@ -127,7 +106,6 @@
 
       function showKeySim() {
         document.title = "ROTMG Tools — Key sim";
-        introEl.hidden = true;
         enchantView.hidden = true;
         keyView.hidden = false;
         document.body.classList.remove("home-intro");
@@ -162,8 +140,6 @@
         showEnchantSim();
       } else if (showingKey) {
         showKeySim();
-      } else {
-        showIntro();
       }
     })();
   </script>
